@@ -15,7 +15,10 @@
     # $ darwin-rebuild build --flake .#Cadens-MacBook-Pro
     darwinConfigurations."Cadens-MacBook-Pro" = nix-darwin.lib.darwinSystem {
       specialArgs = inputs;
-      modules = [ ./darwin/configuration.nix ];
+      modules = [
+        ./darwin/configuration.nix
+        ./darwin/pam.nix
+      ];
     };
   };
 }
