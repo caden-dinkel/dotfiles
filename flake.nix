@@ -14,10 +14,17 @@
     # Build darwin flake using:
     # $ darwin-rebuild build --flake .#Cadens-MacBook-Pro
     darwinConfigurations."Cadens-MacBook-Pro" = nix-darwin.lib.darwinSystem {
-      specialArgs = inputs;
+      specialArgs = { inherit inputs; };
       modules = [
         ./darwin/configuration.nix
         ./darwin/pam.nix
+        home-manager.darwinModules.home-manager
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+          home-manager.extraSpecialArgs = { inherit inputs; };
+          home-manager.users.cdink = ./users/cdink/home.nix;
+        }
       ];
     };
   };
