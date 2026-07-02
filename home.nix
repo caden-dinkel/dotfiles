@@ -1,13 +1,8 @@
-{ home-manager, ... }:
 {
-  home-manager.darwinModules.home-manager = {
+  home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
-    users.cdink = { pkgs, ... }:
-    {
-      home.pkgs = [
-        pkgs.bitwarden-desktop
-      ];
-    };
+
+    users.cdink = import ./home/cdink.nix;
   };
 }
