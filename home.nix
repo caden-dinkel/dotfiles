@@ -7,5 +7,6 @@
       imports = [
         ./home/cdink.nix
       ];
+    };
   };
 }
