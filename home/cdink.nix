@@ -14,4 +14,7 @@
     programs.obsidian = {
       enable = true;
     };
+    programs.cursor = {
+      enable = true;
+    };
 }
