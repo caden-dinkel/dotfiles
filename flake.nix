@@ -21,7 +21,7 @@
     };
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager }:
+  outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager, catppuccin }:
   {
     # Build darwin flake using:
     # $ darwin-rebuild build --flake .#Cadens-MacBook-Pro
