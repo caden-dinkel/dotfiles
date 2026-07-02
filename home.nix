@@ -5,8 +5,7 @@
 
     users.cdink = {
       imports = [
-        ./home/cdink.nix;
+        ./home/cdink.nix
       ];
-    };
   };
 }
