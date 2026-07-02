@@ -1,3 +1,4 @@
+{ home-manager, ... }:
 {
   home-manager.darwinModules.home-manager = {
     useGlobalPkgs = true;
