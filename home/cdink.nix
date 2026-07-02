@@ -11,4 +11,7 @@
       enable = true;
       enableZshIntegration = true;
     };
+    programs.obsidian = {
+      enable = true;
+    };
 }
