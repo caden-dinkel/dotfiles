@@ -18,13 +18,8 @@
       modules = [
         ./darwin/configuration.nix
         ./darwin/pam.nix
-        home-manager.darwinModules.home-manager
-        {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = { inherit inputs; };
-          home-manager.users.cdink = ./users/cdink/home.nix;
-        }
+        ./users/cdink/user.nix
+        ./users/cdink/home.nix
       ];
     };
   };

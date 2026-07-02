@@ -1,10 +1,14 @@
-{ config, pkgs, ... }:
+{ home-manager, ... }:
 
 {
-  home.username = "cdink";
-  home.homeDirectory = "/home/cdink";
-
-  home.stateVersion = "26.05";
-
-  programs.home-manager.enable = true;
+  home-manager.darwinModules.home-manager = {
+    useGlobalPkgs = true;
+    useUserPackages = true;
+    users.cdink = { pkgs, ... }:
+    {
+      home.pkgs = [
+        pkgs.bitwarden-desktop
+      ];
+    };
+  };
 }
