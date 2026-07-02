@@ -6,9 +6,9 @@
     packages = with pkgs; [
       bitwarden-cli
     ];
+    };
     programs.wezterm = {
       enable = true;
       enableZshIntegration = true;
     };
-  };
 }
