@@ -70,7 +70,7 @@
     package = pkgs.skhd;
 
     skhdConfig = ''
-      cmd - return : open -na "/Users/cadend/Applications/Home Manager Apps/WezTerm.app"
+      cmd - return : open -na "/Users/cdink/Applications/Home Manager Apps/WezTerm.app"
     '';
   };
 }
