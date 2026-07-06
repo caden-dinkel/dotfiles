@@ -23,7 +23,7 @@
     darwinConfigurations."mac-m3" = nix-darwin.lib.darwinSystem {
       specialArgs = { inherit self inputs; };
       modules = [
-        ./configuration.nix
+        ./hosts/darwin/configuration.nix
       ];
     };
   };
