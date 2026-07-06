@@ -24,11 +24,6 @@
       specialArgs = { inherit self inputs; };
       modules = [
         ./configuration.nix
-        ./pam.nix
-        ./user.nix
-        
-        home-manager.darwinModules.home-manager
-        ./home.nix
       ];
     };
   };

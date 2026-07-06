@@ -2,6 +2,14 @@
 {
   # List packages installed in system profile. To search by name, run:
   # $ nix-env -qaP | grep wget
+
+  imports = [
+    ./user.nix
+    ./pam.nix
+    inputs.home-manager.darwinModules.home-manager
+    ../../home/home.nix
+  ];
+  
   environment.systemPackages = [
     pkgs.vim
     pkgs.helix
