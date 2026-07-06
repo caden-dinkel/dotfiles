@@ -7,6 +7,7 @@
       imports = [
         ./programs.nix
         ./git.nix
+        ./ssh.nix
       ];
     };
   };
