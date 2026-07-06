@@ -6,6 +6,7 @@
     users.cdink = {
       imports = [
         ./programs.nix
+        ./git.nix
       ];
     };
   };

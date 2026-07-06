@@ -6,15 +6,15 @@
     packages = with pkgs; [
       bitwarden-cli
     ];
-    };
-    programs.wezterm = {
-      enable = true;
-      enableZshIntegration = true;
-    };
-    programs.obsidian = {
-      enable = true;
-    };
-    programs.cursor = {
-      enable = true;
-    };
+  };
+  programs.wezterm = {
+    enable = true;
+    enableZshIntegration = true;
+  };
+  programs.obsidian = {
+    enable = true;
+  };
+  programs.cursor = {
+    enable = true;
+  };
 }
