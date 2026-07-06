@@ -26,5 +26,11 @@
         ./hosts/darwin/configuration.nix
       ];
     };
+    nixosConfigurations.builder = nixpkgs.lib.nixosSystem {
+      specialArgs = { inherit self inputs; };
+      modules = [
+        ./hosts/builder/configuration.nix
+      ];
+    };
   };
 }
