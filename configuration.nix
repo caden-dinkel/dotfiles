@@ -18,6 +18,8 @@
   # Set Git commit hash for darwin-version.
   system.configurationRevision = self.rev or self.dirtyRev or null;
 
+  system.primaryUser = "cdink";
+  
   system.defaults = {
     finder = {
       AppleShowAllFiles = true;

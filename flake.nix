@@ -20,7 +20,7 @@
   {
     # Build darwin flake using:
     # $ darwin-rebuild build --flake .#Cadens-MacBook-Pro
-    darwinConfigurations."Cadens-MacBook-Pro" = nix-darwin.lib.darwinSystem {
+    darwinConfigurations."mac-m3" = nix-darwin.lib.darwinSystem {
       specialArgs = { inherit self inputs; };
       modules = [
         ./configuration.nix
