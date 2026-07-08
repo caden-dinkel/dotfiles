@@ -18,18 +18,10 @@
 
   outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager }:
   {
-    # Build darwin flake using:
-    # $ darwin-rebuild build --flake .#Cadens-MacBook-Pro
     darwinConfigurations."mac-m3" = nix-darwin.lib.darwinSystem {
       specialArgs = { inherit self inputs; };
       modules = [
         ./hosts/darwin/configuration.nix
-      ];
-    };
-    nixosConfigurations.builder = nixpkgs.lib.nixosSystem {
-      specialArgs = { inherit self inputs; };
-      modules = [
-        ./hosts/builder/configuration.nix
       ];
     };
   };

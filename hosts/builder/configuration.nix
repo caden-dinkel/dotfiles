@@ -13,8 +13,13 @@
 
     services.openssh.enable = true;
 
+    nix.linux-builder = {
+        enable = true;
+        package = pkgs.darwin.linux-builder;
 
-    nix.settings.trusted-users = [ "builder" ];
+    };
+
+    nix.settings.trusted-users = [ "@admin" ];
     nix.settings.experimental-features = [
         "nix-command"
         "flakes"
