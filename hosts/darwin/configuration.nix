@@ -18,6 +18,20 @@
 
   nix.settings.experimental-features = "nix-command flakes";
 
+  nix.linux-builder = {
+    enable = true;
+    ephemeral = true; # Wipes the VM state on reboot (keeps things clean)
+    maxJobs = 4;      # Adjust based on your M3 core count
+    config = {
+      virtualisation = {
+        darwin-builder = {
+          diskSize = 40 * 1024; # 40 GB disk size
+          memorySize = 8192;    # 8 GB RAM
+        };
+      };
+    };
+  };
+
   nixpkgs.config.allowUnfree = true;
 
   system.configurationRevision = self.rev or self.dirtyRev or null;
