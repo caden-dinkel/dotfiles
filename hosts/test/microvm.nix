@@ -12,11 +12,14 @@
         ];
     };
 
+
+
     microvm = {
         shares = [ {
             tag = "ro-store";
             proto = "virtiofs";
             source = "/nix/store";
+            mountPoint = "/nix/.ro-store";
         } ];
         interfaces = [ {
             type = "user"; # Simple user-networking (NAT)

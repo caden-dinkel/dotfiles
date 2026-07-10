@@ -18,10 +18,13 @@
 
   nix.settings.experimental-features = "nix-command flakes";
 
+  nix.distributedBuilds = true;
+
   nix.linux-builder = {
     enable = true;
     ephemeral = true; # Wipes the VM state on reboot (keeps things clean)
     maxJobs = 4;      # Adjust based on your M3 core count
+    systems = [ "aarch64-linux" ];
     config = {
       virtualisation = {
         darwin-builder = {
