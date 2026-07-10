@@ -29,17 +29,5 @@
         ./hosts/darwin/configuration.nix
       ];
     };
-
-    apps."aarch64-darwin".run-test-vm = {
-      type = "app";
-      program = let
-        microvmSystem = microvm.lib.nixosAsVm {
-          system = "aarch64-linux";
-          modules = [
-            ./hosts/test/configuration.nix
-          ];
-        };
-        in "${microvmSystem.config.microvm.runner}/bin/run-microvm";
-    };
   };
 }
