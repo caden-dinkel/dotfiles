@@ -6,6 +6,13 @@
     services.openssh.enable = true;
     services.openssh.settings.PermitRootLogin = "yes";
 
+    users.users.caden = {
+        extraGroups = [ "wheel" ];
+        openssh.authorizedKeys.keys = [
+            
+        ];
+    };
+
     microvm = {
         shares = [ {
             tag = "ro-store";

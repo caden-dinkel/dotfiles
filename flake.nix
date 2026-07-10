@@ -36,11 +36,7 @@
         microvmSystem = microvm.lib.nixosAsVm {
           system = "aarch64-linux";
           modules = [
-            ({ pkgs, ... }: {
-              networking.hostName = "test-node";
-
-              services.openssh.enable = true;
-            })
+            ./hosts/test/configuration.nix
           ];
         };
     };
