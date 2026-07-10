@@ -2,14 +2,16 @@
 {
     networking.hostName = "test-node";
     
-    # Enable SSH so you can test deploy-rs
     services.openssh.enable = true;
-    services.openssh.settings.PermitRootLogin = "yes";
+    services.openssh.settings.PermitRootLogin = "no";
 
     users.users.caden = {
         extraGroups = [ "wheel" ];
         openssh.authorizedKeys.keys = [
-            
+            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPQSQpXpm7lmsfqUnyUzRD+h3CkXVlxPKyhMOSxAa7ml mac@cdink.dev"
+        ];
+        packages = with pkgs; [
+            vim
         ];
     };
 

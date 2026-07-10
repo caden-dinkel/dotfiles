@@ -21,7 +21,7 @@
     }; 
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager }:
+  outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager, microvm }:
   {
     darwinConfigurations."mac-m3" = nix-darwin.lib.darwinSystem {
       specialArgs = { inherit self inputs; };
@@ -39,6 +39,7 @@
             ./hosts/test/configuration.nix
           ];
         };
+        in "${microvmSystem.config.microvm.runner}/bin/run-microvm";
     };
   };
 }
