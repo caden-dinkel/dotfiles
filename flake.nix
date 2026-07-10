@@ -16,7 +16,7 @@
     };   
 
     microvm = {
-      url = "github:astro/microvm.nix";
+      url = "github:microvm-nix/microvm.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     }; 
   };
@@ -27,6 +27,13 @@
       specialArgs = { inherit self inputs; };
       modules = [
         ./hosts/darwin/configuration.nix
+      ];
+    };
+
+    nixosConfigurations."test-microvm" = nixpkgs.lib.nixosSystem {
+      specialArgs = { inherit self inputs; };
+      modules = [
+        ./hosts/test/configuration.nix
       ];
     };
   };
