@@ -19,14 +19,20 @@
       url = "github:microvm-nix/microvm.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     }; 
+
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager, microvm }:
+  outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager, microvm, sops-nix }:
   {
     darwinConfigurations."mac-m3" = nix-darwin.lib.darwinSystem {
       specialArgs = { inherit self inputs; };
       modules = [
         ./hosts/darwin/configuration.nix
+        sops-nix.darwinModules.sops
       ];
     };
   };
