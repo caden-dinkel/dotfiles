@@ -8,12 +8,15 @@
     ../../modules/users/cdink.nix
     inputs.home-manager.darwinModules.home-manager
     ../../modules/home/home.nix
+    inputs.sops-nix.darwinModules.sops-nix
+    ./sops.nix
   ];
   
   environment.systemPackages = [
     pkgs.vim
     pkgs.helix
     pkgs.vfkit
+    pkgs.age
   ];
 
   nix.settings.experimental-features = "nix-command flakes";

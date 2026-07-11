@@ -32,7 +32,6 @@
       specialArgs = { inherit self inputs; };
       modules = [
         ./hosts/darwin/configuration.nix
-        sops-nix.darwinModules.sops
       ];
     };
   };
