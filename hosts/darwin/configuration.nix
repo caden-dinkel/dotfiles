@@ -4,10 +4,10 @@
   # $ nix-env -qaP | grep wget
 
   imports = [
-    ./user.nix
     ./pam.nix
+    ../../modules/users/cdink.nix
     inputs.home-manager.darwinModules.home-manager
-    ../../home/home.nix
+    ../../modules/home/home.nix
   ];
   
   environment.systemPackages = [
