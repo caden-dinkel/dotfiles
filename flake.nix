@@ -29,18 +29,5 @@
         ./hosts/darwin/configuration.nix
       ];
     };
-
-    nixosConfigurations."test-microvm" = nixpkgs.lib.nixosSystem {
-      specialArgs = { inherit self inputs; };
-      system = "aarch64-darwin";
-      modules = [
-        ./hosts/test/configuration.nix
-      ];
-    };
-
-    apps."aarch64-darwin".test-microvm = {
-      type = "app";
-      program = "${self.nixosConfigurations.test-microvm.config.microvm.declaredRunner}/bin/test-microvm";
-    };
   };
 }
