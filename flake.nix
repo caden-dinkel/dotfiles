@@ -29,7 +29,7 @@
   outputs = { self, nix-darwin, nixpkgs, ... }@inputs:
   {
     darwinConfigurations."mac-m3" = nix-darwin.lib.darwinSystem {
-      specialArgs = { inherit self inputs; };
+      specialArgs = { inherit inputs; };
       modules = [
         ./hosts/darwin/configuration.nix
       ];
