@@ -8,6 +8,7 @@
     ../../modules/users/cdink.nix
     inputs.home-manager.darwinModules.home-manager
     ../../modules/home/home.nix
+    
     inputs.sops-nix.darwinModules.sops-nix
     ./sops.nix
   ];

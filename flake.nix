@@ -26,7 +26,7 @@
     };
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager, microvm, sops-nix }:
+  outputs = { self, nix-darwin, nixpkgs, ... }@inputs:
   {
     darwinConfigurations."mac-m3" = nix-darwin.lib.darwinSystem {
       specialArgs = { inherit self inputs; };
