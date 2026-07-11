@@ -16,33 +16,18 @@
     };   
 
     microvm = {
-      url = "github:astro/microvm.nix";
+      url = "github:microvm-nix/microvm.nix";
       inputs.nixpkgs.follows = "nixpkgs";
     }; 
   };
 
-  outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager }:
+  outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager, microvm }:
   {
     darwinConfigurations."mac-m3" = nix-darwin.lib.darwinSystem {
       specialArgs = { inherit self inputs; };
       modules = [
         ./hosts/darwin/configuration.nix
       ];
-    };
-
-    apps."aarch64-darwin".run-test-vm = {
-      type = "app";
-      program = let
-        microvmSystem = microvm.lib.nixosAsVm {
-          system = "aarch64-linux";
-          modules = [
-            ({ pkgs, ... }: {
-              networking.hostName = "test-node";
-
-              services.openssh.enable = true;
-            })
-          ];
-        };
     };
   };
 }
