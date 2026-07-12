@@ -1,3 +1,3 @@
 {
-    sops.age.keyFile = "/var/lib/sops-nix/keys.txt"
+    sops.age.keyFile = "/var/lib/sops-nix/keys.txt";
 }
