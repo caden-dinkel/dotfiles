@@ -24,6 +24,8 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    deploy-rs.url = "github:serokell/deploy-rs";
   };
 
   outputs = { self, nix-darwin, nixpkgs, ... }@inputs:
@@ -32,6 +34,13 @@
       specialArgs = { inherit self inputs; };
       modules = [
         ./hosts/darwin/configuration.nix
+      ];
+    };
+
+    nixosConfigurations."luck" = nixpkgs.lib.nixosSystem {
+      specialArgs = { inherit self inputs; };
+      modules = [
+        ./hosts/luck/configuration.nix
       ];
     };
   };

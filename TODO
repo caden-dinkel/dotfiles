@@ -1,0 +1,15 @@
+[X] - Implement config in disko.nix
+
+    [X] - Implement checks in all cases that use possibly null values.
+
+
+
+
+
+
+[ ] - Figure out sops-nix stuff
+[ ] - Configure tailscale with one-time use tagged keys
+[ ] - Setup deploy-rs with tailscale based auth
+[ ] - nixos-anywhere machines.
+[ ] - kubernetes.
+
