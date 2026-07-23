@@ -16,5 +16,10 @@
   };
   programs.cursor = {
     enable = true;
+    profiles.cdink = {
+      extensions = with pkgs.vscode-extensions; [
+        jnoortheen.nix-ide
+      ];
+    };
   };
 }
