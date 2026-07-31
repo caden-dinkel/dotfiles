@@ -17,7 +17,7 @@
 
   # This isn't working properly. Need to look into it.
   programs.cursor = {
-    enable = false;
+    enable = true;
     profiles.cdink = {
       extensions = with pkgs.vscode-extensions; [
         jnoortheen.nix-ide
