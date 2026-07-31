@@ -14,14 +14,4 @@
   programs.obsidian = {
     enable = true;
   };
-
-  # This isn't working properly. Need to look into it.
-  programs.cursor = {
-    enable = true;
-    profiles.cdink = {
-      extensions = with pkgs.vscode-extensions; [
-        jnoortheen.nix-ide
-      ];
-    };
-  };
 }
