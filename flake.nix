@@ -26,6 +26,8 @@
     };
 
     deploy-rs.url = "github:serokell/deploy-rs";
+
+    
   };
 
   outputs = { self, nix-darwin, nixpkgs, ... }@inputs:
