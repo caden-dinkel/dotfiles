@@ -1,6 +1,6 @@
 { self, pkgs, config, lib, ... }:
 {
-  networking.hostName = "luck";
+  networking.hostName = "omen";
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
 
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
@@ -12,7 +12,6 @@
   imports = [
     "${self}/modules/base.nix"
     "${self}/modules/nvidia.nix"
-    "${self}/modules/disko.nix"
     "${self}/modules/tailscale.nix"
     "${self}/modules/users/deploy.nix"
   ];
@@ -25,38 +24,6 @@
             enable = true;
             intelBusId = "PCI:0:2:0";
             nvidiaBusId = "PCI:1:0:0";
-        };
-    };
-
-    storage = {
-        enable = true;
-        main = {
-            enable = true;
-            device = "/dev/nvme0n1";
-            ESP = {
-                enable = true;
-                size = "1G";
-            };
-            swap = {
-                enable = true;
-                size = "16G";
-            };
-        };
-
-        persistent = {
-            enable = true;
-            device = "/dev/sda";
-            format = "ext4";
-        };
-
-        ephemeral = {
-            enable = true;
-            tmpfsSize = "4G";
-            persistentDirectories = [
-                "/var/lib/tailscale"
-                "/etc/machine-id"
-                "/etc/ssh"
-            ];
         };
     };
   };

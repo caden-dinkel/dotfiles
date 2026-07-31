@@ -37,10 +37,10 @@
       ];
     };
 
-    nixosConfigurations."luck" = nixpkgs.lib.nixosSystem {
+    nixosConfigurations."omen" = nixpkgs.lib.nixosSystem {
       specialArgs = { inherit self inputs; };
       modules = [
-        ./hosts/luck/configuration.nix
+        ./hosts/omen/configuration.nix
       ];
     };
   };
