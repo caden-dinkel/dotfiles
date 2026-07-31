@@ -16,8 +16,5 @@
   };
   programs.vscode = {
     enable = true;
-    profiles.cdink.extensions = [
-      pkgs.vscode-extensions.jnoortheen.nix-ide
-    ];
   };
 }
