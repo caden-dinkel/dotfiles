@@ -36,16 +36,16 @@
   outputs = { self, nix-darwin, nixpkgs, ... }@inputs:
   {
     darwinConfigurations."mac-m3" = nix-darwin.lib.darwinSystem {
-      specialArgs = { inherit self home-manager sops-nix inputs; };
+      specialArgs = { inherit self inputs; };
       modules = [
-        home-manager.darwinModules.home-manager
-        sops-nix.darwinModules.sops
+        inputs.home-manager.darwinModules.home-manager
+        inputs.sops-nix.darwinModules.sops
         ./hosts/darwin/configuration.nix
       ];
     };
 
     nixosConfigurations."omen" = nixpkgs.lib.nixosSystem {
-      specialArgs = { inherit self disko inputs; };
+      specialArgs = { inherit self inputs; };
       modules = [
         inputs.disko.nixosModules.disko
         ./hosts/omen/configuration.nix
