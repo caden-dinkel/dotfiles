@@ -1,16 +1,12 @@
 { pkgs }:
-
 {
     users.users.deploy = {
         isNormalUser = true;
         description = "Deployment User for deploy-rs";
-        extraGroups = [ "trusted-users" ];
         openssh.authorizedKeys.keys = [
             ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPQSQpXpm7lmsfqUnyUzRD+h3CkXVlxPKyhMOSxAa7ml mac@cdink.dev
         ];
     };
-
-    nix.settings.trusted-users = [ "deploy" ];
 
     security.sudo = {
         enable = true;

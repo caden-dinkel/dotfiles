@@ -5,11 +5,8 @@
 
   imports = [
     ./pam.nix
-    ../../modules/users/cdink.nix
-    inputs.home-manager.darwinModules.home-manager
+    ../../users/cdink.nix
     ../../modules/home/home.nix
-
-    inputs.sops-nix.darwinModules.sops
     ./sops.nix
   ];
   

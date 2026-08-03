@@ -1,0 +1,8 @@
+
+./hardware-configuration.nix is the path that you want the hardware-configuration generated. (Should relay file over ssh and save to location on host.)
+```
+--generate-hardware-config nixos-generate-config ./hardware-configuration.nix
+```
+
+Tailscale should check the /var/lib/tailscale folder for existing identities/tailnet membership. If there is one present, the tagged auth key is ignored.
+

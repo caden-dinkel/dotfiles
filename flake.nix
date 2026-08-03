@@ -35,6 +35,8 @@
     darwinConfigurations."mac-m3" = nix-darwin.lib.darwinSystem {
       specialArgs = { inherit self inputs; };
       modules = [
+        home-manager.darwinModules.home-manager
+        sops-nix.darwinModules.sops
         ./hosts/darwin/configuration.nix
       ];
     };
@@ -42,6 +44,7 @@
     nixosConfigurations."omen" = nixpkgs.lib.nixosSystem {
       specialArgs = { inherit self inputs; };
       modules = [
+        disko.nixosModules.disko
         ./hosts/omen/configuration.nix
       ];
     };
