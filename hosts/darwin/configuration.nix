@@ -5,9 +5,9 @@
 
   imports = [
     ./pam.nix
-    ../../users/cdink.nix
-    ../../modules/home/home.nix
     ./sops.nix
+    "${self}/users/cdink.nix"
+    "${self}/modules/home/home.nix"
   ];
   
   environment.systemPackages = [

@@ -4,8 +4,6 @@
     [ ] - ADJUST THE CONFIG IMPLEMENTATION TO ALLOW EPHEMERAL TO BE BTRFS.
     [ ] - Test
 
-[ ] - Figure out sops-nix stuff
-
 [ ] - Figure out disko/impermanence
 
 [ ] - Configure tailscale with one-time use tagged keys.

@@ -30,6 +30,12 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    impermanence = {
+      url = "github:nix-community/impermanence";
+      inputs.nixpkgs.follows = "";
+      inputs.home-manager.follows = "";
+    };
+
     deploy-rs.url = "github:serokell/deploy-rs";
   };
 
@@ -47,6 +53,7 @@
     nixosConfigurations."omen" = nixpkgs.lib.nixosSystem {
       specialArgs = { inherit self inputs; };
       modules = [
+        inputs.impermanence.nixosModules.impermanence
         inputs.disko.nixosModules.disko
         ./hosts/omen/configuration.nix
       ];

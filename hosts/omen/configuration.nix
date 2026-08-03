@@ -7,8 +7,12 @@
     "${self}/modules/nvidia.nix"
     "${self}/modules/disko.nix"
     "${self}/modules/tailscale.nix"
+    "${self}/modules/persist.nix"
+    "${self}/modules/rollback.nix"
+
     "${self}/users/deploy.nix"
     "${self}/users/admin.nix"
+    
     ./hardware-configuration.nix
   ];
 
