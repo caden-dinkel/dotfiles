@@ -25,15 +25,18 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    deploy-rs.url = "github:serokell/deploy-rs";
+    disko = {
+      url = "github:nix-community/disko";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
 
-    
+    deploy-rs.url = "github:serokell/deploy-rs";
   };
 
   outputs = { self, nix-darwin, nixpkgs, ... }@inputs:
   {
     darwinConfigurations."mac-m3" = nix-darwin.lib.darwinSystem {
-      specialArgs = { inherit self inputs; };
+      specialArgs = { inherit self home-manager sops-nix inputs; };
       modules = [
         home-manager.darwinModules.home-manager
         sops-nix.darwinModules.sops
@@ -42,9 +45,9 @@
     };
 
     nixosConfigurations."omen" = nixpkgs.lib.nixosSystem {
-      specialArgs = { inherit self inputs; };
+      specialArgs = { inherit self disko inputs; };
       modules = [
-        disko.nixosModules.disko
+        inputs.disko.nixosModules.disko
         ./hosts/omen/configuration.nix
       ];
     };
