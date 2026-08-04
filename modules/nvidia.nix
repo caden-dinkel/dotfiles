@@ -1,15 +1,13 @@
 { config, lib, pkgs, ... }:
 
-with lib;
-
 let 
     cfg = config.myHardware.nvidia;
 in
 {
     options.myHardware.nvidia = {
-        enable = mkEnableOption "NVIDIA graphics support.";
+        enable = lib.mkEnableOption "NVIDIA graphics support.";
 
-        package = mkOption {
+        package = lib.mkOption {
             type = types.package;
             default = config.boot.kernelPackages.nvidiaPackages.stable;
             description = "The NVIDIA driver package to use.";
@@ -17,16 +15,16 @@ in
         };
 
         prime = {
-            enable = mkEnableOption "NVIDIA PRIME hybrid graphics offloading.";
+            enable = lib.mkEnableOption "NVIDIA PRIME hybrid graphics offloading.";
 
-            intelBusId = mkOption {
+            intelBusId = lib.mkOption {
                 type = types.nullOr types.str;
                 default = null;
                 example = "PCI:0:2:0";
                 description = "Bus ID of the Intel Integrated Graphics.";
             };
 
-            nvidiaBusId = mkOption {
+            nvidiaBusId = lib.mkOption {
                 type = types.nullOr types.str;
                 default = null;
                 example = "PCI:1:0:0";
@@ -35,7 +33,7 @@ in
         };
     };
 
-    config = mkIf cfg.enable {
+    config = lib.mkIf cfg.enable {
         hardware.graphics.enable = true;
 
         services.xserver.videoDrivers = [ "modesetting" "nvidia" ];
@@ -47,7 +45,7 @@ in
             modesetting.enable = true;
             open = false;
 
-            prime = mkIf cfg.prime.enable {
+            prime = lib.mkIf cfg.prime.enable {
                 offload = {
                     enable = true;
                     enableOffloadCmd = true;

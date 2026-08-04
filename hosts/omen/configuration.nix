@@ -12,7 +12,7 @@
 
     "${self}/users/deploy.nix"
     "${self}/users/admin.nix"
-    
+
     ./hardware-configuration.nix
   ];
 
@@ -20,11 +20,7 @@
     nvidia = {
         enable = true;
         package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
-        prime = {
-            enable = true;
-            intelBusId = "PCI:0:2:0";
-            nvidiaBusId = "PCI:1:0:0";
-        };
+        prime.enable = false;
     };
     disk = {
       mainDevice = "/dev/nvme0n1";
@@ -37,6 +33,5 @@
   nix.settings.trusted-users = [
     "root"
     "admin"
-    "deploy"
   ];
 }

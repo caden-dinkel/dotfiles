@@ -1,5 +1,5 @@
 {
-  description = "Example nix-darwin system flake";
+  description = "Nix-darwin user system flake and impermanent nixos headless system flake";
 
 
   inputs = {
@@ -30,11 +30,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    impermanence = {
-      url = "github:nix-community/impermanence";
-      inputs.nixpkgs.follows = "";
-      inputs.home-manager.follows = "";
-    };
+    impermanence.url = "github:nix-community/impermanence";
 
     deploy-rs.url = "github:serokell/deploy-rs";
   };
