@@ -1,8 +1,8 @@
-{ config, nixpkgs, ... }:
+{ config, inputs, ... }:
 {
     services.tailscale = {
         enable = true;
-        authKeyFile = ""; # Passed with nixos-anywhere hopefully (need to figure out).
+        authKeyFile = null; # Passed with nixos-anywhere hopefully (need to figure out).
         extraUpFlags = [ "--hostname=${config.networking.hostName}" ];
     };
 
@@ -11,7 +11,7 @@
         wants = [ "network-online.target" ];
     
         serviceConfig = {
-            Restart = nixpkgs.lib.mkForce "on-failure";
+            Restart = inputs.nixpkgs.lib.mkForce "on-failure";
             RestartSec = "5s";
         };
     };

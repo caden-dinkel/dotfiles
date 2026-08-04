@@ -17,4 +17,7 @@
   programs.vscode = {
     enable = true;
   };
+  programs.claude-code = {
+    enable = true;
+  }
 }

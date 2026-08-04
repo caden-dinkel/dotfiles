@@ -1,4 +1,4 @@
 [X] - Disko module.
 [X] - Persistant dirs/files.
-[X] - Root Rollback
-[ ] - Nixos-anywhere command
+[X] - Root Rollback.
+[ ] - Nixos-anywhere command + tailscale secret.

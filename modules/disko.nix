@@ -68,7 +68,7 @@ in
                 content = {
                   extraArgs = [ "-f" ];
                   type = "btrfs";
-                  subVolumes = {
+                  subvolumes = {
                     "/root" = {
                       mountpoint = "/";
                       mountOptions = [ "compress=zstd" "noatime" ];
@@ -79,6 +79,7 @@ in
                     };
                     "/persist" = {
                       mountpoint = "/persist";
+
                       mountOptions = [ "compress=zstd" "noatime" ];
                     };
                     "/root_blank" = {};
@@ -106,5 +107,7 @@ in
         };
       };
     };
+
+    fileSystems."/persist".neededForBoot = true;
   };
 }

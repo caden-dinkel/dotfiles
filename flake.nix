@@ -87,5 +87,7 @@
     nixosConfigurations = forEachHost mkSystem;
 
     deploy.nodes = forEachHost mkNode;
+
+    checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) inputs.deploy-rs.lib;
   };
 }
