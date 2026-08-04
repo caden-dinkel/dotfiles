@@ -1,3 +1,4 @@
+{ config, lib, ... }:
 {
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -16,6 +17,8 @@
     "nix-command"
     "flakes"
   ];
+
+  system.configurationRevision = self.rev or self.dirtyRev or null;
 
   networking.useDHCP = lib.mkDefault true;
 

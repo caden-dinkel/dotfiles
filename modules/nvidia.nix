@@ -8,7 +8,7 @@ in
         enable = lib.mkEnableOption "NVIDIA graphics support.";
 
         package = lib.mkOption {
-            type = types.package;
+            type = lib.types.package;
             default = config.boot.kernelPackages.nvidiaPackages.stable;
             description = "The NVIDIA driver package to use.";
             # Look into finding link
@@ -18,14 +18,14 @@ in
             enable = lib.mkEnableOption "NVIDIA PRIME hybrid graphics offloading.";
 
             intelBusId = lib.mkOption {
-                type = types.nullOr types.str;
+                type = lib.types.nullOr lib.types.str;
                 default = null;
                 example = "PCI:0:2:0";
                 description = "Bus ID of the Intel Integrated Graphics.";
             };
 
             nvidiaBusId = lib.mkOption {
-                type = types.nullOr types.str;
+                type = lib.types.nullOr lib.types.str;
                 default = null;
                 example = "PCI:1:0:0";
                 description = "Bus ID of the NVIDIA dedicated GPU.";
@@ -36,7 +36,7 @@ in
     config = lib.mkIf cfg.enable {
         hardware.graphics.enable = true;
 
-        services.xserver.videoDrivers = [ "modesetting" "nvidia" ];
+        services.xserver.videoDrivers = [ "nvidia" ];
 
         boot.blacklistedKernelModules = [ "nouveau" ];
 
