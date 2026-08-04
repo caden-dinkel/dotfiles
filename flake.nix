@@ -46,26 +46,23 @@
         aarch64-linux = [];
       };
 
-      mkSystem = system: hostname: {
-        nixos = nixpkgs.lib.nixosSystem {
-          inherit system;
-          specialArgs = { inherit self inputs; };
-          modules = [
-            inputs.impermanence.nixosModules.impermanence
-            inputs.disko.nixosModules.disko
-            ./hosts/${hostname}/configuration.nix
-          ];
-        };
+      mkSystem = system: hostname: nixpkgs.lib.nixosSystem {
+        inherit system;
+        specialArgs = { inherit self inputs; };
+        modules = [
+          inputs.impermanence.nixosModules.impermanence
+          inputs.disko.nixosModules.disko
+          ./hosts/${hostname}/configuration.nix
+        ];
       };
+      
 
       mkNode = system: hostname: {
-        deployNode = {
-          hostname = "${hostname}.rainbow-dorian.ts.net";
-          sshUser = "deploy";
+        hostname = "${hostname}.rainbow-dorian.ts.net";
+        profiles.system = {
           user = "root";
-          profiles.system = {
-            path = inputs.deploy-rs.lib.${system}.activate.nixos self.nixosConfigurations.${hostname};
-          };
+          sshUser = "deploy";
+          path = inputs.deploy-rs.lib.${system}.activate.nixos self.nixosConfigurations.${hostname};
         };
       };
 
@@ -86,6 +83,7 @@
         ./hosts/darwin/configuration.nix
       ];
     };
+
     nixosConfigurations = forEachHost mkSystem;
 
     deploy.nodes = forEachHost mkNode;

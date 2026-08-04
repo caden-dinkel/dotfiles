@@ -1,4 +1,4 @@
-{ config, ... }:
+{ config, nixpkgs, ... }:
 {
     services.tailscale = {
         enable = true;
@@ -11,7 +11,7 @@
         wants = [ "network-online.target" ];
     
         serviceConfig = {
-            Restart = lib.mkForce "on-failure";
+            Restart = nixpkgs.lib.mkForce "on-failure";
             RestartSec = "5s";
         };
     };
