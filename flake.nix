@@ -40,6 +40,43 @@
   };
 
   outputs = { self, nix-darwin, nixpkgs, ... }@inputs:
+    let
+      hostsByArch = {
+        x86_64-linux = [ "omen" ];
+        aarch64-linux = [];
+      };
+
+      mkSystem = system: hostname: {
+        nixos = nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = { inherit self inputs; };
+          modules = [
+            inputs.impermanence.nixosModules.impermanence
+            inputs.disko.nixosModules.disko
+            ./hosts/${hostname}/configuration.nix
+          ];
+        };
+      };
+
+      mkNode = system: hostname: {
+        deployNode = {
+          hostname = "${hostname}.rainbow-dorian.ts.net";
+          sshUser = "deploy";
+          user = "root";
+          profiles.system = {
+            path = inputs.deploy-rs.lib.${system}.activate.nixos self.nixosConfigurations.${hostname};
+          };
+        };
+      };
+
+      forEachHost = f:
+        nixpkgs.lib.concatMapAttrs (system: hosts:
+          builtins.listToAttrs (map (hostname: {
+            name = hostname;
+            value = f system hostname;
+          }) hosts)
+        ) hostsByArch;
+    in
   {
     darwinConfigurations."mac-m3" = nix-darwin.lib.darwinSystem {
       specialArgs = { inherit self inputs; };
@@ -49,14 +86,8 @@
         ./hosts/darwin/configuration.nix
       ];
     };
+    nixosConfigurations = forEachHost mkSystem;
 
-    nixosConfigurations."omen" = nixpkgs.lib.nixosSystem {
-      specialArgs = { inherit self inputs; };
-      modules = [
-        inputs.impermanence.nixosModules.impermanence
-        inputs.disko.nixosModules.disko
-        ./hosts/omen/configuration.nix
-      ];
-    };
+    deploy.nodes = forEachHost mkNode;
   };
 }

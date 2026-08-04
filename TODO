@@ -1,13 +1,4 @@
-[X] - Implement config in disko.nix
-
-    [X] - Implement checks in all cases that use possibly null values
-    [ ] - ADJUST THE CONFIG IMPLEMENTATION TO ALLOW EPHEMERAL TO BE BTRFS.
-    [ ] - Test
-
-[ ] - Figure out disko/impermanence
-
-[ ] - Configure tailscale with one-time use tagged keys.
-[ ] - Setup deploy-rs with tailscale based auth.
-[ ] - nixos-anywhere machines.
-[ ] - kubernetes.
-
+[X] - Disko module.
+[X] - Persistant dirs/files.
+[X] - Root Rollback
+[ ] - Nixos-anywhere command
