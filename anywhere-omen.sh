@@ -11,4 +11,4 @@ bw get password TAIL_SCALE_AUTH_SERVER > "$temp/etc/tailscale/authkey"
 
 chmod 600 "$temp/etc/tailscale/authkey"
 
-nixos-anywhere --extra-files "$temp" --flake '.#omen' --target-host root@192.168.1.232
+nixos-anywhere --extra-files "$temp" --flake '.#omen' --target-host root@192.168.1.232 --generate-hardware-config nixos-generate-config ./hosts/omen/hardware-configuration.nix
