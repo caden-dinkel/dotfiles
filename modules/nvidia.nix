@@ -35,8 +35,8 @@ in
 
     config = lib.mkIf cfg.enable {
         hardware.graphics.enable = true;
-
-        services.xserver.videoDrivers = [ "nvidia" ];
+        
+        hardware.nvidia.nvidiaPersistenced.enable = true;
 
         boot.blacklistedKernelModules = [ "nouveau" ];
 

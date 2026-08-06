@@ -1,226 +1,198 @@
 # Flake Review
 
-Goal: impermanent NixOS server setup, deploying via deploy-rs over Tailscale, with BTRFS root rollback on every boot.
+Architecture goal: impermanent NixOS server(s), easily provisioned to new hardware, managed remotely via deploy-rs over Tailscale, provisioned initially via nixos-anywhere. Darwin host managed alongside for convenience.
 
 ---
 
-## Critical Issues (will block a working deploy)
+## Bugs
 
-### 1. SSH is never enabled
+### `anywhere-omen.sh` — `authkey` created as a directory, not a file
 
-`base.nix` has no `services.openssh.enable = true`. Without it, the server will have no SSH daemon after the first nixos-anywhere installation and you won't be able to reach it for subsequent `deploy-rs` runs. Add this to `base.nix`:
+```bash
+install -d -m755 "$temp/etc/tailscale/authkey"  # BUG: -d creates a directory
+bw get password TAIL_SCALE_AUTH_SERVER --session "$BW_SESSION" > "$temp/etc/tailscale/authkey"
+```
+
+`install -d` creates the full path as a directory tree — so `authkey` ends up as a directory, not a file. The redirect on the next line then fails ("Is a directory") and, since the script has `set -euo pipefail`, the whole provisioning run aborts before `nixos-anywhere` is ever called.
+
+Fix:
+```bash
+install -d -m755 "$temp/etc/tailscale"
+bw get password TAIL_SCALE_AUTH_SERVER --session "$BW_SESSION" \
+  | install -m600 /dev/stdin "$temp/etc/tailscale/authkey"
+```
+
+Using `install -m600 /dev/stdin` sets permissions atomically and avoids the intermediate world-readable window you'd get from `> file; chmod 600 file`.
+
+---
+
+### `modules/base.nix` — `self` referenced but not in scope
 
 ```nix
-services.openssh = {
-  enable = true;
-  settings = {
-    PasswordAuthentication = false;
-    PermitRootLogin = "no";
+{ config, lib, ... }:
+{
+  ...
+  system.configurationRevision = self.rev or self.dirtyRev or null;
+}
+```
+
+`self` is available as a `specialArg` and will be passed to every module, but Nix only binds arguments that are explicitly destructured. The `...` pattern silently drops them without making them usable by name. This will produce `undefined variable 'self'` at evaluation time.
+
+Fix — add `self` to the function signature:
+```nix
+{ self, config, lib, ... }:
+```
+
+---
+
+### `modules/rollback.nix` — `/dev/root` is not guaranteed to exist
+
+```bash
+mount -t btrfs -o subvolid=5 /dev/root /btrfs_tmp
+```
+
+`/dev/root` is a symlink created by some initrd generators, but its presence is not guaranteed across all kernel versions or initrd configurations. On systems where it is absent the rollback service silently fails and the root subvolume is never reset, defeating the entire impermanence setup without any visible error.
+
+A more robust approach is to read the root device from `/proc/mounts` or `/proc/cmdline`, or to explicitly pass the device via a NixOS option. Many impermanence write-ups use:
+
+```bash
+rootDevice=$(findmnt -n -o SOURCE --target / | sed 's/\[.*\]//')
+mount -t btrfs -o subvolid=5 "$rootDevice" /btrfs_tmp
+```
+
+Or — simpler and more reliable for disko-managed layouts — hard-code the resolved device path from the `myHardware.disk.mainDevice` option by threading `config` into the rollback module.
+
+---
+
+## Security Concerns
+
+### `.env` contains a live Bitwarden session token
+
+The `.env` file (`.gitignore`d, confirmed not committed) holds `BW_SESSION`. Bitwarden session tokens do expire on idle (default 15 minutes), but the file sits plaintext in the dotfiles directory. Any process running as your user can read it. This is low risk in practice for a personal machine, but worth being aware of. Consider sourcing the session fresh each run (`bw unlock`) rather than caching it in a file.
+
+### `admin` user has unconditional `NOPASSWD: ALL`
+
+```nix
+security.sudo.extraRules = [{
+  users = [ "admin" ];
+  commands = [{ command = "ALL"; options = [ "NOPASSWD" ]; }];
+}];
+```
+
+If the SSH key for `admin` is ever compromised, the attacker has full root without any additional credential. This is the intended design (emergency breakglass user), so it is a deliberate trade-off rather than a mistake — but it means the security of the entire server rests entirely on the secrecy of that one ed25519 key. Consider:
+- Using a separate key for `admin` vs. `deploy` rather than the same public key for both.
+- Adding `requireTTY` for admin sudo so it cannot be driven non-interactively.
+
+### Both `admin` and `deploy` share the same SSH public key
+
+`users/admin.nix` and `users/deploy.nix` currently list the same key (`mac@cdink.dev`). This collapses the two roles into one: an attacker who gains the key can deploy arbitrary NixOS configs. `deploy` is correctly restricted to only the sudo commands deploy-rs needs; consider giving it a separate key so that compromising the deploy workflow doesn't also grant shell access as a wheel user.
+
+### SOPS is configured on Darwin but not wired up for NixOS
+
+`.sops.yaml` exists and `sops-nix` is an input, but no `sops` secrets are declared anywhere in the NixOS host configs. The tailscale authkey is currently delivered via nixos-anywhere's `--extra-files`, which is one-time provisioning only. For ongoing secret rotation (e.g. re-keying tailscale, adding service credentials) there is no mechanism in place.
+
+---
+
+## Observations & Recommendations
+
+### `microvm` input is unused
+
+`microvm` is declared as a flake input and follows nixpkgs, but is never referenced in any output. It adds evaluation time and a line in `flake.lock`. Remove it until you need it.
+
+### Secondary disk has no mount options
+
+The primary disk partitions use `compress=zstd` and `noatime`. The secondary disk does not:
+
+```nix
+partitions.data = {
+  size = "100%";
+  content = {
+    type = "filesystem";
+    format = "btrfs";
+    mountpoint = "/storage";
+    # no mountOptions
   };
 };
 ```
 
-### 2. SSH host keys not persisted
+Add `mountOptions = [ "compress=zstd" "noatime" ]` here for consistency and to get the same space/performance benefits on `/storage`.
 
-Even after enabling OpenSSH, the host keys live under `/etc/ssh/ssh_host_*` which is on the ephemeral root — they will be regenerated every boot. Every client connecting after a reboot will get a host-key-changed warning, and automated tooling (deploy-rs, scripts) will fail. Add to `persist.nix`:
+### Secondary disk device defaults to `/dev/sda`
 
-```nix
-files = [
-  "/etc/machine-id"
-  "/etc/ssh/ssh_host_ed25519_key"
-  "/etc/ssh/ssh_host_ed25519_key.pub"
-  "/etc/ssh/ssh_host_rsa_key"
-  "/etc/ssh/ssh_host_rsa_key.pub"
-];
-```
+Kernel device names are not stable across reboots or hardware changes — a USB drive plugging in before boot can shift `sda` to `sdb`. For disko layouts, prefer `/dev/disk/by-id/` paths. The option description could note this and the `example` could show the `by-id` form.
 
-### 3. No networking configuration
+### `services.xserver.videoDrivers = [ "nvidia" ]` on a headless server
 
-`base.nix` doesn't set up any network interface. The system will boot with no working network (and therefore no Tailscale, no SSH). At minimum add:
+`nvidia.nix` sets `services.xserver.videoDrivers = [ "nvidia" ]`. This pulls in X11 server infrastructure even though this is a headless server. For GPU compute (CUDA, ML inference, transcoding), you want the nvidia driver loaded but not X11. Consider using:
 
 ```nix
-networking.useDHCP = lib.mkDefault true;
+hardware.nvidia.nvidiaPersistenced.enable = true; # keeps GPU initialized
 ```
 
-Or use `systemd-networkd` if you prefer, but something must bring up the physical interface before Tailscale can connect.
+and dropping the `xserver.videoDrivers` line, or setting `services.xserver.enable = false` explicitly so future modules don't accidentally start X.
 
-### 4. Tailscale auth key is unresolved
+### `persist.nix` missing systemd journal persistence
 
-`tailscale.nix` has `authKeyFile = null` with a comment acknowledging this is unfigured-out. Without an auth key on first boot, Tailscale will start but never join the tailnet — your `deploy.nodes` hostname resolution (`${hostname}.rainbow-dorian.ts.net`) will fail on every subsequent deploy.
-
-The canonical flow for this setup is:
-1. Generate a reusable (or one-time) tagged auth key in the Tailscale admin console.
-2. Encrypt it with SOPS using the host's age key (derived from its SSH ed25519 host key via `ssh-to-age`).
-3. Set `authKeyFile = config.sops.secrets.tailscale_authkey.path`.
-
-The chicken-and-egg for first boot (host key doesn't exist yet to derive the age key) is solved by using nixos-anywhere's `--extra-files` flag to drop the auth key at the expected path before the first activation — nixos-anywhere supports this. Alternatively, use a one-time key and just accept that the first deploy is semi-manual.
-
----
-
-## Significant Issues (functional gaps)
-
-### 5. SOPS not configured for the NixOS host
-
-`sops.nix` is only imported in the darwin configuration. The omen host has no SOPS setup, which means:
-- No secrets can be decrypted on the server at runtime.
-- The Tailscale auth key (item 4 above) can't be managed declaratively.
-- `.sops.yaml` only has one age key (the mac), so there's no server host key to decrypt with anyway.
-
-Once you have SSH host keys persisted (item 2), derive the host age key:
-```bash
-ssh-keyscan omen.rainbow-dorian.ts.net | ssh-to-age
-```
-Then add it to `.sops.yaml` under a new `&omen_host` anchor and re-encrypt your secrets. Add to `hosts/omen/configuration.nix` (or a new `hosts/omen/sops.nix`):
+`/var/log` is persisted, but journald writes to `/var/log/journal` only if that directory exists and `Storage=persistent` is set in journald config. Without that, logs go to the volatile `/run/log/journal` and are lost on every rollback. Add:
 
 ```nix
-sops.age.sshKeyPaths = [ "/persist/etc/ssh/ssh_host_ed25519_key" ];
+services.journald.extraConfig = "Storage=persistent";
 ```
 
-Note the path is under `/persist` — since the real key is there, not `/etc/ssh` (which is ephemeral).
+(or set it via `systemd.journald.extraConfig`) so journal logs survive reboots and are actually in the persisted `/var/log`.
 
-### 6. `rollback.nix` mounts by `/dev/root` — fragile
+### `/etc/NetworkManager/system-connections` persisted but NetworkManager may not be in use
 
-The rollback script does `mount -t btrfs -o subvolid=5 /dev/root /btrfs_tmp`. The symlink `/dev/root` isn't guaranteed to exist in all initrd environments, and it points to whatever the kernel decided is the root device — which could be wrong if disk enumeration is non-deterministic. Use a UUID or label instead:
+`base.nix` uses `networking.useDHCP = lib.mkDefault true`, which typically works without NetworkManager. If you end up using `systemd-networkd` instead (common in headless server setups), the NetworkManager persist entry is dead weight. Worth deciding early: NetworkManager or systemd-networkd, then either wire up the appropriate service or drop the persist entry.
 
-```bash
-mount -t btrfs -o subvolid=5 /dev/disk/by-label/nixos /btrfs_tmp
-```
-
-Add a `partitions.root.label` to `disko.nix` to ensure the label exists:
+### `nix.linux-builder` on Darwin cannot cross-compile `x86_64-linux`
 
 ```nix
-root = {
-  priority = 3;
-  size = "100%";
-  content = {
-    extraArgs = [ "-f" "-L" "nixos" ];   # add the label here
-    type = "btrfs";
-    ...
-```
-
-Also add `set -euo pipefail` as the first line of the script so any failure aborts cleanly rather than silently.
-
-### 7. `impermanence` module `enable` option may not exist
-
-`persist.nix` sets `environment.persistence."/persist".enable = true`. The NixOS impermanence module does have this option, but it was added relatively recently. If you're on an older pin this will fail. More importantly: the `enable` option defaults to `true`, so explicitly setting it is harmless but worth knowing — removing it slightly simplifies the config.
-
-### 8. `nix.settings.trusted-users` includes `deploy`
-
-In `hosts/omen/configuration.nix`, the `deploy` user is listed in `trusted-users`. Trusted users can pass arbitrary options to the Nix daemon (override `sandbox`, use `--impure`, substitute from arbitrary caches). The deploy user only needs to run a switch-to-configuration script and manipulate one symlink — it should not be a trusted Nix user. Remove `"deploy"` from that list.
-
----
-
-## Moderate Issues (correctness and robustness)
-
-### 9. Spurious `impermanence` follows in flake.nix
-
-```nix
-impermanence = {
-  url = "github:nix-community/impermanence";
-  inputs.nixpkgs.follows = "";       # impermanence has no nixpkgs input
-  inputs.home-manager.follows = "";  # impermanence has no home-manager input
+nix.linux-builder = {
+  systems = [ "aarch64-linux" ];
+  ...
 };
 ```
 
-The impermanence flake has no external inputs. These `follows = ""` lines are dead and slightly confusing. Remove them.
+The linux-builder VM runs on `aarch64-linux` (your M3). It can build native `aarch64-linux` packages but cannot build `x86_64-linux` ones. Builds for the `omen` host will still be done locally or on the remote machine itself. This is probably fine — just worth knowing so you don't wonder why distributed builds aren't helping with omen deploys.
 
-### 10. `microvm` input is unused
+### Tailscale authkey removal service ordering gap
 
-`microvm` is declared as an input but never referenced in any module or output. Dead inputs slow down `nix flake update` and add noise to the lock file. Remove it unless you're about to use it.
+`remove-tailscale-authkey` runs `after = [ "tailscale.service" ]`. But "tailscale service started" does not mean "tailscale has completed registration." If the machine has no network on first boot, tailscaled starts, fails to register, and the authkey is deleted before registration completes — leaving the machine unregistered with no way to re-register (the key is gone and `/etc/tailscale/authkey` is not in the persist list).
 
-### 11. Flake description is stale
+Options:
+1. Add `/etc/tailscale/authkey` to the persist list, and rely on tailscale's own behavior of ignoring the authkey when `/var/lib/tailscale` already has a node key.
+2. Check for successful registration before removing: run `tailscale status` in the remove service's `ExecStartPre` and only proceed if it exits 0.
+3. Accept the risk and document the recovery procedure (re-provision with nixos-anywhere).
 
-`description = "Example nix-darwin system flake"` — update this to describe what the flake actually is.
+The NOTES file already documents that tailscale checks `/var/lib/tailscale` for existing identity and ignores the authkey if present, so option 1 is the simplest.
 
-### 12. `tailscale.nix` uses `inputs.nixpkgs.lib` instead of `lib`
+### `forEachHost` is a good abstraction — extend it consistently
 
-```nix
-serviceConfig = {
-  Restart = inputs.nixpkgs.lib.mkForce "on-failure";
-```
+The `forEachHost` helper cleanly scales to multiple hosts. One thing to watch: `mkNode` hard-codes the Tailscale domain suffix `rainbow-dorian.ts.net`. When you add hosts, if they live in a different tailnet (e.g. a future staging tailnet), you'd need to branch. Consider making the domain a flake-level option or at minimum a named `let` binding so it's easy to find and change.
 
-The module already receives `lib` as a parameter. Use `lib.mkForce` directly. This works as-is (since `inputs` is in scope via `specialArgs`) but it's coupling a module to the flake's input namespace, which will break if the module is ever used outside this flake.
-
-### 13. `swap` partition has `resumeDevice = true`
-
-For a server, hibernate/resume from swap is almost certainly not desired. `resumeDevice = true` causes the kernel to emit a `resume=` cmdline parameter and adds initrd complexity. Set it to `false`.
-
-### 14. Missing `nix.settings.experimental-features` in `base.nix`
-
-Darwin has `nix.settings.experimental-features = "nix-command flakes"` but the NixOS `base.nix` doesn't. Without it, running `nix` commands (as opposed to legacy `nix-*` commands) on the server requires `--extra-experimental-features`. Add this to `base.nix`:
+### `flake.nix` outputs destructuring leaves some inputs implicit
 
 ```nix
-nix.settings.experimental-features = [ "nix-command" "flakes" ];
+outputs = { self, nix-darwin, nixpkgs, ... }@inputs:
 ```
 
-Note the NixOS option expects a list, not a space-separated string.
+`nix-darwin` is destructured explicitly but only used as `nix-darwin.lib.darwinSystem`, which could equally be `inputs.nix-darwin.lib.darwinSystem`. Being consistent — either use `inputs.X` everywhere or destructure explicitly — makes it easier to grep for input usage when trimming the flake.
 
-### 15. Same SSH key for `admin` and `deploy`
+### Hardware config workflow needs documentation
 
-Both `users/admin.nix` and `users/deploy.nix` authorize the same key (`mac@cdink.dev`). These are separate roles with different privileges — they should use different key pairs. If you ever need to rotate or revoke access to the deploy slot (e.g., automate it with a CI key), you don't want to accidentally also affect your emergency admin access (or vice versa).
-
-### 16. `admin` user has NOPASSWD ALL
-
-The admin user is passwordless sudo for everything. This is intentional for an emergency account, but it's worth being deliberate: any attacker who gets the private key for that SSH key can do anything on the system without further authentication. The risk is bounded by the key security, which is acceptable — just keep the key offline or behind a hardware security key.
-
-### 17. No firewall allowance for Tailscale
-
-The NixOS default firewall is enabled by default. Without explicitly trusting the `tailscale0` interface, services running on Tailscale IPs may be blocked. Add to `tailscale.nix`:
-
-```nix
-networking.firewall = {
-  trustedInterfaces = [ "tailscale0" ];
-  allowedUDPPorts = [ config.services.tailscale.port ];
-};
-```
+`NOTES` mentions that hardware config is generated via `--generate-hardware-config` during `nixos-anywhere` and saved to `./hosts/omen/hardware-configuration.nix`. This file is tracked in git but generated externally. It should either be in `.gitignore` with a note to regenerate it, or the generation step should be documented clearly. As it stands, a new contributor cloning the repo would find `hardware-configuration.nix` missing (it's not committed until after first provisioning) and the flake evaluation would fail.
 
 ---
 
-## Minor Issues (style and future-proofing)
+## What's Working Well
 
-### 18. `nvidia.nix` uses `with lib`
-
-`with lib;` at the top of `nvidia.nix` imports the entire `lib` namespace. This works but obscures where names come from and can shadow locals. Prefer explicit references: `lib.mkIf`, `lib.mkOption`, `lib.mkEnableOption`, etc.
-
-### 19. NVIDIA PRIME offload mode for a server
-
-The omen host uses `nvidia.prime.offload.enable = true` which is the laptop power-saving PRIME mode (Intel drives the display, NVIDIA renders on demand). If omen is a desktop or is being used headlessly as a server, consider whether you need PRIME at all. If you intend to use the NVIDIA GPU for compute (ML inference, Plex transcoding, etc.), sync mode or no PRIME (just run everything on NVIDIA) is likely more appropriate.
-
-Also: `services.xserver.videoDrivers = [ "modesetting" "nvidia" ]` — having both listed can cause conflicts. For PRIME offload, just `[ "nvidia" ]` is typically sufficient; the modesetting driver for the integrated GPU is handled automatically.
-
-### 20. Secondary disk has no persistence or backup consideration
-
-The `/storage` btrfs filesystem on the secondary disk is mounted but never referenced in `persist.nix` or anywhere else. This is fine — it's persistent by definition (it's not on the ephemeral root). Just worth being deliberate: if you store data there, it won't be rolled back, which is what you want, but there's no mention of it in the persistence configuration so it could be confused with managed state.
-
-### 21. `nix-darwin` input pinned to `master`
-
-```nix
-nix-darwin = {
-  url = "github:nix-darwin/nix-darwin/master";
-```
-
-`master` is a moving target. The `flake.lock` pins the exact commit so you're reproducible — but `nix flake update` will pull whatever master is at that moment. If a breaking nix-darwin API change lands, your mac config breaks. Consider pinning to a specific release tag (`release-25.05` etc.) or staying on `master` consciously since you use nixpkgs-unstable anyway.
-
-### 22. `hardware-configuration.nix` is a stub
-
-This is noted in NOTES as intentional (nixos-anywhere will generate it). Just ensure the nixos-anywhere command in your deploy flow includes `--generate-hardware-config nixos-generate-config ./hosts/omen/hardware-configuration.nix` before building, otherwise the blank stub will evaluate but produce a non-bootable system (missing `boot.initrd.availableKernelModules`, etc.).
-
----
-
-## Summary of Recommended Changes Priority
-
-| Priority | File | Change |
-|----------|------|--------|
-| Critical | `modules/base.nix` | Add `services.openssh.enable = true` |
-| Critical | `modules/base.nix` | Add `networking.useDHCP = lib.mkDefault true` |
-| Critical | `modules/persist.nix` | Persist SSH host keys |
-| Critical | `modules/tailscale.nix` | Resolve auth key delivery via SOPS + nixos-anywhere `--extra-files` |
-| Critical | `.sops.yaml` | Add host age key derived from SSH host key |
-| High | `modules/rollback.nix` | Mount btrfs by label/UUID, add `set -euo pipefail` |
-| High | `hosts/omen/configuration.nix` | Remove `deploy` from `trusted-users` |
-| High | `modules/tailscale.nix` | Use `lib.mkForce` not `inputs.nixpkgs.lib.mkForce`, add firewall rules |
-| Medium | `flake.nix` | Remove spurious impermanence follows, remove microvm input, fix description |
-| Medium | `modules/base.nix` | Add `nix.settings.experimental-features` |
-| Medium | `modules/disko.nix` | Set `resumeDevice = false` for swap, add btrfs label |
-| Medium | `users/admin.nix` + `users/deploy.nix` | Use separate SSH keys per role |
-| Low | `modules/nvidia.nix` | Remove `with lib`, reconsider PRIME mode for server use |
+- The BTRFS subvolume layout for impermanence (`/root`, `/nix`, `/persist`, `/root_blank`) is correct and matches established community patterns.
+- `neededForBoot = true` on `/persist` is correctly set.
+- Rollback timing (`before = [ "sysroot.mount" ]`, `after = [ "initrd-root-device.target" ]`) is correct.
+- `deploy.nix` sudo rules are correctly scoped — deploy user cannot run arbitrary commands.
+- `PasswordAuthentication = false` and `PermitRootLogin = "no"` are set in base SSH config.
+- `myHardware` option namespace is clean and avoids collisions.
+- `forEachHost` will scale naturally as hosts are added.
+- `sops-nix` is included as an input for future secrets management even if not yet wired up.
+- The `authkey` removal service is a good hygiene step regardless of whether the key is persisted.

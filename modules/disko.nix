@@ -79,7 +79,6 @@ in
                     };
                     "/persist" = {
                       mountpoint = "/persist";
-
                       mountOptions = [ "compress=zstd" "noatime" ];
                     };
                     "/root_blank" = {};
@@ -101,6 +100,7 @@ in
                 type = "filesystem";
                 format = "btrfs";
                 mountpoint = "/storage";
+                mountOptions = [ "compress=zstd" "noatime" ];
               };
             };
           };

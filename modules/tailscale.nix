@@ -1,8 +1,11 @@
 { config, lib, pkgs, ... }:
+let
+    keyPath = "/etc/tailscale/authkey";
+in
 {
     services.tailscale = {
         enable = true;
-        authKeyFile = "/etc/tailscale/authkey"; # Passed with nixos-anywhere hopefully (need to figure out).
+        authKeyFile = keyPath;
         extraUpFlags = [ "--hostname=${config.networking.hostName}" ];
     };
 
@@ -17,15 +20,19 @@
         };
     };
 
+    # We need to leave the file there, so that the system activation script can see it.
     systemd.services.remove-tailscale-authkey = {
         description = "Remove Tailscale auth key after registration";
         wantedBy = [ "multi-user.target" ];
-        after = [ "tailscale.service" ];
+        after = [ "tailscaled-autoconnect.service" ];
         requires = [ "tailscale.service" ];
         serviceConfig = {
             Type = "oneshot";
-            ExecStart = "${lib.getExe' pkgs.coreutils "rm"} -f /etc/tailscale/authkey";
+            RemainAfterExit = true;
         };
+        script = ''
+            (: > /etc/nixos-secret/tailscale_key)
+        '';
     };
 
     networking.firewall = {
