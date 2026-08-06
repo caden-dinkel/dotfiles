@@ -9,7 +9,9 @@
         serviceConfig.Type = "oneshot";
         script = ''
             mkdir -p /btrfs_tmp
-            mount -t btrfs -o subvolid=5 /dev/root /btrfs_tmp
+            rootDevice="${config.fileSystems."/".device}"
+
+            mount -t btrfs -o subvolid=5 "$rootDevice" /btrfs_tmp
             
             # Delete the old root subvolume if it exists
             if [[ -e /btrfs_tmp/root ]]; then

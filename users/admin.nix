@@ -7,7 +7,7 @@
         ];
 
         openssh.authorizedKeys.keys = [
-            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPQSQpXpm7lmsfqUnyUzRD+h3CkXVlxPKyhMOSxAa7ml mac@cdink.dev"
+            "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEWvvdPcGO49IkxqQTBOoOpS0Z5b73JeitMrPE+AnoYN mac@cdink.dev"
         ]; 
     };
 
