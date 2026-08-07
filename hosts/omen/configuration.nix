@@ -31,7 +31,6 @@
   };
 
   nix.settings.trusted-users = [
-    "root"
-    "admin"
+    "@wheel"
   ];
 }

@@ -31,7 +31,7 @@ in
             RemainAfterExit = true;
         };
         script = ''
-            (: > /etc/nixos-secret/tailscale_key)
+            (: > ${keyPath})
         '';
     };
 
