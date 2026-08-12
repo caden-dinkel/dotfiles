@@ -35,55 +35,65 @@
     deploy-rs.url = "github:serokell/deploy-rs";
   };
 
-  outputs = { self, nix-darwin, nixpkgs, ... }@inputs:
-    let
-      hostsByArch = {
-        x86_64-linux = [ "omen" ];
-        aarch64-linux = [];
-      };
+  outputs = { 
+    self, 
+    nix-darwin, 
+    nixpkgs, 
+    home-manager, 
+    microvm, 
+    sops-nix, 
+    disko, 
+    impermanence, 
+    deploy-rs, 
+    ... }:
+      let
+        hostsByArch = {
+          x86_64-linux = [ "omen" ];
+          aarch64-linux = [];
+        };
 
-      mkSystem = system: hostname: nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = { inherit self inputs; };
+        mkSystem = system: hostname: nixpkgs.lib.nixosSystem {
+          inherit system;
+          specialArgs = { inherit self; };
+          modules = [
+            impermanence.nixosModules.impermanence
+            disko.nixosModules.disko
+            ./hosts/${hostname}/configuration.nix
+          ];
+        };
+
+
+        mkNode = system: hostname: {
+          hostname = "${hostname}.rainbow-dorian.ts.net";
+          profiles.system = {
+            user = "root";
+            sshUser = "deploy";
+            path = deploy-rs.lib.${system}.activate.nixos self.nixosConfigurations.${hostname};
+          };
+        };
+
+        forEachHost = f:
+          nixpkgs.lib.concatMapAttrs (system: hosts:
+            builtins.listToAttrs (map (hostname: {
+              name = hostname;
+              value = f system hostname;
+            }) hosts)
+          ) hostsByArch;
+      in
+    {
+      darwinConfigurations."mac-m3" = nix-darwin.lib.darwinSystem {
+        specialArgs = { inherit self; };
         modules = [
-          inputs.impermanence.nixosModules.impermanence
-          inputs.disko.nixosModules.disko
-          ./hosts/${hostname}/configuration.nix
+          home-manager.darwinModules.home-manager
+          sops-nix.darwinModules.sops
+          ./hosts/darwin/configuration.nix
         ];
       };
-      
 
-      mkNode = system: hostname: {
-        hostname = "${hostname}.rainbow-dorian.ts.net";
-        profiles.system = {
-          user = "root";
-          sshUser = "deploy";
-          path = inputs.deploy-rs.lib.${system}.activate.nixos self.nixosConfigurations.${hostname};
-        };
-      };
+      nixosConfigurations = forEachHost mkSystem;
 
-      forEachHost = f:
-        nixpkgs.lib.concatMapAttrs (system: hosts:
-          builtins.listToAttrs (map (hostname: {
-            name = hostname;
-            value = f system hostname;
-          }) hosts)
-        ) hostsByArch;
-    in
-  {
-    darwinConfigurations."mac-m3" = nix-darwin.lib.darwinSystem {
-      specialArgs = { inherit self inputs; };
-      modules = [
-        inputs.home-manager.darwinModules.home-manager
-        inputs.sops-nix.darwinModules.sops
-        ./hosts/darwin/configuration.nix
-      ];
+      deploy.nodes = forEachHost mkNode;
+
+      checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) deploy-rs.lib;
     };
-
-    nixosConfigurations = forEachHost mkSystem;
-
-    deploy.nodes = forEachHost mkNode;
-
-    checks = builtins.mapAttrs (system: deployLib: deployLib.deployChecks self.deploy) inputs.deploy-rs.lib;
-  };
 }

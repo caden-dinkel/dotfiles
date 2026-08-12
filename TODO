@@ -1,4 +1,11 @@
-[X] - Disko module.
-[X] - Persistant dirs/files.
-[X] - Root Rollback.
-[ ] - Nixos-anywhere command + tailscale secret.
+
+
+[ ] - Move anywhere-omen.sh into the flake properly, and finish it to generate/configure age keys.
+
+[ ] - Configure Microvm to produce an aarch64 microvm to be used as darwin's linux-builder. Check feasibility/gains of using rosetta internally for cross-compile.
+
+[ ] - Ensure tailscale domains are <hostname>.tsdomain as a standard. If so, need to adjust method used to produce the system results. At the moment, any two systems deployed with the same profile, share the same hostname.
+
+[ ] - Figure out networking (There's a few alternatives I believe). Will have ethernet up to 3 hosts. Wifi should be a fallback for all w/ declarative configuration.
+
+[ ] - Kubernetes.

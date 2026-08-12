@@ -1,213 +1,90 @@
-# Flake Review
+# Project Review
 
 ## Overview
 
-The setup is clean and well-structured for a homelab. The core design decisions — BTRFS impermanence with rollback, deploy-rs over Tailscale, disko for declarative disk layout — are solid. The concerns below are ordered roughly by severity.
+This flake manages two system tiers:
+
+- **darwin** (`mac-m3`, aarch64-darwin) — nix-darwin + home-manager workstation
+- **omen** (x86_64-linux) — headless NixOS server with impermanence, disko, and deploy-rs
+
+The design philosophy is correct: ephemeral root via btrfs snapshot rollback, Tailscale-gated SSH, deploy-rs for remote pushes, and sops-nix for secrets (in progress). The module abstractions (`myHardware.disk`, `myHardware.nvidia`) are clean and will compose well when more hosts are added.
 
 ---
 
-## Bugs
+## What's Working Well
 
-### 1. `remove-tailscale-authkey` targets the wrong path
+### `forEachHost` abstraction (`flake.nix`)
+Clean pattern. Adding a new host requires only adding its name to `hostsByArch` and a `hosts/<name>/configuration.nix`. Both `nixosConfigurations` and `deploy.nodes` are derived automatically.
 
-In `modules/tailscale.nix`, the cleanup service zeroes out `/etc/nixos-secret/tailscale_key`, but the actual auth key is placed at `/etc/tailscale/authkey` (the value of `keyPath`). These paths don't match, so the cleanup service is a no-op.
+### Impermanence + rollback
+The btrfs rollback in `modules/rollback.nix` is correct — it mounts subvolid=5 (the btrfs root), deletes the stale `/root` subvolume, and snapshots `/root_blank` in its place, all inside the initrd before the real root mounts. The persistence list in `modules/persist.nix` covers the right state: tailscale identity, SSH host keys, machine-id, and logs.
 
-```nix
-# keyPath = "/etc/tailscale/authkey"
-script = ''
-  (: > /etc/nixos-secret/tailscale_key)  # wrong path, does nothing
-'';
-```
+### Tailscale key lifecycle
+The pattern of placing the auth key at `/etc/tailscale/authkey`, having the service consume it on first boot, and clearing it afterward is sound. Because `/etc` is ephemeral, the key is automatically gone after rollback, and `/var/lib/tailscale` (persisted) provides tailnet membership on subsequent boots.
 
-The auth key sits on disk permanently. As noted in NOTES, tailscale ignores the key once `/var/lib/tailscale` holds an identity, so there's no functional breakage — but the key remains on disk unzeroed. Fix by aligning the path, or use `rm` rather than truncation so the file is gone entirely:
+### NVIDIA module
+The `myHardware.nvidia` option is well structured. The `prime` sub-option is there for laptops with hybrid graphics, defaulting to off for omen's discrete-only setup.
 
-```nix
-script = ''
-  rm -f ${keyPath}
-'';
-```
+### Deployment security
+The deploy user has narrowly scoped passwordless sudo: only `switch-to-configuration` and `nix-env`. The admin user's full NOPASSWD sudo is intentional for emergency console access and is acceptable given the threat model of a home server.
 
 ---
 
-## Security
+## Issues and Gaps
 
-### 2. `admin` and `deploy` share the same SSH key
+### `anywhere-omen.sh` — broken, cannot run as-is
 
-Both `users/admin.nix` and `users/deploy.nix` use `mac@cdink.dev` (`ssh-ed25519 AAAAC3...`). A single key compromise simultaneously grants both emergency shell access and deployment authority. These should be separate keys so each role has independent blast radius.
+**Syntax error on line 15:** `end` is not valid bash. Should be `;;`.
 
-### 3. Auth key survives on disk
-
-Follows from bug #1 above. Until the cleanup service is fixed, the Tailscale auth key (a tagged, reusable key retrieved from Bitwarden) lives at `/etc/tailscale/authkey` indefinitely. On the current setup this doesn't survive rollback (the key is on the ephemeral root, not in `/persist`), so risk resets on reboot. But it's on disk for the duration of an uptime.
-
-### 4. `admin` has `NOPASSWD ALL` sudo
-
-Intentional for an emergency user, but worth documenting. If the `mac@cdink.dev` key is compromised, an attacker has passwordless root on every host that imports `users/admin.nix`. Consider scoping it or at minimum adding a comment in the file explaining the deliberate tradeoff.
-
----
-
-## Architecture & Design
-
-### 5. No SOPS integration on NixOS hosts
-
-The darwin host has sops-nix configured (`hosts/darwin/sops.nix`), but the omen host imports no sops module and has no secrets management. The `.sops.yaml` only contains the `admin_mac` age key — there's no host key for omen. Any secrets needed on omen (beyond the Tailscale auth key) have no mechanism. See the SOPS Provisioning section below for the full recommendation.
-
-### 6. `microvm` input imported but unused
-
-`flake.nix` declares `microvm` as an input, but nothing in the flake references it. Either use it or remove it to keep the lock file lean.
-
-### 7. `aarch64-linux = []` in `hostsByArch`
-
-This is a no-op entry that generates no outputs. If it's forward-looking, a comment would clarify intent. Otherwise remove it.
-
-### 8. Darwin linux-builder only targets `aarch64-linux`
-
-The `nix.linux-builder` in `hosts/darwin/configuration.nix` builds for `aarch64-linux`. The NixOS hosts are `x86_64-linux`. The Mac can't use that builder to cross-compile for omen. If you want to evaluate or test NixOS configs locally, you'd need either Rosetta emulation (slow) or a separate remote builder pointing at an x86_64 machine. This probably isn't a daily-driver concern but worth knowing.
-
-### 9. Only `wlan0` is configured in `base.nix`
-
-`modules/base.nix` configures a single `wlan0` interface with DHCPv4. If omen has ethernet (and a gaming-class machine likely does), it's not wired up. There's also no fallback — if wifi drops, the host is unreachable. Consider adding an ethernet match using `matchConfig.Type = "ether"` or a specific interface name so wired connectivity is available.
-
-### 10. `nix.settings.trusted-users` inconsistency
-
-Darwin uses `trusted-users = [ "@admin" ]` (the `admin` group), while omen uses explicit user strings `[ "root" "admin" ]`. Neither is wrong, but the inconsistency is worth noting if you add more hosts — use the group form consistently (`"@wheel"` or `"@admin"`) so you don't have to remember to update the list per-host.
-
-### 11. `hardware-configuration.nix` is overwritten on every `nixos-anywhere` run
-
-The `--generate-hardware-config nixos-generate-config ./hosts/omen/hardware-configuration.nix` flag regenerates and overwrites the committed file each time you run `anywhere-omen.sh`. For a single machine this is benign (the hardware doesn't change), but any manual tweaks to that file would be silently discarded on re-provision. Consider removing the flag after the initial install and committing the generated file.
-
----
-
-## Minor / Style
-
-- `watchIdAuth = true` is commented out in `hosts/darwin/pam.nix`. If it's waiting on hardware support, a comment explaining why would be helpful.
-- `flake.nix` checks only cover deploy-rs deployment validation. Adding a `nix flake check` step that evaluates `nixosConfigurations` would catch evaluation errors before deployment.
-- `programs.git` in `modules/home/git.nix` sets `package = pkgs.git` explicitly — this is the default and can be omitted.
-- `core.sshCommand = "ssh"` is also the default and can be omitted.
-- `services.journald.extraConfig = "Storage=persistent"` in `base.nix` and `/var/log` in `persist.nix` work together, but the explicit extraConfig is redundant when `/var/log` is bind-mounted from `/persist/var/log`. Either one would be sufficient.
-
----
-
-## SOPS Age Key Exchange in Provisioning
-
-### The Problem
-
-SOPS requires each host to have an age private key at a known path so sops-nix can decrypt secrets during activation. For a new host this creates a bootstrapping problem:
-
-1. You need the host's age public key to encrypt secrets for it.
-2. The host doesn't have a key until it's provisioned.
-3. Some secrets (credentials, API keys) may be needed on first boot.
-
-### Recommended Approach: Pre-generate and inject via nixos-anywhere
-
-`nixos-anywhere`'s `--extra-files` already injects the Tailscale auth key. The same mechanism works for the sops age key. Because `/persist` is a separate BTRFS subvolume that survives rollbacks, injecting the key there means it persists across reboots.
-
-**Workflow:**
-
-1. Pre-generate an age keypair locally during provisioning.
-2. Inject the private key to `/persist/var/lib/sops-nix/keys.txt` via `--extra-files`.
-3. Output the public key so you can add it to `.sops.yaml` and encrypt host-specific secrets.
-4. Configure sops-nix on the host to use that path.
-
-**Changes to `anywhere-omen.sh`:**
-
+**Argument parsing is broken (lines 9–11):** All three cases assign `"$1"` (the flag name itself) instead of `"$2"` (the value). Correct form:
 ```bash
-#!/usr/bin/env bash
-
-set -euo pipefail
-
-set -a
-source .env
-set +a
-
-temp=$(mktemp -d)
-
-cleanup() {
-  rm -rf "$temp"
-}
-trap cleanup EXIT
-
-# Tailscale auth key
-install -d -m755 "$temp/etc/tailscale"
-bw get password TAIL_SCALE_AUTH_SERVER --session "$BW_SESSION" \
-  | install -m600 /dev/stdin "$temp/etc/tailscale/authkey"
-
-# SOPS age key for omen
-sops_dir="$temp/persist/var/lib/sops-nix"
-install -d -m700 "$sops_dir"
-age-keygen -o "$sops_dir/keys.txt" 2>/dev/null
-chmod 600 "$sops_dir/keys.txt"
-
-# Print the public key so you can add it to .sops.yaml
-pub_key=$(grep "^# public key:" "$sops_dir/keys.txt" | awk '{print $4}')
-echo ""
-echo "==> Add the following to .sops.yaml under omen's key group:"
-echo "    - &omen ${pub_key}"
-echo ""
-echo "Then run: sops updatekeys secrets/<file>.yaml"
-echo "Press enter when ready to proceed with provisioning..."
-read -r
-
-nixos-anywhere \
-  --extra-files "$temp" \
-  --flake '.#omen' \
-  --target-host root@192.168.1.232 \
-  --generate-hardware-config nixos-generate-config ./hosts/omen/hardware-configuration.nix
+-target_ip) TARGET_IP="$2"; shift ;;
+-tailscale_auth_key) TAILSCALE_KEY="$2"; shift ;;
+-sops_pub_key) SOPS_PUB_KEY="$2"; shift ;;
 ```
 
-**Changes to `.sops.yaml`:**
+**Target IP is hardcoded (line 38):** `$TARGET_IP` is parsed but never used — the nixos-anywhere call has `root@192.168.1.232` literally. Should be `root@$TARGET_IP`.
 
-```yaml
-keys:
-  - &admin_mac age152dq9nhuj0lhgelpzt8h9mwvntpm8nu3ds3dh3wczm5vyla25u8s2jjt65
-  - &omen <generated-public-key>
-creation_rules:
-  - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
-    key_groups:
-      - age:
-        - *admin_mac
-  - path_regex: secrets/omen/[^/]+\.(yaml|json|env|ini)$
-    key_groups:
-      - age:
-        - *admin_mac
-        - *omen
-```
+**`$TAILSCALE_KEY` is never used:** The script fetches the key from Bitwarden instead, which is fine, but accepting `-tailscale_auth_key` as a parameter is misleading. Either remove the parameter and document the Bitwarden dependency, or use the parameter directly and skip Bitwarden.
 
-**Changes to `hosts/omen/configuration.nix`:**
+**`$BW_SESSION` is an implicit dependency:** The script relies on this environment variable being set but never validates it. Should check and error out early.
 
-```nix
-imports = [
-  ...
-  inputs.sops-nix.nixosModules.sops
-  ./sops.nix
-];
-```
+### `hardware-configuration.nix` is a blank stub
 
-**New `hosts/omen/sops.nix`:**
+`hosts/omen/hardware-configuration.nix` contains only `# Blank file for testing\n{}`. The NOTES file explains how to generate the real one via nixos-anywhere's `--generate-hardware-config` flag, but this requires the provisioning script to work first (see above).
 
-```nix
-{
-  sops.age.keyFile = "/var/lib/sops-nix/keys.txt";
-}
-```
+### Networking in `base.nix` is misconfigured for omen
 
-**Why not SSH host keys?**
+`base.nix` configures `networking.wireless.iwd.enable = true` and a `systemd.network` rule for `wlan0`. Omen is a desktop (NVIDIA GPU, NVMe + SATA drives) — it presumably connects via ethernet, not WiFi. The wlan0 configuration almost certainly doesn't match any real interface on omen.
 
-`sops.age.sshKeyPaths` lets you derive the age key from the SSH ed25519 host key (already persisted at `/etc/ssh`). This is tempting because it avoids a separate key file, but the SSH host key is generated by openssh on first activation — you can't know its public key before provisioning. You'd have to provision first, SSH in to get the public key, update `.sops.yaml`, re-encrypt secrets, then redeploy. The pre-generate approach avoids that two-phase dance.
+Additionally, `/etc/NetworkManager/system-connections` is persisted in `persist.nix`, but NetworkManager is not enabled anywhere in the config. Either the persist entry should be removed, or ethernet should be configured via NetworkManager (and `networking.useNetworkd` disabled).
 
-**Re-provision idempotency**
+### SOPS is partially wired but no secrets exist yet
 
-On re-provision, nixos-anywhere will overwrite the injected key with a freshly generated one, invalidating any encrypted secrets. To guard against this, the script could check for an existing persisted key (e.g., by SSHing to the host first) and skip key generation if one already exists. Alternatively, keep a local copy of the private key in a Bitwarden vault entry and retrieve it during provisioning instead of re-generating.
+`.sops.yaml` is configured with an age key and a pattern for `secrets/[^/]+\.(yaml|json|env|ini)$`, but there is no `secrets/` directory and no actual secret files. Darwin's `sops.nix` just points to the key file location. The sops-nix input and darwin module are in place — the next step is to identify what actually needs to be a secret (Tailscale auth key being the obvious candidate) and create the secrets directory.
+
+### `microvm` input is declared but unused
+
+The flake imports `microvm` as an input and passes it through `outputs`, but there are no `microvm` outputs and the input is not passed as a `specialArg` to any system. It's ready to use but dead weight until the aarch64 linux-builder replacement work begins.
+
+### darwin linux-builder only covers `aarch64-linux`
+
+`nix.linux-builder.systems = [ "aarch64-linux" ]`. Building for omen (`x86_64-linux`) from the Mac will still hit remote builders or fail locally. This is noted in the TODO (microvm task) but worth flagging explicitly: deploying to omen from darwin currently requires either a remote x86_64 build cache or building on omen itself.
+
+### Hostname uniqueness (acknowledged in TODO)
+
+`mkNode` produces `${hostname}.rainbow-dorian.ts.net` as the deploy target, which is correct assuming one machine per profile name. The TODO correctly identifies that if two machines share the same profile name they'd collide on Tailscale. The fix is either per-machine hostname overrides or separating profile name from hostname.
 
 ---
 
-## Summary Checklist
+## Structural Observations
 
-| Item | Severity | Action |
-|------|----------|--------|
-| Cleanup service wrong path | Bug | Fix path to `${keyPath}` or use `rm` |
-| `admin`/`deploy` share SSH key | Security | Generate separate keys |
-| No SOPS on omen | Gap | Add sops-nix, inject key via provisioning |
-| `microvm` input unused | Cleanup | Remove or use |
-| Only `wlan0` configured | Reliability | Add ethernet interface match |
-| `hardware-configuration.nix` overwritten | Risk | Remove `--generate-hardware-config` after initial install |
-| `aarch64-linux = []` in hostsByArch | Cleanup | Remove or add comment |
+**No NixOS home-manager.** Omen only has `admin` and `deploy` users — both system-only. If a regular interactive user is ever needed on omen, home-manager is not wired up for NixOS hosts (only darwin has it).
+
+**`cdink.nix` is darwin-specific.** It sets `home = "/Users/cdink"` which is a macOS path. If a cdink user is ever needed on NixOS, a separate or conditional definition will be required.
+
+**skhd keybinding hardcodes a macOS app path.** `"/Users/cdink/Applications/Home Manager Apps/WezTerm.app"` will break if the username changes or HM changes the app install location. Using `open -n -a WezTerm` (assuming wezterm is in PATH) would be more robust.
+
+**deploy-rs `nix-env` path is fragile.** The deploy user's sudo rule allows `${pkgs.nix}/bin/nix-env` — this expands to a specific nix store path at build time. If nix is upgraded, the path changes and the sudo rule stops matching. A wildcard like `/nix/store/*-nix-*/bin/nix-env` would be more robust.
+
+**Comment debt in pam.nix.** `# Don't have my watch setup yet.` — fine as a temporary note, should become real config or be removed when the watch situation is resolved.

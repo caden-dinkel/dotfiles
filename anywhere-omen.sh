@@ -4,7 +4,9 @@ set -euo pipefail
 
 TARGET_IP=""
 TAILSCALE_KEY=""
+TAILSCALE_KEY_LOCATION=""
 SOPS_PUB_KEY=""
+SOPS_PRIV_KEY=""
 
 while [[ "$#" -gt 0 ]]; do
     case $1 in
@@ -12,7 +14,7 @@ while [[ "$#" -gt 0 ]]; do
         -tailscale_auth_key) TAILSCALE_KEY="$1"; shift ;;
         -sops_pub_key) SOPS_PUB_KEY="$1"; shift ;;
         *) echo "Unknown parameter passed: $1"; exit 1 ;;
-    end
+    ;;
     shift
 done
 

@@ -7,7 +7,8 @@
 
   services.xserver.enable = false;
 
-  services.journald.extraConfig = "Storage=persistent";
+  # Redundant with presence of persistent var/log (I think?)
+  # services.journald.extraConfig = "Storage=persistent";
 
   services.openssh = {
     enable = true;
