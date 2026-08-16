@@ -1,11 +1,29 @@
 
 
-[ ] - Move anywhere-omen.sh into the flake properly, and finish it to generate/configure age keys.
+[ ] - Move anywhere-omen.sh into the flake properly, and finish it to generate/configure age keys. -> modules/provision.nix
 
 [ ] - Configure Microvm to produce an aarch64 microvm to be used as darwin's linux-builder. Check feasibility/gains of using rosetta internally for cross-compile.
 
 [ ] - Ensure tailscale domains are <hostname>.tsdomain as a standard. If so, need to adjust method used to produce the system results. At the moment, any two systems deployed with the same profile, share the same hostname.
+    Can be fixed by adjusting flake structure:
+        systems/ (was hosts/) --- sets networking.hostName per host, also includes hardware-configuration.nix from system install.
+        profiles/
+        modules/
+        users/
+        .
+        .
+        .
 
 [ ] - Figure out networking (There's a few alternatives I believe). Will have ethernet up to 3 hosts. Wifi should be a fallback for all w/ declarative configuration.
+
+[ ] - Set Global UIDs for users.
+
+[ ] - Setup per-host versioning. Currently, the only versioning is the global commit hash for the flake. Should be able to set it up per host by leveraging the nix evaluated hash of each host.
+
+[ ] - Finish module structure refactor. Now segmented by hardware profile, role, and host. user/software modules pulled by role. hardware modules pulled by profiles, host applies a role to profile and gives it a name. Darwin/linux is inherit to the module format and default imports. In the future, aarch64 vs x86 can be added on with the same scheme if needed.
+
+[ ] - Consider tying home-manager in with the users that are only on personal machines. This should be better instead of passing homeUser into personal.nix
+
+[ ] - Set up monitoring user (Or delete if not needed)
 
 [ ] - Kubernetes.

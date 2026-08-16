@@ -1,6 +1,6 @@
 {
     users.users.admin = {
-        isNormalUser = true;
+        isSystemUser = true;
         description = "Emergency User for servers.";
         extraGroups = [ 
             "wheel"
@@ -10,6 +10,8 @@
             "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEWvvdPcGO49IkxqQTBOoOpS0Z5b73JeitMrPE+AnoYN mac@cdink.dev"
         ]; 
     };
+
+    users.groups.admin = {};
 
     security.sudo.extraRules = [
         {

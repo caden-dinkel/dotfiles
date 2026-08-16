@@ -26,9 +26,13 @@
   system.configurationRevision = self.rev or self.dirtyRev or null;
 
   networking.useNetworkd = true;
+
   networking.wireless.iwd.enable = true;
+
   networking.useDHCP = false;
+
   systemd.network.enable = true;
+  
   systemd.network.networks."10-wlan" = {
     matchConfig.Name = "wlan0";
 

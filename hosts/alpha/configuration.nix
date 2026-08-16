@@ -14,10 +14,10 @@
     pkgs.vim
     pkgs.helix
     pkgs.vfkit
-    pkgs.age
+    pkgs.age # Common between all
   ];
 
-  services.tailscale.enable = true;
+  services.tailscale.enable = true; # Common on all
 
   nix.settings.experimental-features = "nix-command flakes";
 
@@ -46,6 +46,7 @@
 
   system.primaryUser = "cdink";
   
+  # only on darwin
   system.defaults = {
     finder = {
       AppleShowAllFiles = true;
@@ -58,6 +59,7 @@
     dock.autohide = true;
   };
 
+  # probably only personal machines
   fonts.packages = with pkgs; [
     nerd-fonts.fira-code
     nerd-fonts.fira-mono

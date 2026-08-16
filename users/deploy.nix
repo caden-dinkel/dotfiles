@@ -1,12 +1,17 @@
 { pkgs, ... }:
 {
     users.users.deploy = {
-        isNormalUser = true;
         description = "Deployment User for deploy-rs";
+        group = "deploy";
+        # Check whether deploy-rs/SSH need a home dir. 
+        createHome = false;
+        isSystemUser = true;
         openssh.authorizedKeys.keys = [
             "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPQSQpXpm7lmsfqUnyUzRD+h3CkXVlxPKyhMOSxAa7ml mac@cdink.dev"
         ];
     };
+
+    users.groups.deploy = {};
 
     security.sudo = {
         enable = true;

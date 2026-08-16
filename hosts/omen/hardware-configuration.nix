@@ -1,2 +1,0 @@
-# Blank file for testing
-{}
