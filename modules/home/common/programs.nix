@@ -1,8 +1,7 @@
 { pkgs, ... }:
 {
-  programs.wezterm = {
+  programs.alacritty = {
     enable = true;
-    enableZshIntegration = true;
   };
   programs.obsidian = {
     enable = true;

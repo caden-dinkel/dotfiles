@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ self, pkgs, lib, ... }:
 let
   userName = "cdink";
   userDescription = "Caden Dinkel";
@@ -29,12 +29,8 @@ in
 
     extraGroups = [
       "wheel"
-      "audio"
-      "video"
       "networkmanager" 
       "bluetooth" 
-      "input" 
-      "disk"
     ];
 
     shell = pkgs.zsh;

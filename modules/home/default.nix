@@ -1,11 +1,10 @@
-{ homeUser, ... }:
+{ userName, pkgs, lib, ... }:
 {
   home-manager = {
     useGlobalPkgs = true;
     useUserPackages = true;
 
-    users."${homeUser}" = {
-      # This tree handles home-manager
+    users."${userName}" = {
       imports = [
         ./common
       ] ++ lib.optionals pkgs.stdenv.isDarwin [

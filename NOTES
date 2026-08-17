@@ -1,8 +1,54 @@
+### Hardware Configuration and Provisioning
 
 ./hardware-configuration.nix is the path that you want the hardware-configuration generated. (Should relay file over ssh and save to location on host.)
 ```
 --generate-hardware-config nixos-generate-config ./hardware-configuration.nix
 ```
 
+Should be generated into hosts within the proper host dir.
+
+hosts/alpha/hardware-configuration.nix (alpha is a darwin, won't actually have one)
+
+
+Currently have script anywhere-omen.sh. Planning to integrate it into the flake as a flake app. Can reference flake for needed details (IPs, file paths, etc.). Additionally allows for easy configuration of runners in the future. (Deps guarunteed + nix bonuses).
+
+### Tailscale
+
 Tailscale should check the /var/lib/tailscale folder for existing identities/tailnet membership. If there is one present, the tagged auth key is ignored.
 
+The above is correct, but the nix activation script will not properly evaluate if the file is not present at the path marked in tailscale.nix. Given this, the file should be cleared, but remain in place. (May need to add to persistent files/directories).
+
+TO BE REMOVED - Add comments to tailscale.nix
+
+### Sops Integration
+
+Need to consider potential options here. Current belief is that it should be integrated along with the provisioning script as an extraFiles. Prior to the nixos-anywhere final command, the .sops.yaml file should have the newly provisioned host added and the public key for the machine. (add age to provision script deps, generate keys)
+
+Don't yet have a sops module to import with the declared key dirs and secret files. (Don't yet have any sops secrets).
+
+This has been confirmed as the goal, tied in with provisioning
+
+### Admin/Deploy Keys
+
+The keys are not the same between admin and deploy. Will look into a better naming mechanism to make more clear in the future.
+
+### Secret Manager
+
+Not set on BW as a secret manager (actually kind of blows). Need to look into options and their integrations with nix/sops.
+
+Will likely continue to use it, open source, and i can use other clients if needed.
+Also will likely self host vault in future.
+Look into RBW.
+And options for splitting my vault away from my personal one.
+
+### Admin Security
+
+As systems come online, and deployment user and logic flows prove to work, will likely shrink permissions of admin user.
+
+### Microvm is Dead input
+
+Microvm isn't used, planned for use in the future, bad practice, but will have to wait until systems are up and ready to receive vms. Also an idea for efficient dual system build/compilation on mac systems. (aarch64-linux w/ vfkit/microvm that uses resetta internally to build packages). Rosetta translates to arm64 at run-time, making it seemingly pretty decent for building/compilation.
+
+### aarch64-linux Host []
+
+The empty aarch64-linux hosts are on purpose. In the future, a raspberry pi running on arm will be integrated into the fleet.

@@ -6,6 +6,7 @@
     packages = [
       pkgs.bitwarden-cli
       pkgs.tree
+      pkgs.tmux
     ];
   };
 }

@@ -1,4 +1,6 @@
-imports = [
-    ./system.nix
-    ./packages.nix
-]
+{
+    imports = [
+        ./system.nix
+        ./packages.nix
+    ];
+}

@@ -1,5 +1,7 @@
 { config, lib, ... }:
 
+# I'll probably want to reformat this between having an ephemeral option that applies the btrfs setup, and a normal one.
+
 let
   cfg = config.myHardware.disk;
 in
