@@ -3,6 +3,18 @@
     nix.settings.trusted-users = [
         "@admin"
     ];
-
+    
     system.stateVersion = 6;
+
+    system.defaults = {
+        finder = {
+            AppleShowAllFiles = true;
+            AppleShowAllExtensions = true;
+        };
+        NSGlobalDomain = {
+            AppleShowAllFiles = true;
+            _HIHideMenuBar = true;
+        };
+        dock.autohide = true;
+    };
 }

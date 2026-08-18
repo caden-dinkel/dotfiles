@@ -17,13 +17,13 @@ NOTE: This has been fixed by the structure, but if possible, I'd like to add a m
 
 [ ] - Figure out networking (There's a few alternatives I believe). Will have ethernet up to 3 hosts. Wifi should be a fallback for all w/ declarative configuration.
 
+Setup Ethernet. I'll probably just add it under roles somewhere (only linux probably). Even if something isn't connected via ethernet, it can be enabled.
+
 [X] - Set Global UIDs for users.
 
 [ ] - Setup per-host versioning. Currently, the only versioning is the global commit hash for the flake. Should be able to set it up per host by leveraging the nix evaluated hash of each host.
 
 [ ] - Finish module structure refactor. Now segmented by hardware profile, role, and host. user/software modules pulled by role. hardware modules pulled by profiles, host applies a role to profile and gives it a name. Darwin/linux is inherit to the module format and default imports. In the future, aarch64 vs x86 can be added on with the same scheme if needed.
-
-# ADD TODOS HERE AS SUB-REFACTOR TASKS:
 
 [X] - Consider tying home-manager in with the users that are only on personal machines. This should be better instead of passing homeUser into personal.nix
 
@@ -52,3 +52,7 @@ NOTE: This has been fixed by the structure, but if possible, I'd like to add a m
 
 [ ] - modules/desktop/darwin/services/skhd.nix has a hardcoded /Users/cdink/ path. Should derive the
       WezTerm path from the configured userName so it works for any user.
+
+[ ] - Configure linux desktop environment services/programs.
+
+[ ] - add treefmt-nix and setup some formatting for different languages.

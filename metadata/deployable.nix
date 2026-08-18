@@ -1,0 +1,3 @@
+{
+    deployable = true;
+}

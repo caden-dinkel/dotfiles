@@ -3,7 +3,8 @@
     networking.hostName = "bravo";
     imports = [
         "${self}/profiles/desktop"
-        "${self}/modules/roles/personal"
+        "${self}/roles/personal.nix"
+        "${self}/metadata/linux-x86_64.nix"
         ./hardware-configuration.nix
     ];
 }

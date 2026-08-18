@@ -1,4 +1,5 @@
 { config, ... }:
+# I should consider cleaning this script up a bit.
 {
     boot.initrd.systemd.services.rollback = {
         description = "Rollback BTRFS root subvolume to a pristine state";

@@ -3,7 +3,8 @@
     networking.hostName = "charlie";
     imports = [
         "${self}/profiles/omen-laptop"
-        "${self}/modules/roles/server"
+        "${self}/roles/server.nix"
+        "${self}/metadata/nixos-x86_64.nix"
         ./hardware-configuration.nix
     ];
 }

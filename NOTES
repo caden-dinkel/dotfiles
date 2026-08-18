@@ -32,19 +32,6 @@ This has been confirmed as the goal, tied in with provisioning
 
 The keys are not the same between admin and deploy. Will look into a better naming mechanism to make more clear in the future.
 
-### Secret Manager
-
-Not set on BW as a secret manager (actually kind of blows). Need to look into options and their integrations with nix/sops.
-
-Will likely continue to use it, open source, and i can use other clients if needed.
-Also will likely self host vault in future.
-Look into RBW.
-And options for splitting my vault away from my personal one.
-
-### Admin Security
-
-As systems come online, and deployment user and logic flows prove to work, will likely shrink permissions of admin user.
-
 ### Microvm is Dead input
 
 Microvm isn't used, planned for use in the future, bad practice, but will have to wait until systems are up and ready to receive vms. Also an idea for efficient dual system build/compilation on mac systems. (aarch64-linux w/ vfkit/microvm that uses resetta internally to build packages). Rosetta translates to arm64 at run-time, making it seemingly pretty decent for building/compilation.
@@ -52,3 +39,15 @@ Microvm isn't used, planned for use in the future, bad practice, but will have t
 ### aarch64-linux Host []
 
 The empty aarch64-linux hosts are on purpose. In the future, a raspberry pi running on arm will be integrated into the fleet.
+
+### Alternatives to push based deployment
+
+I might consider going with something like cachix-deploy in the future. At the moment, I'm using tailscale, but I'm not fully sold.
+
+Tailscale is pretty lit though, but I also don't really need ssh into all of the machines.
+
+### There is no primaryUser Currently set
+
+darwin might throw a fit. 
+
+`system.primaryUser = "cdink" or userName`

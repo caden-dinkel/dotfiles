@@ -3,6 +3,6 @@
     networking.hostName = "alpha";
     imports = [
         "${self}/profiles/darwin"
-        "${self}/modules/roles/personal"
+        "${self}/roles/personal.nix"
     ];
 }

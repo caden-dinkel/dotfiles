@@ -10,7 +10,7 @@
     services.hypridle = {
         enable = true;
     };
-    services.greetd = {
+    services.cliphist = {
         enable = true;
     };
 }
