@@ -58,3 +58,9 @@ NOTE: This has been fixed by the structure, but if possible, I'd like to add a m
 [ ] - Ephemeral CI/CD runner. I should be able to design something based on nix flakes/microvm fairly easily.
 
 [ ] - Microvm based kubernetes simulation for dev environments.
+
+[ ] - Fix deploy user to have proper NOPASSWD for correct commands.
+
+[ ] - Fix application of inputs to systems that utilize them.
+
+[ ] - Add proper top level apps output. I think I just need to wrap apps dir with some magic.

@@ -1,10 +1,15 @@
-{ config, lib, ... }:
+{ config, lib, inputs, ... }:
 
 let
   cfg = config.myHardware.disk;
 in
 
 {
+  imports = [
+    inputs.impermanence.nixosModule.impermanence
+    ./ephemeral
+  ];
+
   options.myHardware.disk = {
     enable = lib.mkEnableOption "Disko based disk formatting.";
 
@@ -152,10 +157,5 @@ in
         };
       };
     };
-
-    imports = [
-      ./ephemeral
-    ];
-    
   };
 }

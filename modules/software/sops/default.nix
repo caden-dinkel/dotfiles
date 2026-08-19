@@ -4,7 +4,7 @@ let
 in
 {
   imports = [
-    inputs.home-manager.${systemModules}.home-manager
-    ./home
+    inputs.sops-nix.${systemModules}.sops
+    ./sops.nix
   ];
 }
