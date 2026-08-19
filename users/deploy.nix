@@ -20,16 +20,14 @@
             users = [ "deploy" ];
             commands = [
             {
-                # Allow switching to the newly deployed system profile
-                command = "/nix/store/*-nixos-system-*/bin/switch-to-configuration";
+                command = "/nix/store/*-nixos-system-*/bin/switch-to-configuration switch";
                 options = [ "NOPASSWD" ];
             }
             {
-                # Allow manipulating the system profile symlink
-                command = "${pkgs.nix}/bin/nix-env";
+                command = "/run/current-system/sw/bin/nix-env";
                 options = [ "NOPASSWD" ];
             }
-          ];
+            ];
         }
       ];
   };

@@ -25,7 +25,7 @@ in
   } // lib.mkIf pkgs.stdenv.isLinux {
     createHome = true;
 
-    isNormaluser = true;
+    isNormalUser = true;
 
     extraGroups = [
       "wheel"
@@ -35,4 +35,6 @@ in
 
     shell = pkgs.zsh;
   };
+} // lib.mkIf pkgs.stdenv.isDarwin {
+  system.primaryUser = userName;
 }

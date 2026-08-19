@@ -10,6 +10,5 @@ let
     imports = [
         ( mkUser "admin" ./admin.nix )
         ( mkUser "deploy" ./deploy.nix )
-        ( mkUser "monitoring" ./monitoring.nix )
     ];
 }

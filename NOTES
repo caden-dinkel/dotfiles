@@ -51,3 +51,17 @@ Tailscale is pretty lit though, but I also don't really need ssh into all of the
 darwin might throw a fit. 
 
 `system.primaryUser = "cdink" or userName`
+
+### Adjusting Bootstrap Path
+
+Once microvm is figured out, setup a microvm using vfkit that will act as an isolated deployment machine for deploys.
+
+Stops mac from interfering with overall deployment.
+
+### SLSA
+
+Look into the SLSA framework, and maybe choose a track and level to attempt.
+
+### PER HOST VERSIONING
+
+PER-HOST VERSIONING IS A DEAD DREAM. BASICALLY IMPOSSIBLE DUE TO STRUCTURAL LIMITS IN THE FLAKE. ANY CHANGE TO ANYTHING IN THE FLAKE RESULTS IN A DIFFERENT COMMIT. THIS REFLECTS AS A CHANGE IN THE {self} INPUT, WHICH CHANGES THE UNDERLYING RESULT. EVERY HOST WOULD HAVE A VERSION THAT MEANS NOTHING BUT THE OVERALL CHANGES TO THE FLAKE SINCE THE OPTION HAD BEEN ADDED.

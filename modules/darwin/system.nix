@@ -3,7 +3,7 @@
     nix.settings.trusted-users = [
         "@admin"
     ];
-    
+
     system.stateVersion = 6;
 
     system.defaults = {
@@ -17,4 +17,12 @@
         };
         dock.autohide = true;
     };
+
+    # Annoying that these are separate between darwin and nixos.
+    networking.dns = [
+        "1.1.1.1"
+        "1.0.0.1"
+        "8.8.8.8"
+        "8.8.4.4"
+    ];
 }
