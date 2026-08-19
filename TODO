@@ -43,7 +43,7 @@ NOTE: This has been fixed by the structure, but if possible, I'd like to add a m
 [X] - modules/desktop/linux/ is an empty stub. Needs Linux desktop modules (window manager, display server
       config, etc.) as the counterpart to modules/desktop/darwin/.
 
-[ ] - Setup primaryUser on darwin. 
+[X] - Setup primaryUser on darwin. 
 
 [ ] - modules/scripts/provision.nix is empty. Implement provisioning logic to replace anywhere-omen.sh
       as a flake app (see existing TODO and NOTES).
