@@ -35,7 +35,6 @@
     nix-darwin, 
     nixpkgs, 
     home-manager, 
-    microvm, 
     sops-nix, 
     disko, 
     impermanence, 
