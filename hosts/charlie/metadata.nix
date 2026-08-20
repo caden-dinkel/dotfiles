@@ -1,7 +1,6 @@
-{ self, ... }:
 {
     imports = [
-        "${self}/metadata/nixos-x86_64.nix"
-        "${self}/metadata/deployable.nix"
+        ./metadata/nixos-x86_64.nix
+        ./metadata/deployable.nix
     ];
 }

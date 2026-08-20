@@ -1,6 +1,6 @@
 {
     users.users.admin = {
-        isSystemUser = true;
+        isNormalUser = true;
         description = "Emergency User for servers.";
         extraGroups = [ 
             "wheel"

@@ -6,7 +6,6 @@ in
 
 {
   imports = [
-    inputs.impermanence.nixosModule.impermanence
     ./ephemeral
   ];
 

@@ -6,6 +6,7 @@ let
         imports = [ userModule ];
         users.users.${userName}.uid = registry.${userName};
     };
+in
 {
     imports = [
         ( mkUser "admin" ./admin.nix )

@@ -56,7 +56,7 @@
           (nixpkgs.lib.filter (n: (getMeta n).type == "nixos") hostNames) 
           (name: nixpkgs.lib.nixosSystem {
             system = (getMeta name).system;
-            specialArgs = { inherit self; };
+            specialArgs = { inherit self; inputs = self.inputs; };
             modules = [ ./hosts/${name} ];
           });
 
@@ -64,7 +64,7 @@
           (nixpkgs.lib.filter (n: (getMeta n).type == "darwin") hostNames) 
           (name: nix-darwin.lib.darwinSystem {
             system = (getMeta name).system;
-            specialArgs = { inherit self; };
+            specialArgs = { inherit self; inputs = self.inputs; };
             modules = [ ./hosts/${name} ];
           });
           deploy.nodes = nixpkgs.lib.genAttrs deployableHosts (name: {

@@ -4,7 +4,7 @@
         enable = true;
         settings = {
             default_session = {
-                command = "${pkgs.tuigreet}/bin/tuigreet --cmd Hyprland"
+                command = "${pkgs.tuigreet}/bin/tuigreet --cmd Hyprland";
             };
         };
     };
@@ -16,4 +16,4 @@
         pulse.enable = true;
         wireplumber.enable = true;
     };
-};
+}

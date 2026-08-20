@@ -1,3 +1,4 @@
+{ pkgs, ... }:
 {
     # Maybe switch fonts. Have to try a few.
     fonts.packages = [
