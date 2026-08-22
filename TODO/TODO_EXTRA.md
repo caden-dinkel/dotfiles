@@ -58,7 +58,7 @@ changed name from swww to awww.
 
 ## Missing Flake Outputs / Infrastructure
 
-[ ] - Add `deploy-rs` checks output to `flake.nix` so `nix flake check` validates deployment configs:
+[X] - Add `deploy-rs` checks output to `flake.nix` so `nix flake check` validates deployment configs:
   ```nix
   checks = builtins.mapAttrs (_: lib: lib.deployChecks self.deploy) deploy-rs.lib;
   ```

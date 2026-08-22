@@ -12,6 +12,8 @@ in
             default = config.boot.kernelPackages.nvidiaPackages.stable;
             description = "The NVIDIA driver package to use.";
         };
+
+        open = lib.mkEnableOption "Enable Open source NVIDIA kernel module.";
     };
 
     config = lib.mkIf cfg.enable {
@@ -23,8 +25,9 @@ in
 
         hardware.nvidia = {
             package = cfg.package;
+            # Keep this enabled for now, may consider adding as an option if it needs disabled.
             modesetting.enable = true;
-            open = false;
+            open = cfg.open;
         };
     };
 }

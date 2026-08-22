@@ -25,6 +25,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    nixos-anywhere = {
+      url = "github:nix-community/nixos-anywhere"
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     impermanence.url = "github:nix-community/impermanence";
 
     deploy-rs.url = "github:serokell/deploy-rs";
@@ -67,13 +72,14 @@
             specialArgs = { inherit self; inputs = self.inputs; };
             modules = [ ./hosts/${name} ];
           });
-          deploy.nodes = nixpkgs.lib.genAttrs deployableHosts (name: {
-            hostname = "${name}.rainbow-dorian.ts.net";
-            profiles.system = {
-              user = "root";
-              sshUser = "deploy";
-              path = deploy-rs.lib.${(getMeta name).system}.activate.nixos self.nixosConfigurations.${name};
-            };
-          });
+        deploy.nodes = nixpkgs.lib.genAttrs deployableHosts (name: {
+          hostname = "${name}.rainbow-dorian.ts.net";
+          profiles.system = {
+            user = "root";
+            sshUser = "deploy";
+            path = deploy-rs.lib.${(getMeta name).system}.activate.nixos self.nixosConfigurations.${name};
+          };
+        });
+        checks = builtins.mapAttrs (_: lib: lib.deployChecks self.deploy) deploy-rs.lib;
       };
 }

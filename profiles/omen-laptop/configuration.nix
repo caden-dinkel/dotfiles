@@ -1,5 +1,5 @@
 
-    { self, pkgs, config, lib, ... }:
+{ config, lib, ... }:
 {
   nixpkgs.hostPlatform = "x86_64-linux";
 
@@ -7,21 +7,24 @@
     nvidia = {
         enable = true;
         package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
-        prime.enable = false;
     };
-    # Should consider looking for device-ids and whatnot to be more specific
-    # And actually, this definition may partially need to be in hosts/<hostname>
+
+    # Need to determine how I want to source device paths.
     disk = {
-      mainDevice = "/dev/nvme0n1";
-      enableSecondary = true;
-      secondaryDevice = "/dev/sda";
-      swapSize = "16G";
+        main = {
+            enable = true;
+            device = lib.mkDefault "/dev/nvme0n1";
+            ephemeral = true;
+            swap = {
+                enable = true;
+                size = "16G";
+            };
+        };
+
+        secondary = {
+            enable = true;
+            device = lib.mkDefault "/dev/sda";
+        };
     };
   };
-  # May remove/move positions
-  /*
-  nix.settings.trusted-users = [
-    "@wheel"
-  ];
-  */
 }
