@@ -77,6 +77,7 @@
           profiles.system = {
             user = "root";
             sshUser = "deploy";
+            sshOpts = [ "-p" "2222" ];
             path = deploy-rs.lib.${(getMeta name).system}.activate.nixos self.nixosConfigurations.${name};
           };
         });

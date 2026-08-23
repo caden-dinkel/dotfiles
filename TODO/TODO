@@ -40,16 +40,13 @@ NOTE: This has been fixed by the structure, but if possible, I'd like to add a m
 [X] - modules/linux/ is an empty stub. Needs Linux-specific NixOS modules (system.nix, packages.nix)
       as the counterpart to modules/darwin/.
 
-[X] - modules/desktop/linux/ is an empty stub. Needs Linux desktop modules (window manager, display server
-      config, etc.) as the counterpart to modules/desktop/darwin/.
+[X] - modules/desktop/linux/ is an empty stub. Needs Linux desktop modules (window manager, display server config, etc.) as the counterpart to modules/desktop/darwin/.
 
 [X] - Setup primaryUser on darwin. 
 
-[ ] - modules/scripts/provision.nix is empty. Implement provisioning logic to replace anywhere-omen.sh
-      as a flake app (see existing TODO and NOTES).
+[ ] - modules/scripts/provision.nix is empty. Implement provisioning logic to replace anywhere-omen.sh as a flake app (see existing TODO and NOTES).
 
-[ ] - modules/desktop/darwin/services/skhd.nix has a hardcoded /Users/cdink/ path. Should derive the
-      WezTerm path from the configured userName so it works for any user.
+[X] - modules/desktop/darwin/services/skhd.nix has a hardcoded /Users/cdink/ path. Should derive the WezTerm path from the configured userName so it works for any user.
 
 [ ] - Configure linux desktop environment services/programs.
 

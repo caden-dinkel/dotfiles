@@ -28,7 +28,7 @@ Items missing from TODO that should be addressed before this is in a decent work
 
 ## Logic / Design Fixes
 
-[ ] - `modules/software/tailscale.nix` (the complete tailscale module with auth key handling, firewall rules, and clear-after-boot service) is never imported anywhere. Wire it into `roles/server.nix` or a suitable module and remove the bare `services.tailscale.enable = true` from `modules/common/services.nix`.
+[X] - `modules/software/tailscale.nix` (the complete tailscale module with auth key handling, firewall rules, and clear-after-boot service) is never imported anywhere. Wire it into `roles/server.nix` or a suitable module and remove the bare `services.tailscale.enable = true` from `modules/common/services.nix`.
 
 [ ] - `profiles/omen-laptop/configuration.nix` uses wrong option names for both the nvidia and disko modules. The module API uses `myHardware.disk.main.device`, `myHardware.disk.main.swap.size`, `myHardware.disk.secondary.enable`, `myHardware.disk.secondary.device` — not `mainDevice`, `swapSize`, `enableSecondary`, `secondaryDevice`. The nvidia module also does not have a `prime` option; that reference should be removed.
 
