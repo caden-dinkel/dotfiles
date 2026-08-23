@@ -5,8 +5,6 @@
 
 [ ] - Fix application of inputs to systems that utilize them.
 
-
-
 ---
 
 ## Security
@@ -65,52 +63,3 @@
 [ ] - Ephemeral CI/CD runner. I should be able to design something based on nix flakes/microvm fairly easily.
 
 [ ] - Microvm based kubernetes simulation for dev environments.
-
----
-
-## Completed
-
-[X] - Configure Microvm to produce an aarch64 microvm to be used as darwin's linux-builder. Check feasibility/gains of using rosetta internally for cross-compile.
-Was added to upstream nix-darwin before I made it this far lol.
-
-[X] - Ensure tailscale domains are <hostname>.tsdomain as a standard. If so, need to adjust method used to produce the system results. At the moment, any two systems deployed with the same profile, share the same hostname.
-    Can be fixed by adjusting flake structure:
-        systems/ (was hosts/) --- sets networking.hostName per host, also includes hardware-configuration.nix from system install.
-        profiles/
-        modules/
-        users/
-        .
-        .
-        .
-NOTE: This has been fixed by the structure, but if possible, I'd like to add a method to produce many hosts programmatically, without requiring explicit configuration per host.
-
-[X] - Figure out networking (There's a few alternatives I believe). Will have ethernet up to 3 hosts.
-
-[X] - Set Global UIDs for users.
-
-[X] - Finish module structure refactor. Now segmented by hardware profile, role, and host. user/software modules pulled by role. hardware modules pulled by profiles, host applies a role to profile and gives it a name. Darwin/linux is inherit to the module format and default imports. In the future, aarch64 vs x86 can be added on with the same scheme if needed.
-
-[X] - Consider tying home-manager in with the users that are only on personal machines. This should be better instead of passing homeUser into personal.nix
-
-[X] - Set up monitoring user (Or delete if not needed)
-
-[X] - Adjust disko.nix file to allow for ephemeral or not systems.
-
-[X] - flake.nix is outdated: still references non-existent hosts/darwin/configuration.nix and hostname "omen".
-      Needs to be updated to use the new host entry points (hosts/alpha/alpha.nix, hosts/bravo/bravo.nix,
-      hosts/charlie/charlie.nix) and the correct hostnames (alpha, bravo, charlie).
-
-[X] - hosts/alpha/configuration.nix is the old monolithic darwin config and is no longer wired up correctly.
-      Its content needs to be distributed into profiles/darwin/, modules/darwin/, modules/desktop/darwin/,
-      and roles/personal.nix. The new hosts/alpha/alpha.nix entry point is ready but unused by the flake.
-
-[X] - modules/linux/ is an empty stub. Needs Linux-specific NixOS modules (system.nix, packages.nix)
-      as the counterpart to modules/darwin/.
-
-[X] - modules/desktop/linux/ is an empty stub. Needs Linux desktop modules (window manager, display server config, etc.) as the counterpart to modules/desktop/darwin/.
-
-[X] - Setup primaryUser on darwin.
-
-[X] - modules/desktop/darwin/services/skhd.nix has a hardcoded /Users/cdink/ path. Should derive the WezTerm path from the configured userName so it works for any user.
-
-[X] - Make the deploy user's `nix-env` sudo rule more robust. The current rule pins to `${pkgs.nix}/bin/nix-env` which is a specific store path. Consider using a glob pattern or `/run/current-system/sw/bin/nix-env` so it doesn't break silently on nix upgrades.
