@@ -21,6 +21,8 @@ let
 
 The `let` block is never closed with `in`. This is a parse error.
 
+DONE
+
 ### 2. `modules/desktop/default.nix` — `lib` not in function args
 
 ```nix
@@ -31,13 +33,19 @@ The `let` block is never closed with `in`. This is a parse error.
 
 `lib` is referenced but not destructured. Fails at evaluation. Fix: `{ pkgs, lib, ... }:`.
 
+DONE
+
 ### 3. `modules/desktop/common/fonts.nix` — `pkgs` not in function args
 
 The file is a bare attrset `{ fonts.packages = [ pkgs.nerd-fonts.hack ... ]; }` with no function args. `pkgs` is undefined.
 
+DONE
+
 ### 4. `modules/desktop/linux/system.nix` — `pkgs` not in function args
 
 Same issue. `xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-hyprland ... ]` with no `pkgs` in scope. File also ends with `};` — the trailing `;` at file level is a syntax error.
+
+DONE
 
 ### 5. `modules/desktop/linux/services.nix` — Missing semicolon + trailing `};`
 
