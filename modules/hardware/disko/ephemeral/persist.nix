@@ -1,6 +1,7 @@
 { config, lib, ... }:
 let
   cfg = config.myHardware.disk;
+  tailscaleKeyPath = config.services.tailscale.authKeyFile;
 in
 {
     config = lib.mkIf (cfg.main.enable && cfg.main.ephemeral) {
@@ -8,10 +9,9 @@ in
             enable = true;
             hideMounts = true;
             directories = [
-                "/var/lib/tailscale"
+                tailscaleKeyPath # This path should be referenced from modules/software/tailscale.nix
                 "/var/lib/nixos"
                 "/etc/ssh"
-                "/etc/NetworkManager/system-connections"
                 "/var/log"
             ];
             files = [

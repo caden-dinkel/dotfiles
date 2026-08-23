@@ -16,4 +16,6 @@
         pulse.enable = true;
         wireplumber.enable = true;
     };
+
+    services.tailscale.enable;
 }

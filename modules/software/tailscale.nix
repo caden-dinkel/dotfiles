@@ -1,3 +1,4 @@
+# Explicit module for server roles.
 { config, lib, pkgs, ... }:
 let
     keyPath = "/etc/tailscale/authkey";

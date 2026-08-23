@@ -1,0 +1,9 @@
+Tailscale auth key should be passed through the provision `--extraFiles` command.
+
+They should not be added to sops. Auth keys should be one-time use keys.
+
+Only the OAuth key, with limited decryptors, should be in sops.
+
+This also adds some more resilience to a system. If it's enrolled in tailscale, issues in secrets decryption (might actually break nixos activation, not sure) won't affect our ability to re-provision.
+
+Age key should also be passed through extraFiles.

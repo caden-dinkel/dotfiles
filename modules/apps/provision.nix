@@ -1,4 +1,4 @@
-{ ... }:
+{ pkgs, lib, ... }:
 let
     supportedSystems = [ 
         "x86_64-linux" 
@@ -6,7 +6,7 @@ let
         "aarch64-darwin" 
         "x86_64-darwin" 
     ];
-    forAllSystems = nixpkgs.lib.genAttrs supportedSystems;
+    forAllSystems = lib.genAttrs supportedSystems;
 in
 {
     forAllSystems (system:
@@ -20,8 +20,12 @@ in
                     pkgs.openssh
                     nixos-anywhere.packages.${system}.nixos-anywhere
                 ];
+                # Three phases. 
+                # 1. Get one time use auth key (tailscale API).
+                # 2. Generate age key.
+                # 3. Place in files based on the flake's designation. (Not sure here)
+                # 
                 text = ''
-                    # Script goes here.
                 '';
             };
         in
