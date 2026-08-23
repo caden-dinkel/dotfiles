@@ -1,12 +1,80 @@
-# Overview
+# dotfiles
 
-This flake hosts my darwin system flake, as well as my nixos servers.
+NixOS and nix-darwin system configurations for a small personal fleet, managed as a single Nix flake.
 
-The primary goal of this setup is simple, secure setup of future hosts.
+## Hosts
 
-On provisioning, a tagged auth key is passed to enroll a machine in tailscale. On subsequent deployments, the persisted /var/lib/tailscale should provide the tailnet membership to the daemon. The file will still be pointed to in the module, requiring the file to be present for the system activation script. Key file will be cleared instead of deleted/shredded.
+| Host    | OS             | Profile      | Role     | Deployable |
+|---------|----------------|--------------|----------|------------|
+| alpha   | aarch64-darwin | darwin       | personal | no         |
+| bravo   | x86_64-linux   | desktop      | personal | no         |
+| charlie | x86_64-linux   | omen-laptop  | server   | yes        |
 
-Designed with an ephemeral root setup. Reprovisioning a system shouldn't affect it (excluding storage drive for now (may consider some backup or method to persist between provisioning))
+Linux hosts use ephemeral root (btrfs rollback on boot). `charlie` is the only host currently reachable via `deploy-rs`; `alpha` and `bravo` rebuild locally.
 
-If feasible, I'd like to automate sops on provision as well. Likely just printing public key to the provisioner console to place in sops.yaml for re-encryption. I don't yet have sops secrets in place. Need to consider potential issues on hosts trying to decrypt secrets on provisioning, once the secrets are declared in flake.
+## Prerequisites
 
+- Nix with flakes enabled (`nix.settings.experimental-features = "nix-command flakes"`)
+- Tailscale access to `rainbow-dorian.ts.net` for remote operations
+- `sops` + `age` for secret management
+- `deploy-rs` for remote deployments (`nix run github:serokell/deploy-rs`)
+- `nixos-anywhere` for initial host provisioning
+
+## Common Commands
+
+**Rebuild darwin (alpha) locally:**
+```sh
+darwin-rebuild switch --flake .#alpha
+```
+
+**Rebuild a NixOS host locally:**
+```sh
+nixos-rebuild switch --flake .#bravo
+```
+
+**Deploy a remote NixOS host via deploy-rs:**
+```sh
+nix run github:serokell/deploy-rs -- .#charlie
+```
+
+**Validate the flake (includes deploy-rs checks):**
+```sh
+nix flake check
+```
+
+**Re-encrypt secrets after adding a new host:**
+```sh
+sops updatekeys secrets/<file>
+```
+
+## Repository Structure
+
+```
+hosts/          # Per-host entry points and metadata
+  <name>/
+    default.nix       # NixOS/darwin module entry point (sets hostname, imports profile + role)
+    metadata.nix      # Imports platform metadata (type, system, deployable)
+    hardware-configuration.nix  # nixos-generate-config output (NixOS only)
+  metadata/     # Shared platform metadata attrsets consumed by flake.nix
+profiles/       # Hardware-level configs (disk layout, GPU driver, platform)
+  darwin/       # macOS profile
+  desktop/      # x86_64 desktop with NVidia (open driver) + ephemeral NVMe
+  omen-laptop/  # x86_64 laptop with NVidia (legacy_580) + ephemeral NVMe + secondary disk
+roles/          # Role-level configs pulled in by hosts
+  personal.nix  # Pulls in desktop modules and the cdink user (with home-manager)
+  server.nix    # Pulls in system users and Tailscale module
+modules/        # Shared NixOS/nix-darwin modules
+users/          # User declarations and global UID registry
+secrets/        # SOPS-encrypted secrets (age-encrypted YAML/env files)
+```
+
+See [ARCHITECTURE.md](ARCHITECTURE.md) for a detailed breakdown of the module system and design decisions.
+
+## Adding a New Host
+
+See [PROVISIONING.md](PROVISIONING.md) for the full workflow including nixos-anywhere, SOPS key setup, and Tailscale enrollment.
+
+## Roadmap
+
+Active TODOs and planned work are tracked in [TODO/TODO.md](TODO/TODO.md).
+Completed items are in [TODO/TOODONE.md](TODO/TOODONE.md).

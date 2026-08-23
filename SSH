@@ -1,5 +1,0 @@
-General ssh will rely on tailscale (external identity backed).
-
-Deployment and any future automated tasks should go through standard ssh (port 2222 to avoid conflicts with tailscale ssh).
-
-Enabling openSSH and setting a port opens the port automatically by default.
