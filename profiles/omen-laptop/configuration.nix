@@ -9,7 +9,6 @@
         package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
     };
 
-    # Need to determine how I want to source device paths.
     disk = {
         main = {
             enable = true;

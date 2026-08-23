@@ -11,7 +11,6 @@
         open = true;
     };
 
-    # Need to determine how I want to source device paths.
     disk = {
         main = {
             enable = true;
@@ -19,13 +18,8 @@
             ephemeral = true;
             swap = {
                 enable = true;
-                size = "16G";
+                size = "32G";
             };
-        };
-
-        secondary = {
-            enable = true;
-            device = lib.mkDefault "/dev/sda";
         };
     };
   };
