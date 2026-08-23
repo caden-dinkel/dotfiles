@@ -1,10 +1,77 @@
 
+## Breaking / Must Fix
+
+[ ] - Fix deploy user to have proper NOPASSWD for correct commands.
+
+[ ] - Fix application of inputs to systems that utilize them.
+
+
+
+---
+
+## Security
+
+[ ] - Create actual SOPS secrets. `.sops.yaml` and the darwin sops module are wired up but there's no `secrets/` directory and no secrets files. The Tailscale auth key is the obvious first candidate (would replace the Bitwarden fetch in `anywhere-omen.sh`). Requires deciding which hosts need access to which secrets and updating `.sops.yaml` creation_rules accordingly.
+
+[ ] - Add a `secrets/` directory with a `.gitkeep` or first real secret so the path structure matches `.sops.yaml` expectations.
+
+[ ] - Deploy and admin SSH keys are the same key (`mac@cdink.dev`). These should be separate keys. A compromised deploy key should not grant admin-equivalent access.
+
+[ ] - `users/admin.nix` declares `isSystemUser = true` with no shell, which defeats the purpose of an emergency access user. Either switch to `isNormalUser = true` with a locked password and a real shell, or rethink what "emergency access" means here.
+
+[ ] - `git.nix` gitignore has `**/.DS_STORE` (all caps) but the actual macOS file is `.DS_Store` (mixed case). On case-sensitive filesystems this never matches. Fix the case.
+
+
+---
+
+## Core Infrastructure
 
 [ ] - Move anywhere-omen.sh into the flake properly, and finish it to generate/configure age keys. -> modules/provision.nix
 
+[ ] - modules/scripts/provision.nix is empty. Implement provisioning logic to replace anywhere-omen.sh as a flake app (see existing TODO and NOTES).
+
+[ ] - Add proper top level apps output. I think I just need to wrap apps dir with some magic.
+
+[ ] - `EXTRAFILES/sops.nix` (which sets `sops.age.keyFile`) is outside the module tree and not imported anywhere. Move its content into `modules/software/sops/sops.nix` which is currently empty.
+
+[ ] - Add `nixos-anywhere` as a flake input (needed for `provision.nix` and the provisioning workflow described in `NOTES`).
+
+[ ] - Hardcoded Tailscale domain `rainbow-dorian.ts.net` in `flake.nix` should be a variable or pulled from per-host metadata so renaming the tailnet doesn't require editing the flake core.
+
+[ ] - `modules/common/system.nix` sets `networking.dns = []` — an explicit empty list. Verify this is intentional and not accidentally overriding upstream defaults. On NixOS, `networking.nameservers` (set in `modules/linux/system.nix`) is the right knob; the `networking.dns` option may not do anything useful or may conflict.
+
+[ ] - Wire up the `provision.nix` app properly under `flake.outputs.apps` once the module is fixed.
+
+---
+
+## Feature Implementation
+
+[ ] - Configure linux desktop environment services/programs.
+
+[ ] - `modules/home/common/hotkeys/` is all stubs. Implement the terminal open hotkey in `open-term.nix` and import it in `hotkeys/default.nix`. Then import `hotkeys` in `modules/home/common/default.nix`. (The skhd keybind in `skhd.nix` is commented out pending this.)
+
+---
+
+## Tooling / Developer Experience
+
+[ ] - add treefmt-nix and setup some formatting for different languages.
+
+[ ] - Add a `devShells` output that provides a shell with `deploy-rs`, `nixos-anywhere`, `sops`, and `age` pinned to the flake's nixpkgs. Avoids tool/version drift between the shell and the deployed systems.
+
+---
+
+## Future
+
+[ ] - Ephemeral CI/CD runner. I should be able to design something based on nix flakes/microvm fairly easily.
+
+[ ] - Microvm based kubernetes simulation for dev environments.
+
+---
+
+## Completed
+
 [X] - Configure Microvm to produce an aarch64 microvm to be used as darwin's linux-builder. Check feasibility/gains of using rosetta internally for cross-compile.
 Was added to upstream nix-darwin before I made it this far lol.
-
 
 [X] - Ensure tailscale domains are <hostname>.tsdomain as a standard. If so, need to adjust method used to produce the system results. At the moment, any two systems deployed with the same profile, share the same hostname.
     Can be fixed by adjusting flake structure:
@@ -42,30 +109,8 @@ NOTE: This has been fixed by the structure, but if possible, I'd like to add a m
 
 [X] - modules/desktop/linux/ is an empty stub. Needs Linux desktop modules (window manager, display server config, etc.) as the counterpart to modules/desktop/darwin/.
 
-[X] - Setup primaryUser on darwin. 
-
-[ ] - modules/scripts/provision.nix is empty. Implement provisioning logic to replace anywhere-omen.sh as a flake app (see existing TODO and NOTES).
+[X] - Setup primaryUser on darwin.
 
 [X] - modules/desktop/darwin/services/skhd.nix has a hardcoded /Users/cdink/ path. Should derive the WezTerm path from the configured userName so it works for any user.
 
-[ ] - Configure linux desktop environment services/programs.
-
-[ ] - add treefmt-nix and setup some formatting for different languages.
-
-[ ] - Ephemeral CI/CD runner. I should be able to design something based on nix flakes/microvm fairly easily.
-
-[ ] - Microvm based kubernetes simulation for dev environments.
-
-[ ] - Fix deploy user to have proper NOPASSWD for correct commands.
-
-[ ] - Fix application of inputs to systems that utilize them.
-
-[ ] - Add proper top level apps output. I think I just need to wrap apps dir with some magic.
-
-[ ] - Create actual SOPS secrets. `.sops.yaml` and the darwin sops module are wired up but there's no `secrets/` directory and no secrets files. The Tailscale auth key is the obvious first candidate (would replace the Bitwarden fetch in `anywhere-omen.sh`). Requires deciding which hosts need access to which secrets and updating `.sops.yaml` creation_rules accordingly.
-
 [X] - Make the deploy user's `nix-env` sudo rule more robust. The current rule pins to `${pkgs.nix}/bin/nix-env` which is a specific store path. Consider using a glob pattern or `/run/current-system/sw/bin/nix-env` so it doesn't break silently on nix upgrades.
-
-[ ] - Add a `secrets/` directory with a `.gitkeep` or first real secret so the path structure matches `.sops.yaml` expectations.
-
-[ ] - Need to adjust openSSH and tailscale. Should use generic ssh through port 22, limiting traffic to the tailscale0 interface. This will avoid tailscale identity checks (manual step) for node provisioning.
