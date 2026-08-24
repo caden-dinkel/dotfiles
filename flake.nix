@@ -49,9 +49,8 @@
         hostNames = builtins.attrNames (
           nixpkgs.lib.filterAttrs (n: t: t == "directory") (builtins.readDir ./hosts)
         );
-        getMeta = name: import ./hosts/${name}/metadata.nix;
 
-        # replace hostNames and getMeta with one loop through dir, collecting metadata and hostname
+        getMeta = name: import ./hosts/${name}/metadata.nix;
 
         deployableHosts = nixpkgs.lib.filter (name: 
           (getMeta name).deployable or false)
@@ -66,8 +65,6 @@
             specialArgs = { inherit self; inputs = self.inputs; };
             modules = [ ./hosts/${name} ];
           });
-        
-
         darwinConfigurations = nixpkgs.lib.genAttrs 
           (nixpkgs.lib.filter (n: (getMeta n).type == "darwin") hostNames)
           (name: nix-darwin.lib.darwinSystem {

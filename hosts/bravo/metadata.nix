@@ -1,5 +1,5 @@
 {
-    imports = [
-        ./metadata/nixos-x86_64.nix
-    ];
+    system = "x86_64-linux";
+    type = "nixos";
+    deployable = false;
 }
