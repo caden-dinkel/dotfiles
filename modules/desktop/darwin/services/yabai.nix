@@ -1,6 +1,6 @@
 { lib, pkgs, ... }:
 {
-    config = lib.mkIf pkgs.stdenv.isDarwin {
+    config = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         services.yabai = {
             enable = true;
             package = pkgs.yabai;

@@ -8,10 +8,6 @@
 
     nixpkgs.config.allowUnfree = true;
 
-    networking.dns = [
-
-    ];
-
     # Overall flake hash/revision
     system.configurationRevision = self.rev or self.dirtyRev or null;
 

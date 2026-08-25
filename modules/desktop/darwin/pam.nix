@@ -1,6 +1,6 @@
 { lib, pkgs, ... }:
 {
-    config = lib.mkIf pkgs.stdenv.isDarwin {
+    config = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         security.pam.services.sudo_local = {
             enable = true;
             touchIdAuth = true;

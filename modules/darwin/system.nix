@@ -1,6 +1,6 @@
 { lib, pkgs, ... }:
 {
-    config = lib.mkIf pkgs.stdenv.isDarwin {
+    config = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         # May move this out of here and into personal role for darwin if it shouldn't be on servers
         nix.settings.trusted-users = [
             "@admin"

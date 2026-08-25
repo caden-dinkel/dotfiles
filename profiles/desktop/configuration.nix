@@ -3,6 +3,11 @@
 {
   nixpkgs.hostPlatform = "x86_64-linux";
 
+  imports = [
+    ../../modules/hardware/disko
+    ../../modules/hardware/nvidia.nix
+  ];
+
   myHardware = {
     nvidia = {
         enable = true;

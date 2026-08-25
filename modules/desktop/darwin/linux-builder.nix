@@ -1,6 +1,6 @@
 { lib, pkgs, ... }:
 {
-    config = lib.mkIf pkgs.stdenv.isDarwin {
+    config = lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
         nix.linux-builder = {
             enable = true;
             package = pkgs.darwin.linux-builder-vz;
