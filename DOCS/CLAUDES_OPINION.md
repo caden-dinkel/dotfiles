@@ -141,24 +141,6 @@ There's no pinned dev environment. Anyone working on this repo has to have
 else. A `devShells.default` that includes these tools keeps the tooling in sync
 with the nixpkgs pin.
 
-### The Tailscale Domain Should Not Be Hardcoded
-
-`"${name}.rainbow-dorian.ts.net"` in `flake.nix` is fragile. When the tailnet
-name changes, or when you want a host on a different domain, you're editing the
-flake core. Moving it to `meta.nix` (or `registry.nix`) as an optional
-`tailnetDomain` field — with a sensible default — keeps the flake generic:
-
-```nix
-hostname = "${name}.${(getMeta name).tailnetDomain or "rainbow-dorian.ts.net"}";
-```
-
-### SSH Key Separation (REVIEW.md #18)
-
-`deploy` and `admin` sharing the same SSH key is a real risk. The `deploy` key
-is the one that gets put into CI, stored on servers, and passed around. If it's
-ever leaked, an attacker has full `NOPASSWD ALL` sudo through the `admin` user.
-These should be different keys from the start, before any key material is deployed
-anywhere.
 
 ---
 

@@ -23,9 +23,9 @@ in
                 # Three phases. 
                 # 1. Get one time use auth key (tailscale API).
                 # 2. Generate age key.
-                # 3. Place in files based on the flake's designation. (Not sure here)
-                # 
+                # 3. Place in files based on the flake's designation. (Not sure here.)
                 text = ''
+                
                 '';
             };
         in
