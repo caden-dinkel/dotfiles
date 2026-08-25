@@ -1,0 +1,18 @@
+[ ] - Fix deploy user to have proper NOPASSWD for correct commands.
+
+[ ] - Move home-manager imports into role instead of user.
+
+[X] - Modules Refactor
+    [X] - common
+    [X] - darwin
+    [X] - desktop
+    [X] - hardware
+    [X] - home + moved skhd declaration to home-manager.
+    [X] - linux
+    [X] - software
+
+[X] - Change programs.ssh entry in modules/home/default.nix to be not reliant on the system.
+
+[ ] - Look into moving system.configurationRevision to the top level flake.
+
+[ ] - Setup Hotkeys generic of system.

@@ -1,9 +1,9 @@
 { self, ... }:
 {
     imports = [
-        "${self}/users"
-        "${self}/modules"
-        "${self}/modules/software/tailscale.nix"
+        ../modules/common
+        ../modules/software/tailscale.nix
+        ../users
     ];
     services.xserver.enable = false;
 }
