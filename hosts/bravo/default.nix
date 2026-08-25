@@ -2,8 +2,8 @@
 {
     networking.hostName = "bravo";
     imports = [
-        "${self}/profiles/desktop"
-        "${self}/roles/personal.nix"
+        ../../profiles/desktop
+        ../../roles/personal.nix
         ./hardware-configuration.nix
     ];
 }

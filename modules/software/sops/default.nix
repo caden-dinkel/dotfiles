@@ -1,10 +1,7 @@
-{ inputs, pkgs, ... }:
-let
-  systemModules = if pkgs.stdenv.isLinux then "nixosModules" else "darwinModules";
-in
+{ inputs, pkgs, moduleType, ... }:
 {
   imports = [
-    inputs.sops-nix.${systemModules}.sops
+    inputs.sops-nix.${moduleType}.sops
     ./sops.nix
   ];
 }

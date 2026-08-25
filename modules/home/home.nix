@@ -1,4 +1,4 @@
-{ userName, pkgs, lib, ... }:
+{ userName, ... }:
 {
   home-manager = {
     useGlobalPkgs = true;
@@ -7,9 +7,7 @@
     users."${userName}" = {
       imports = [
         ./common
-      ] ++ lib.optionals pkgs.stdenv.isDarwin [
         ./darwin
-      ] ++ lib.optionals pkgs.stdenv.isLinux [
         ./linux
       ];
     };

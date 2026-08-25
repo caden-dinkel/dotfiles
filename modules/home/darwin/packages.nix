@@ -1,7 +1,9 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 {
-    home.packages = [
-        pkgs.maccy
-        pkgs.tailscale-gui
-    ];
+    config = lib.mkIf pkgs.stdenv.isDarwin {
+        home.packages = [
+            pkgs.maccy
+            pkgs.tailscale-gui
+        ];
+    };
 }

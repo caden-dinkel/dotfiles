@@ -1,16 +1,18 @@
-{ pkgs, ... }:
+{ lib, pkgs, config, ... }:
 {
-    xdg.portal.extraPortals = [
-        pkgs.xdg-desktop-portal-hyprland
-        pkgs.xdg-desktop-portal-gtk
-    ];
+    config = lib.mkIf pkgs.stdenv.isLinux {
+        xdg.portal.extraPortals = [
+            pkgs.xdg-desktop-portal-hyprland
+            pkgs.xdg-desktop-portal-gtk
+        ];
 
-    networking.networkmanager.enable = true;
-    hardware.bluetooth.enable = true;
+        networking.networkmanager.enable = true;
+        hardware.bluetooth.enable = true;
 
-    networking.firewall = {
-        enable = true;
-        trustedInterfaces = [ "tailscale0" ];
-        allowedUDPPorts = [ config.services.tailscale.port ];
+        networking.firewall = {
+            enable = true;
+            trustedInterfaces = [ "tailscale0" ];
+            allowedUDPPorts = [ config.services.tailscale.port ];
+        };
     };
-};
+}

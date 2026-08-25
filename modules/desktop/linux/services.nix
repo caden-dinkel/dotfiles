@@ -1,21 +1,23 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 {
-    services.greetd = {
-        enable = true;
-        settings = {
-            default_session = {
-                command = "${pkgs.tuigreet}/bin/tuigreet --cmd Hyprland";
+    config = lib.mkIf pkgs.stdenv.isLinux {
+        services.greetd = {
+            enable = true;
+            settings = {
+                default_session = {
+                    command = "${pkgs.tuigreet}/bin/tuigreet --cmd Hyprland";
+                };
             };
         };
-    };
 
-    services.pipewire = {
-        enable = true;
-        alsa.enable = true;
-        alsa.support32Bit = true;
-        pulse.enable = true;
-        wireplumber.enable = true;
-    };
+        services.pipewire = {
+            enable = true;
+            alsa.enable = true;
+            alsa.support32Bit = true;
+            pulse.enable = true;
+            wireplumber.enable = true;
+        };
 
-    services.tailscale.enable;
+        services.tailscale.enable = true;
+    };
 }

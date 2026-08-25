@@ -1,6 +1,8 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 {
-  environment.systemPackages = [
-    pkgs.vfkit
-  ];
+    config = lib.mkIf pkgs.stdenv.isDarwin {
+        environment.systemPackages = [
+            pkgs.vfkit
+        ];
+    };
 }

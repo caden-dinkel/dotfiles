@@ -1,6 +1,8 @@
-{ pkgs, ... }:
+{ lib, pkgs, ... }:
 {
-    home.packages = [
-        pkgs.xdg-utils
-    ];
+    config = lib.mkIf pkgs.stdenv.isLinux {
+        home.packages = [
+            pkgs.xdg-utils
+        ];
+    };
 }

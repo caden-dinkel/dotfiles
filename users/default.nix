@@ -1,4 +1,4 @@
-{ config, lib, pkgs, ... }:
+{ pkgs, ... }:
 # inject global UID into users defined in ./registry.nix
 let
     registry = import ./registry.nix;

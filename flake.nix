@@ -42,6 +42,7 @@
     home-manager, 
     sops-nix, 
     disko, 
+    nixos-anywhere,
     impermanence, 
     deploy-rs, 
     ... }:
@@ -62,18 +63,26 @@
           (nixpkgs.lib.filter (n: (getMeta n).type == "nixos") hostNames)
           (name: nixpkgs.lib.nixosSystem {
             system = (getMeta name).system;
-            specialArgs = { inherit self; inputs = self.inputs; };
+            specialArgs = { 
+              inherit self; 
+              inputs = self.inputs; 
+              moduleType = "nixosModules";
+            };
             modules = [ ./hosts/${name} ];
           });
         darwinConfigurations = nixpkgs.lib.genAttrs 
           (nixpkgs.lib.filter (n: (getMeta n).type == "darwin") hostNames)
           (name: nix-darwin.lib.darwinSystem {
             system = (getMeta name).system;
-            specialArgs = { inherit self; inputs = self.inputs; };
+            specialArgs = { 
+              inherit self; 
+              inputs = self.inputs; 
+              modulteType = "darwinModules";
+            };
             modules = [ ./hosts/${name} ];
           });
         deploy.nodes = nixpkgs.lib.genAttrs deployableHosts (name: {
-          hostname = "${name}.rainbow-dorian.ts.net";
+          hostname = "${name}.rainbow-dorian.ts.net"; # Ignore the hardcoded domain, will get to it eventually
           profiles.system = {
             user = "root";
             sshUser = "deploy";

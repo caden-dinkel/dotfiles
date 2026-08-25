@@ -1,10 +1,7 @@
-{ inputs, pkgs, ... }:
-let
-  systemModules = if pkgs.stdenv.isLinux then "nixosModules" else "darwinModules";
-in
+{ inputs, moduleType, ... }:
 {
   imports = [
-    inputs.home-manager.${systemModules}.home-manager
-    ./home
+    inputs.home-manager.${moduleType}.home-manager
+    ./home.nix
   ];
 }
