@@ -1,4 +1,5 @@
-{
+{ lib, pkgs, ... }:
+lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
     nix.settings.trusted-users = [
         "@admin"
     ];

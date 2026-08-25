@@ -1,4 +1,5 @@
-{
+{ lib, pkgs, ... }:
+lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
     services.openssh = {
         enable = true;
         ports = [ 2222 ];
