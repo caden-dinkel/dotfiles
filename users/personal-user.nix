@@ -1,9 +1,9 @@
 { self, pkgs, lib, username, userDescription, ... }:
 {
-  users.users."${userName}" = {
+  users.users."${username}" = {
     description = userDescription;
 
-    home = if pkgs.stdenv.hostPlatform.isDarwin then "/Users/${userName}" else "/home/${userName}";
+    home = if pkgs.stdenv.hostPlatform.isDarwin then "/Users/${username}" else "/home/${username}";
 
     packages = [
       pkgs.helix
@@ -23,5 +23,5 @@
     shell = pkgs.zsh;
   };
 } // lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
-  system.primaryUser = userName;
+  system.primaryUser = username;
 }

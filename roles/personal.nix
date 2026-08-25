@@ -10,7 +10,7 @@ let
 in
 {
     imports = [
-        ../modules/common
+        ../modules
         ../users/personal-user.nix
         inputs.home-manager.${moduleType}.home-manager
         ../modules/home
