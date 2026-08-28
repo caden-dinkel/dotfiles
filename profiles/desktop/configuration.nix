@@ -12,7 +12,7 @@
     nvidia = {
         enable = true;
         # Can also change to latest maybe on this machine.
-        package = config.boot.kernelPackages.nvidiaPackages.stable;
+        package = lib.mkDefault config.boot.kernelPackages.nvidiaPackages.stable;
         open = true;
     };
 

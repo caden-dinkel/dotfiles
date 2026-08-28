@@ -1,18 +1,12 @@
-[ ] - Fix deploy user to have proper NOPASSWD for correct commands.
+[ ] - Properly separate disko module based on hardware:
+ - capability (profile), 
+ - policy (How capabilities are used), 
+ - and roles (What does this machine do?)
 
-[ ] - Move home-manager imports into role instead of user.
+[ ] - Think on how to handle networking differences. 
 
-[X] - Modules Refactor
-    [X] - common
-    [X] - darwin
-    [X] - desktop
-    [X] - hardware
-    [X] - home + moved skhd declaration to home-manager.
-    [X] - linux
-    [X] - software
+`networking.networkmanager.enable = true;` vs. 
 
-[X] - Change programs.ssh entry in modules/home/default.nix to be not reliant on the system.
+[ ] - where to put bluetooth `hardware.bluetooth.enable = true;`
 
-[ ] - Look into moving system.configurationRevision to the top level flake.
-
-[ ] - Setup Hotkeys generic of system.
+[ ] - Look into iterating on roles for packages

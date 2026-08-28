@@ -1,7 +1,9 @@
 {
     networking.hostName = "alpha";
+    let
+        platform = "darwin";
+    in
     imports = [
-        ../../profiles/darwin
-        ../../roles/personal.nix
+
     ];
 }

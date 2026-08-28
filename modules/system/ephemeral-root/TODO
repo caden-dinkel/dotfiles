@@ -1,0 +1,3 @@
+Restructure ephemeral-root as an option based module.
+Also, separate ephemeral root from persistence.
+Create a persist option based module that is next to ephemeral root.
