@@ -10,3 +10,9 @@
 [ ] - where to put bluetooth `hardware.bluetooth.enable = true;`
 
 [ ] - Look into iterating on roles for packages
+
+[ ] - Finish filling out the tailscale-server
+
+[ ] - Look into how the deploy-rs and cachix-deploy might work. They may need to be handled outside of imports (primary module evaluation).
+
+[ ] - Need to figure out ports for ssh/tailscale. Also, openssh configuration is pretty limited on darwin. Need to decide on a pattern to handle it.
