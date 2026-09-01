@@ -13,12 +13,12 @@
     home-manager = {
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
-    };   
+    };
 
     microvm = {
       url = "github:microvm-nix/microvm.nix";
       inputs.nixpkgs.follows = "nixpkgs";
-    }; 
+    };
   };
 
   outputs = inputs@{ self, nix-darwin, nixpkgs, home-manager, microvm }:

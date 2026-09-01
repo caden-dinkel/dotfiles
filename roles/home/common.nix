@@ -1,0 +1,3 @@
+[
+    ../../modules/home/common.nix
+]

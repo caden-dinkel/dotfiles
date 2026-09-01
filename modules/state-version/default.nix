@@ -1,0 +1,4 @@
+{ platform, ... }:
+[
+    ./platform + "/${platform}.nix"
+]
