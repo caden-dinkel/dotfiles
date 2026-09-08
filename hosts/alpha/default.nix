@@ -1,7 +1,5 @@
 {
     _module.args = {
-        userName = "cdink";
-        userDescription = "Caden Dinkel";
         platform = "darwin";
     };
     networking.hostName = "alpha";
