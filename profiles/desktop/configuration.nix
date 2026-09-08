@@ -19,7 +19,6 @@
     disk = {
       main = {
           enable = true;
-          ephemeral = true;
           swap = {
               enable = true;
               size = "32G";

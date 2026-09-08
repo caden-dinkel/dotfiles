@@ -47,25 +47,24 @@
     {
         nixosConfigurations = {
             bravo = nixpkgs.lib.nixosSystem {
-                system = "x86_64-linux";
                 specialArgs = { 
                     inherit self; 
                     inputs = self.inputs; 
                 };
                 modules = [
+                  disko.nixosModules.disko
                   ./hosts/bravo
                 ];
             };
         };
         darwinConfiguration = {
             alpha = nix-darwin.lib.darwinSystem {
-                system = "aarch64-darwin";
                 specialArgs = { 
                     inherit self; 
                     inputs = self.inputs; 
                 };
                 modules = [
-
+                  ./hosts/alpha
                 ];
             };
         };

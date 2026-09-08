@@ -10,4 +10,4 @@
         mountpoint = "/boot";
         mountOptions = [ "umask=0077" ];
     };
-};
+}

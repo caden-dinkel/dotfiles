@@ -37,7 +37,7 @@ in
         type = "gpt";
         partitions = {
           ESP = import ./boot.nix;
-          swap = lib.mkIf cfg.main.swap.enable import ./swap.nix;
+          swap = import ./swap.nix;
           root = {
             priority = 3;
             size = "100%";
