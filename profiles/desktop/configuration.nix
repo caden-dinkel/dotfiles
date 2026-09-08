@@ -17,15 +17,14 @@
     };
 
     disk = {
-        main = {
-            enable = true;
-            device = lib.mkDefault "/dev/nvme0n1";
-            ephemeral = true;
-            swap = {
-                enable = true;
-                size = "32G";
-            };
-        };
+      main = {
+          enable = true;
+          ephemeral = true;
+          swap = {
+              enable = true;
+              size = "32G";
+          };
+      };
     };
   };
 }
