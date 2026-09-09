@@ -17,6 +17,7 @@
     };
 
     disk = {
+      enable = true;
       main = {
           enable = true;
           swap = {

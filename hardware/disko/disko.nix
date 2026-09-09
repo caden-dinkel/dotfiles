@@ -29,6 +29,9 @@ in
       };
     };
   };
+
+
+
   config = lib.mkIf cfg.enable {
     disko.devices.disk.main = lib.mkIf cfg.main.enable {
       type = "disk";
@@ -37,7 +40,6 @@ in
         type = "gpt";
         partitions = {
           ESP = import ./boot.nix;
-          swap = import ./swap.nix;
           root = {
             priority = 3;
             size = "100%";
@@ -46,6 +48,10 @@ in
               format = "ext4";
               mountpoint = "/";
             };
+          }; 
+        } // lib.optionalAttrs cfg.main.swap.enable {
+          swap = (import ./swap.nix) // {
+            size = cfg.main.swap.size;
           };
         };
       };
