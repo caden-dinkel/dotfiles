@@ -2,6 +2,7 @@
 
 let
   cfg = config.myUsers;
+  defaultUser = import ./default-user.nix;
 in
 {
   options.myUsers = lib.mkOption {
@@ -17,10 +18,13 @@ in
           description = "The description for the user account.";
         };
 
-        template = lib.mkOption {
-          type = lib.types.enum [ "default-user" ];
-          default = "default-user";
-          description = "The user template to work from under ./users/";
+        template = {
+            enable = lib.mkEnableOption "Enable templates for user.";
+            type = lib.mkOption {
+                type = lib.types.enum [ "default-user" ];
+                default = "default-user";
+                description = "The user template to work from under ./users/";
+            };
         };
 
         extraArgs = lib.mkOption {
@@ -42,8 +46,14 @@ in
             description = userCfg.description;
           };
         }
+        /*
+        lib.optionalAttrs userCfg.template.enable
+        (
+            if userCfg.template.type == "default-user" then defaultUser
+            else {}
+        )
         userCfg.extraArgs
-        (import ./"${userCfg.template}.nix")
+        */
       ])
     ) cfg
   );
