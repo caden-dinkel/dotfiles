@@ -8,7 +8,7 @@ in
   options.myUsers = lib.mkOption {
     default = {};
     description = "Definition of multiple user accounts.";
-    type = lib.types.attrsOf (lib.types.submodule ({ name, ... }: {
+    type = lib.types.attrsOf (lib.types.submodule ({ name, config, ... }: {
       options = {
         enable = lib.mkEnableOption "Enable this user account.";
         
