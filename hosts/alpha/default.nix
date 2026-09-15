@@ -6,6 +6,10 @@
         ../../modules/home.nix
     ];
 
+    users.users.${name} = {
+        home = "/Users/${name}";
+    };
+
     system.stateVersion = 6;
     networking.hostName = "alpha";
     nixpkgs.hostPlatform = "aarch64-darwin";
@@ -40,6 +44,8 @@
 
     nix.settings.trusted-users = [ "@admin" ];
 
+    # Primary User is required for yabai.
+    system.primaryUser = name;
     services.yabai = {
         enable = true;
         enableScriptingAddition = false;
