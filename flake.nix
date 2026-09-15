@@ -32,7 +32,7 @@
 
       deploy-rs.url = "github:serokell/deploy-rs";
   };
-  outputs = {
+  outputs = inputs@{
       self, 
       nix-darwin, 
       nixpkgs, 
@@ -44,24 +44,37 @@
       deploy-rs,
       ... 
   }:
+  let
+    name = "cdink";
+    git = {
+      name = "Caden Dinkel";
+      email = "git@cdink.dev";
+    };
+  in
   {
-    nixosConfigurations.bravo = nixpkgs.lib.nixosSystem {
-      specialArgs = {
-        inherit self;
-        inherit (self.inputs) home-manager disko;
-      };
+    darwinConfigurations.alpha = nix-darwin.lib.darwinSystem {
+      specialArgs = { inherit self inputs git name home-manager; };
+      system = "aarch64-darwin";
       modules = [
+        ./hosts/alpha
+      ];
+    };
+
+    nixosConfigurations.beta = nixpkgs.lib.nixosSystem {
+      specialArgs = { inherit self inputs git name home-manager; };
+      system = "x86_64-linux";
+      modules = [
+        disko.nixosModules.disko
         ./hosts/bravo
       ];
     };
-    
-    darwinConfigurations.alpha = nix-darwin.lib.darwinSystem {
-      specialArgs = {
-        inherit self;
-        inherit (self.inputs) home-manager;
-      };
+
+    nixosConfigurations.charlie = nixpkgs.lib.nixosSystem {
+      specialArgs = { inherit self inputs; };
+      system = "x86_64-linux";
       modules = [
-        ./hosts/alpha
+        disko.nixosModules.disko
+        ./hosts/charlie
       ];
     };
   };
