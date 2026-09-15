@@ -1,4 +1,4 @@
-{ name, pkgs, ... }
+{ name, pkgs, git, ... }:
 {
     home-manager.useGlobalPkgs = true;
     home-manager.useUserPackages = true;
@@ -8,6 +8,7 @@
             pkgs.tmux
             pkgs.ripgrep
         ];
+        home.stateVersion = "26.05";
         programs.git = {
             enable = true;
             ignores = [ "**/.DS_Store" ];
@@ -22,6 +23,7 @@
         };
         programs.ssh = {
             enable = true;
+            enableDefaultConfig = false;
             settings = {
                 "github.com" = {
                     HostName = "github.com";
