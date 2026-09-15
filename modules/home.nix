@@ -8,6 +8,7 @@
             pkgs.tmux
             pkgs.ripgrep
         ];
+        home.homeDirectory = if pkgs.stdenv.hostPlatform.isLinux then "/home/${name}" else "/Users/${name}";
         home.stateVersion = "26.05";
         programs.git = {
             enable = true;
