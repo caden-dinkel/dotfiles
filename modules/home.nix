@@ -72,8 +72,8 @@ in
       theme = "ashes_dark";
       enable = true;
       settings = {
-        "[terminal.shell]" = {
-          program = "/etc/profiles/per-user/${name}/bin/zsh";
+        terminal.shell = {
+          program = "${pkgs.zsh}/bin/zsh";
           args = [ "-l" ];
         };
       };
