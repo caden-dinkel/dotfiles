@@ -1,5 +1,10 @@
-{ config, name, pkgs, home-manager, ... }:
 {
+  config,
+  name,
+  pkgs,
+  home-manager,
+  ...
+}: {
   imports = [
     ./hardware-configuration.nix
     ../../modules/common.nix
@@ -40,7 +45,7 @@
             type = "filesystem";
             format = "vfat";
             mountpoint = "/boot";
-            mountOptions = [ "umask=0077" ];
+            mountOptions = ["umask=0077"];
           };
         };
         swap = {
@@ -60,20 +65,20 @@
             subvolumes = {
               "/rootfs" = {
                 mountpoint = "/";
-                mountOptions = [ "compress=zstd" "noatime" ];
+                mountOptions = ["compress=zstd" "noatime"];
               };
               "/home" = {
-                mountOptions = [ "compress=zstd" ];
+                mountOptions = ["compress=zstd"];
                 mountpoint = "/home";
               };
               "/nix" = {
-                mountOptions = [ "compress=zstd" "noatime" ];
+                mountOptions = ["compress=zstd" "noatime"];
                 mountpoint = "/nix";
               };
-              "/root_blank" = { };
+              "/root_blank" = {};
               "/persist" = {
                 mountpoint = "/persist";
-                mountOptions = [ "compress=zstd" "noatime" ];
+                mountOptions = ["compress=zstd" "noatime"];
               };
             };
           };
@@ -84,7 +89,7 @@
 
   users.users.${name} = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ];
+    extraGroups = ["wheel"];
   };
 
   services.desktopManager.gnome.enable = true;

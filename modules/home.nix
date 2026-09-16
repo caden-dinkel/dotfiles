@@ -1,5 +1,9 @@
-{ name, pkgs, git, ... }:
 {
+  name,
+  pkgs,
+  git,
+  ...
+}: {
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
   home-manager.users.${name} = {
@@ -9,11 +13,14 @@
       pkgs.ripgrep
       pkgs.bitwarden-desktop
     ];
-    home.homeDirectory = if pkgs.stdenv.hostPlatform.isLinux then "/home/${name}" else "/Users/${name}";
+    home.homeDirectory =
+      if pkgs.stdenv.hostPlatform.isLinux
+      then "/home/${name}"
+      else "/Users/${name}";
     home.stateVersion = "26.05";
     programs.git = {
       enable = true;
-      ignores = [ "**/.DS_Store" ];
+      ignores = ["**/.DS_Store"];
       settings = {
         user = {
           name = git.name;
