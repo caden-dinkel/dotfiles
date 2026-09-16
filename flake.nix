@@ -108,15 +108,13 @@
         ];
       };
 
-      /*
-          nixosConfigurations.charlie = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit self inputs; };
-          system = "x86_64-linux";
-          modules = [
-        disko.nixosModules.disko
-        ./hosts/charlie
-          ];
-          };
-      */
+      nixosConfigurations.charlie = nixpkgs.lib.nixosSystem {
+        specialArgs = { inherit self inputs; };
+        system = "x86_64-linux";
+        modules = [
+          disko.nixosModules.disko
+          ./hosts/charlie
+        ];
+      };
     };
 }
