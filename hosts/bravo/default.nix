@@ -84,6 +84,7 @@
 
     users.users.${name} = {
         isNormalUser = true;
+        extraGroups = [ "wheel" ];
     };
 
     services.desktopManager.gnome.enable = true;
