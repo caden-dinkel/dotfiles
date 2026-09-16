@@ -67,6 +67,7 @@ in
       mutableExtensionsDir = false;
       extensions = with pkgs.vscode-extensions; [
         jnoortheen.nix-ide
+        rust-lang.rust-analyzer
       ];
       profiles.${name}.userSettings = {
         "[nix]" = {
