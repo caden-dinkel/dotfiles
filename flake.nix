@@ -28,7 +28,7 @@
           inputs.nixpkgs.follows = "nixpkgs";
       };
 
-      inputs.treefmt-nix = {
+      treefmt-nix = {
         url = "github:numtide/treefmt-nix";
         inputs.nixpkgs.follows = "nixpkgs";
       };
@@ -57,8 +57,9 @@
       email = "git@cdink.dev";
     };
 
-  # treefmt - Directly from docs.
-    eachSystem = f: nixpkgs.lib.genAttrs (import systems) (system: f nixpkgs.legacyPackages.${system});
+  # treefmt - Directly from docs-ish.
+    systems = [ "x86_64-linux" "aarch64-linux" "x86_64-darwin" "aarch64-darwin" ];
+    eachSystem = f: nixpkgs.lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
     treefmtEval = eachSystem (pkgs: treefmt-nix.lib.evalModule pkgs ./modules/treefmt.nix);
   in
   {
@@ -67,7 +68,7 @@
     checks = eachSystem (pkgs: {
       formatting = treefmtEval.${pkgs.system}.config.build.check self;
     });
-    
+
     darwinConfigurations.alpha = nix-darwin.lib.darwinSystem {
       specialArgs = { inherit self inputs git name home-manager; };
       system = "aarch64-darwin";
