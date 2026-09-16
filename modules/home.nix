@@ -66,6 +66,6 @@
         };
         programs.fzf = {
             enable = true;
-        }
+        };
     };
 }
