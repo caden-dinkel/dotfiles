@@ -53,12 +53,14 @@
         programs.firefox = {
             enable = true;
         };
+        programs.zsh = {
+            enable = true;
+        };
         programs.starship = {
             enable = true;
         };
         programs.zoxide = {
             enable = true;
-            enableBashIntegration = true;
             enableZshIntegration = true;
             options = [
             "--cmd cd" # This replaces the cd command with zoxide
