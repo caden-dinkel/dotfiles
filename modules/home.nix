@@ -69,7 +69,14 @@ in
     };
 
     programs.alacritty = {
+      theme = "ashes_dark";
       enable = true;
+      settings = {
+        "[terminal.shell]" = {
+          program = "/etc/profiles/per-user/${name}/bin/zsh";
+          args = [ "-l" ];
+        };
+      };
     };
     programs.claude-code = {
       enable = true;
