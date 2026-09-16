@@ -1,6 +1,7 @@
 { config, name, pkgs, home-manager, ... }:
 {
     imports = [
+        ./hardware-configuration.nix
         ../../modules/common.nix
         home-manager.nixosModules.home-manager
         ../../modules/home.nix

@@ -60,7 +60,7 @@
       ];
     };
 
-    nixosConfigurations.beta = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.bravo = nixpkgs.lib.nixosSystem {
       specialArgs = { inherit self inputs git name home-manager; };
       system = "x86_64-linux";
       modules = [
