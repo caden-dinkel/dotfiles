@@ -18,6 +18,7 @@ in
       pkgs.ripgrep
       pkgs.bitwarden-desktop
       pkgs.helix
+      pkgs.du-dust
 
       pkgs.nil
       pkgs.nixfmt
@@ -78,7 +79,9 @@ in
         };
       };
     };
-
+    programs.direnv = {
+      enable = true;
+    };
     programs.claude-code = {
       enable = true;
     };
