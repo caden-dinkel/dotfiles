@@ -2,15 +2,20 @@
   name,
   pkgs,
   git,
+  config,
   ...
 }:
 let
   myHomeDir = if pkgs.stdenv.hostPlatform.isLinux then "/home/${name}" else "/Users/${name}";
-  zshContent = if pkgs.stdenv.hostPlatform.isLinux then ''
-    alias rebuild="sudo nixos-rebuild switch --flake .#${config.networking.hostName}"
-  '' else ''
-    alias rebuild="sudo darwin-rebuild switch --flake .#${config.networking.hostName}"
-  '';
+  zshContent =
+    if pkgs.stdenv.hostPlatform.isLinux then
+      ''
+        alias rebuild="sudo nixos-rebuild switch --flake .#${config.networking.hostName}"
+      ''
+    else
+      ''
+        alias rebuild="sudo darwin-rebuild switch --flake .#${config.networking.hostName}"
+      '';
 in
 {
   home-manager.useGlobalPkgs = true;
@@ -23,7 +28,7 @@ in
       pkgs.ripgrep
       pkgs.bitwarden-desktop
       pkgs.helix
-      pkgs.du-dust
+      pkgs.dust
 
       pkgs.nil
       pkgs.nixfmt
