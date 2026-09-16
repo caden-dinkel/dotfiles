@@ -9,13 +9,13 @@ let
   myHomeDir = if pkgs.stdenv.hostPlatform.isLinux then "/home/${name}" else "/Users/${name}";
   zshContent =
     if pkgs.stdenv.hostPlatform.isLinux then
-      ''
-        alias rebuild="sudo nixos-rebuild switch --flake .#${config.networking.hostName}"
-      ''
-    else
-      ''
-        alias rebuild="sudo darwin-rebuild switch --flake .#${config.networking.hostName}"
-      '';
+        ''
+          alias rebuild="sudo nixos-rebuild switch --flake .#${config.networking.hostName}"
+        ''
+        else 
+        ''
+          alias rebuild="sudo darwin-rebuild switch --flake .#${config.networking.hostName}"
+        '';
 in
 {
   home-manager.useGlobalPkgs = true;
