@@ -3,7 +3,13 @@
   pkgs,
   git,
   ...
-}: {
+}: 
+let
+    myHomeDir = if pkgs.stdenv.hostPlatform.isLinux
+      then "/home/${name}"
+      else "/Users/${name}";
+in
+{
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
   home-manager.users.${name} = {
@@ -13,10 +19,7 @@
       pkgs.ripgrep
       pkgs.bitwarden-desktop
     ];
-    home.homeDirectory =
-      if pkgs.stdenv.hostPlatform.isLinux
-      then "/home/${name}"
-      else "/Users/${name}";
+    home.homeDirectory = myHomeDir;
     home.stateVersion = "26.05";
     programs.git = {
       enable = true;
@@ -51,6 +54,17 @@
         jnoortheen.nix-ide
       ];
     };
+
+    xdg.configFile.vscodeExtensions = {
+        force = true;
+        source = myHomeDir + ".vscode/extensions/extensions.json";
+    };
+
+    xdg.configFile.vscodeArgv = {
+        force = true;
+        source = myHomeDir + ".vscode/argv.json";
+    };
+
     programs.alacritty = {
       enable = true;
     };
