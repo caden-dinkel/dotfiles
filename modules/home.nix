@@ -12,7 +12,7 @@ in
 {
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
-  home-manager.backupFileExtension = "-backup";
+
   home-manager.users.${name} = {
     home.packages = [
       pkgs.tree
@@ -51,6 +51,7 @@ in
       argvSettings = {
         enable-crash-reporter = false;
       };
+      mutableExtensionsDir = false;
       profiles.${name}.extensions = with pkgs.vscode-extensions; [
         jnoortheen.nix-ide
       ];
