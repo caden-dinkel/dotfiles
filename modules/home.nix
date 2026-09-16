@@ -44,6 +44,12 @@
     };
     programs.vscode = {
       enable = true;
+      argvSettings = {
+        enable-crash-reporter = false;
+      };
+      profiles.${name}.extensions = with pkgs.vscode-extensions; [
+        jnoortheen.nix-ide
+      ];
     };
     programs.alacritty = {
       enable = true;
