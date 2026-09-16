@@ -7,6 +7,7 @@
             pkgs.tree
             pkgs.tmux
             pkgs.ripgrep
+            pkgs.bitwarden-desktop
         ];
         home.homeDirectory = if pkgs.stdenv.hostPlatform.isLinux then "/home/${name}" else "/Users/${name}";
         home.stateVersion = "26.05";
@@ -47,6 +48,9 @@
             enable = true;
         };
         programs.obsidian = {
+            enable = true;
+        };
+        programs.firefox = {
             enable = true;
         };
     };
