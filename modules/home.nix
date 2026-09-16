@@ -19,6 +19,7 @@ in
       pkgs.tmux
       pkgs.ripgrep
       pkgs.bitwarden-desktop
+      pkgs.helix
     ];
     home.homeDirectory = myHomeDir;
     home.stateVersion = "26.05";
@@ -46,6 +47,7 @@ in
         };
       };
     };
+    /*
     programs.vscode = {
       enable = true;
       argvSettings = {
@@ -56,6 +58,7 @@ in
         jnoortheen.nix-ide
       ];
     };
+    */
 
     programs.alacritty = {
       enable = true;
