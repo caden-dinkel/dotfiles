@@ -96,6 +96,7 @@ in
     };
     programs.zsh = {
       enable = true;
+      autosuggestion.enable = true;
     };
     programs.starship = {
       enable = true;
