@@ -12,6 +12,7 @@ in
 {
   home-manager.useGlobalPkgs = true;
   home-manager.useUserPackages = true;
+  home-manager.backupFileExtension = "-backup";
   home-manager.users.${name} = {
     home.packages = [
       pkgs.tree
@@ -53,16 +54,6 @@ in
       profiles.${name}.extensions = with pkgs.vscode-extensions; [
         jnoortheen.nix-ide
       ];
-    };
-
-    xdg.configFile.vscodeExtensions = {
-        force = true;
-        source = myHomeDir + ".vscode/extensions/extensions.json";
-    };
-
-    xdg.configFile.vscodeArgv = {
-        force = true;
-        source = myHomeDir + ".vscode/argv.json";
     };
 
     programs.alacritty = {
