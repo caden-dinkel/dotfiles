@@ -3,7 +3,8 @@
   pkgs,
   home-manager,
   ...
-}: {
+}:
+{
   imports = [
     ../../modules/common.nix
     home-manager.darwinModules.home-manager
@@ -46,7 +47,7 @@
     };
   };
 
-  nix.settings.trusted-users = ["@admin"];
+  nix.settings.trusted-users = [ "@admin" ];
 
   # Primary User is required for yabai.
   system.primaryUser = name;

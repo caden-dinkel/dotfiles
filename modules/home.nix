@@ -3,11 +3,9 @@
   pkgs,
   git,
   ...
-}: 
+}:
 let
-    myHomeDir = if pkgs.stdenv.hostPlatform.isLinux
-      then "/home/${name}"
-      else "/Users/${name}";
+  myHomeDir = if pkgs.stdenv.hostPlatform.isLinux then "/home/${name}" else "/Users/${name}";
 in
 {
   home-manager.useGlobalPkgs = true;
@@ -20,12 +18,15 @@ in
       pkgs.ripgrep
       pkgs.bitwarden-desktop
       pkgs.helix
+
+      pkgs.nil
+      pkgs.nixfmt
     ];
     home.homeDirectory = myHomeDir;
     home.stateVersion = "26.05";
     programs.git = {
       enable = true;
-      ignores = ["**/.DS_Store"];
+      ignores = [ "**/.DS_Store" ];
       settings = {
         user = {
           name = git.name;
@@ -56,6 +57,15 @@ in
       extensions = with pkgs.vscode-extensions; [
         jnoortheen.nix-ide
       ];
+      profiles.${name}.userSettings = {
+        "[nix]" = {
+          "editor.tabSize" = 2;
+        };
+        "files.autoSave" = "off";
+        "nix.enableLanguageServer" = true;
+        "nix.serverPath" = "nil";
+        "nix.formatterPath" = "nixfmt -";
+      };
     };
 
     programs.alacritty = {
