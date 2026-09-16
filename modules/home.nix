@@ -78,6 +78,10 @@ in
         };
       };
     };
+    services.ollama = {
+      enable = true;
+      acceleration = "cuda";
+    };
     programs.claude-code = {
       enable = true;
     };
