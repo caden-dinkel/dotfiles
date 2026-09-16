@@ -28,6 +28,11 @@
           inputs.nixpkgs.follows = "nixpkgs";
       };
 
+      inputs.treefmt-nix = {
+        url = "github:numtide/treefmt-nix";
+        inputs.nixpkgs.follows = "nixpkgs";
+      };
+
       impermanence.url = "github:nix-community/impermanence";
 
       deploy-rs.url = "github:serokell/deploy-rs";
@@ -42,6 +47,7 @@
       nixos-anywhere,
       impermanence, 
       deploy-rs,
+      treefmt-nix,
       ... 
   }:
   let
@@ -50,8 +56,18 @@
       name = "Caden Dinkel";
       email = "git@cdink.dev";
     };
+
+  # treefmt - Directly from docs.
+    eachSystem = f: nixpkgs.lib.genAttrs (import systems) (system: f nixpkgs.legacyPackages.${system});
+    treefmtEval = eachSystem (pkgs: treefmt-nix.lib.evalModule pkgs ./modules/treefmt.nix);
   in
   {
+    formatter = eachSystem (pkgs: treefmtEval.${pkgs.system}.config.build.wrapper);
+
+    checks = eachSystem (pkgs: {
+      formatting = treefmtEval.${pkgs.system}.config.build.check self;
+    });
+    
     darwinConfigurations.alpha = nix-darwin.lib.darwinSystem {
       specialArgs = { inherit self inputs git name home-manager; };
       system = "aarch64-darwin";
