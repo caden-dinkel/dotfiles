@@ -3,6 +3,7 @@
   pkgs,
   git,
   config,
+  lib,
   ...
 }:
 let
