@@ -18,6 +18,9 @@
   disko.devices.disk.primary.device = "/dev/disk/by-id/nvme-eui.002538b971031fda";
   disko.devices.disk.secondary.device = "/dev/disk/by-id/wwn-0x5000cca8d8ec939a";
 
+  # primary device holds OS.
+  # secondary device holds store.
+
   services.nix-serve = {
     enable = true;
     package = pkgs.nix-serve-ng;

@@ -32,6 +32,8 @@ in
 
       pkgs.nil
       pkgs.nixfmt
+    ] ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
+      pkgs.freecad
     ];
     home.homeDirectory = myHomeDir;
     home.stateVersion = "26.05";
