@@ -106,7 +106,7 @@ in
     programs.obsidian = {
       enable = true;
     };
-    programs.firefox = mkIf pkgs.stdenv.hostPlatform.isLinux {
+    programs.firefox = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
       enable = true;
     };
     programs.zsh = {
