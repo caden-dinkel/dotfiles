@@ -106,7 +106,7 @@ in
     programs.obsidian = {
       enable = true;
     };
-    programs.firefox = {
+    programs.firefox = mkIf pkgs.stdenv.hostPlatform.isLinux {
       enable = true;
     };
     programs.zsh = {
@@ -123,9 +123,6 @@ in
       options = [
         "--cmd cd" # This replaces the cd command with zoxide
       ];
-    };
-    programs.fzf = {
-      enable = true;
     };
   };
 }
