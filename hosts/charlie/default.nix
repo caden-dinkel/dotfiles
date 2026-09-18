@@ -1,4 +1,6 @@
 { config, ... }: {
+  time.timeZone = "America/Chicago";
+
   imports = [
     ../../modules/common.nix
   ];

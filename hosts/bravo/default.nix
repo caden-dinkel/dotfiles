@@ -6,6 +6,8 @@
   ...
 }:
 {
+  time.timeZone = "America/Chicago";
+
   imports = [
     ./hardware-configuration.nix
     ../../modules/common.nix
