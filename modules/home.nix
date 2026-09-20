@@ -64,16 +64,20 @@ in
       };
     };
     programs.vscode = {
-      profiles.default.enableUpdateCheck = false;
+      profiles.default = {
+        enableUpdateCheck = false;
+
+      };
       enable = true;
       argvSettings = {
         enable-crash-reporter = false;
+        extensions = with pkgs.vscode-extensions; [
+          jnoortheen.nix-ide
+          rust-lang.rust-analyzer
+        ];
       };
       mutableExtensionsDir = false;
-      extensions = with pkgs.vscode-extensions; [
-        jnoortheen.nix-ide
-        rust-lang.rust-analyzer
-      ];
+
       profiles.${name}.userSettings = {
         "[nix]" = {
           "editor.tabSize" = 2;
