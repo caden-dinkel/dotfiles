@@ -1,39 +1,26 @@
-{
-  config,
-  name,
-  pkgs,
-  home-manager,
-  ...
-}:
-{
+# This device will be the binary cache.
+{ config, pkgs, ... }: {
   time.timeZone = "America/Chicago";
 
   imports = [
-    ./hardware-configuration.nix
     ../../modules/common.nix
-    home-manager.nixosModules.home-manager
-    ../../modules/home.nix
-    ../../modules/tailscale.nix
   ];
-
-  # Allows non-root to execute root commands using sudo
-  security.sudo.enable = true;
   system.stateVersion = "26.05";
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  networking.hostName = "bravo";
+  networking.hostName = "charlie";
   nixpkgs.hostPlatform = "x86_64-linux";
   hardware = {
     graphics.enable = true;
     nvidia = {
-      package = config.boot.kernelPackages.nvidiaPackages.stable;
+      package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
       modesetting.enable = true;
       open = true;
     };
   };
+  disko.devices.disk.primary.device = "/dev/disk/by-id/nvme-eui.002538b971031fda";
+  disko.devices.disk.secondary.device = "/dev/disk/by-id/wwn-0x5000cca8d8ec939a";
 
-  # Primary, secondary, ternary, ... naming scheme.
-  disko.devices.disk.primary.device = "/dev/disk/by-label/nvme-eui.e8238fa6bf530001001b448b4c504ccd";
   disko.devices.disk.primary = {
     type = "disk";
     content = {
@@ -100,19 +87,11 @@
     };
   };
 
-  users.users.${name} = {
-    isNormalUser = true;
-    extraGroups = [ "wheel" ];
-  };
+  # primary device holds OS.
+  # secondary device holds store backups/snapshots?
 
-  services.desktopManager.gnome.enable = true;
-  services.displayManager.gdm.enable = true;
-
-  services.pipewire = {
+  services.nix-serve = {
     enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-    wireplumber.enable = true;
+    package = pkgs.nix-serve-ng;
   };
 }

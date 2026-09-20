@@ -64,6 +64,7 @@ in
       };
     };
     programs.vscode = {
+      profiles.default.enableUpdateCheck = false;
       enable = true;
       argvSettings = {
         enable-crash-reporter = false;

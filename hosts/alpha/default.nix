@@ -11,6 +11,7 @@
     ../../modules/common.nix
     home-manager.darwinModules.home-manager
     ../../modules/home.nix
+    ../../modules/tailscale.nix
   ];
 
   users.users.${name} = {

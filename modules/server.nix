@@ -1,6 +1,5 @@
 {
   services.thermald = {
     enable = true;
-
   };
 }
