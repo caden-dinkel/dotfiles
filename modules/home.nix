@@ -66,15 +66,14 @@ in
     programs.vscode = {
       profiles.default = {
         enableUpdateCheck = false;
-
-      };
-      enable = true;
-      argvSettings = {
-        enable-crash-reporter = false;
         extensions = with pkgs.vscode-extensions; [
           jnoortheen.nix-ide
           rust-lang.rust-analyzer
         ];
+      };
+      enable = true;
+      argvSettings = {
+        enable-crash-reporter = false;
       };
       mutableExtensionsDir = false;
 
