@@ -66,6 +66,7 @@ in
     programs.vscode = {
       profiles.default = {
         enableUpdateCheck = false;
+        enableExtensionUpdateCheck = false;
         extensions = with pkgs.vscode-extensions; [
           jnoortheen.nix-ide
           rust-lang.rust-analyzer
