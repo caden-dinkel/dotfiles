@@ -28,8 +28,14 @@
       package = config.boot.kernelPackages.nvidiaPackages.stable;
       modesetting.enable = true;
       open = true;
+      powerManagement.enable = true;
+      powerManagement.finegrained = false;
     };
   };
+
+  boot.kernelParams = [
+    "nvidia.NVreg_PreserveVideoMemoryAllocation=1"
+  ];
 
   # Primary, secondary, ternary, ... naming scheme.
   disko.devices.disk.primary.device = "/dev/disk/by-label/nvme-eui.e8238fa6bf530001001b448b4c504ccd";
