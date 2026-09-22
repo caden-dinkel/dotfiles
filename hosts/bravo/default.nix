@@ -13,7 +13,6 @@
     ../../modules/common.nix
     home-manager.nixosModules.home-manager
     ../../modules/home.nix
-    ../../modules/tailscale.nix
   ];
 
   # Allows non-root to execute root commands using sudo
