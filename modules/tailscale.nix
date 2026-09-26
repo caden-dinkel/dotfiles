@@ -4,9 +4,9 @@
   pkgs,
   ...
 }:
-let 
+let
   cfg = config.myNetworking.tailscale;
-in 
+in
 {
   options.myNetworking.tailscale = {
     enable = lib.mkEnableOption "Enable tailscale.";
