@@ -4,7 +4,8 @@ let
 in
 {
   sops.defaultSopsFile = ../secrets/tailscale.yaml;
-  sops.age.keyFile = myHomeDir + ".config/sops/age/keys.txt";
+  sops.age.keyFile = myHomeDir + "/.config/sops/age/keys.txt";
+  sops.age.generateKey = false;
   sops.secrets = {
     "tailscale/client_id" = { };
     "tailscale/client_secret" = { };
