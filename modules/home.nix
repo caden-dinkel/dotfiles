@@ -109,7 +109,7 @@ in
     programs.claude-code = {
       enable = true;
     };
-    programs.ncspot = {
+    programs.spotify-player = {
       enable = true;
     };
     programs.obsidian = {
