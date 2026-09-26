@@ -137,7 +137,7 @@ in
     programs.tmux = {
       enable = true;
       extraConfig = ''
-        set-option -g default-shell ${pkgs.zsh}
+        set-option -g default-shell ${pkgs.zsh}/bin/zsh
       '';
     };
   };
