@@ -46,7 +46,7 @@ in
       lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
         enable = true;
       }
-      // lib.mkIf cfg.profile == "server" {
+      // lib.attrsets.optionalAttrs cfg.profile == "server" {
         authKeyFile = cfg.authKeyFile;
       };
   };
