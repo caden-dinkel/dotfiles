@@ -10,7 +10,13 @@
     ../../modules/common.nix
     home-manager.darwinModules.home-manager
     ../../modules/home.nix
+    ../../modules/tailscale.nix
   ];
+
+  myNetworking.tailscale = {
+    enable = true;
+    profile = "personal";
+  };
 
   users.users.${name} = {
     home = "/Users/${name}";
