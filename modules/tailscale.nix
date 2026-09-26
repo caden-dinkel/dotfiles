@@ -11,10 +11,12 @@ in
   options.myNetworking.tailscale = {
     enable = lib.mkEnableOption "Enable tailscale.";
     profile = lib.mkOption {
-      type = lib.types.nullOr lib.types.enum [
-        "server"
-        "personal"
-      ];
+      type = lib.types.nullOr (
+        lib.types.enum [
+          "server"
+          "personal"
+        ]
+      );
       default = null;
       description = ''
         Base profile to install tailscale with.
@@ -23,10 +25,12 @@ in
       '';
     };
     authKeyFile = lib.mkOption {
-      type = lib.types.nullOr lib.types.oneOf [
-        lib.types.str
-        lib.types.path
-      ];
+      type = lib.types.nullOr (
+        lib.types.oneOf [
+          lib.types.str
+          lib.types.path
+        ]
+      );
       default = null;
       description = ''
         File location of authkey needed to connect to tailnet. Only valid for server profiles.
@@ -46,7 +50,7 @@ in
       lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
         enable = true;
       }
-      // lib.attrsets.optionalAttrs cfg.profile == "server" {
+      // lib.optionalAttrs (cfg.profile == "server") {
         authKeyFile = cfg.authKeyFile;
       };
   };
