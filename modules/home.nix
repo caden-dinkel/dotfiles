@@ -30,7 +30,6 @@ in
   home-manager.users.${name} = {
     home.packages = [
       pkgs.tree
-      pkgs.tmux
       pkgs.ripgrep
       pkgs.bitwarden-desktop
       pkgs.helix
@@ -119,11 +118,7 @@ in
     programs.firefox = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
       enable = true;
     };
-    programs.zsh = {
-      enable = true;
-      enableCompletion = true;
-      initContent = zshContent;
-    };
+
     programs.starship = {
       enable = true;
     };
@@ -133,6 +128,17 @@ in
       options = [
         "--cmd cd" # This replaces the cd command with zoxide
       ];
+    };
+    programs.zsh = {
+      enable = true;
+      enableCompletion = true;
+      initContent = zshContent;
+    };
+    programs.tmux = {
+      enable = true;
+      extraConfig = ''
+        set-option -g default-shell ${pkgs.zsh}
+      '';
     };
   };
 }
