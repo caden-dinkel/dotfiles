@@ -4,6 +4,7 @@
   git,
   config,
   lib,
+  home-manager,
   ...
 }:
 let

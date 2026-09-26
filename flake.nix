@@ -83,6 +83,7 @@
             git
             name
             home-manager
+            sops-nix
             ;
         };
         system = "aarch64-darwin";
@@ -99,6 +100,7 @@
             git
             name
             home-manager
+            sops-nix
             ;
         };
         system = "x86_64-linux";

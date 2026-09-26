@@ -3,6 +3,7 @@
   name,
   pkgs,
   home-manager,
+  sops-nix,
   ...
 }:
 {
@@ -12,6 +13,8 @@
     ./hardware-configuration.nix
     ../../modules/common.nix
     home-manager.nixosModules.home-manager
+    sops-nix.nixosModules.sops
+    ../../modules/sops.nix
     ../../modules/home.nix
     ../../modules/tailscale.nix
   ];
