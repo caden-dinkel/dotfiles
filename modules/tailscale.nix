@@ -42,9 +42,12 @@ in
       ];
     };
 
-    services.tailscale = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
-      enable = true;
-      authKeyFile = lib.mkIf cfg.profile == "server" cfg.authKeyFile;
-    };
+    services.tailscale =
+      lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
+        enable = true;
+      }
+      // lib.mkIf cfg.profile == "server" {
+        authKeyFile = cfg.authKeyFile;
+      };
   };
 }
