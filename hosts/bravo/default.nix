@@ -13,7 +13,13 @@
     ../../modules/common.nix
     home-manager.nixosModules.home-manager
     ../../modules/home.nix
+    ../../modules/tailscale.nix
   ];
+
+  myNetworking.tailscale = {
+    enable = true;
+    profile = "personal";
+  };
 
   # Allows non-root to execute root commands using sudo
   security.sudo.enable = true;
