@@ -36,6 +36,11 @@ in
         File location of authkey needed to connect to tailnet. Only valid for server profiles.
       '';
     };
+    domain = lib.mkOption {
+      type = lib.types.nullOr lib.types.str;
+      default = null;
+      description = "Tailscale domain prefix to access tailnet.";
+    };
   };
 
   config = lib.mkIf cfg.enable {
