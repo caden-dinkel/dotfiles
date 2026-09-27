@@ -35,6 +35,8 @@ in
       pkgs.helix
       pkgs.dust
 
+      pkgs.spotify
+
       pkgs.nil
       pkgs.nixfmt
     ]
@@ -107,9 +109,6 @@ in
       enable = true;
     };
     programs.claude-code = {
-      enable = true;
-    };
-    programs.spotify-player = {
       enable = true;
     };
     programs.obsidian = {
