@@ -3,3 +3,6 @@
 3. Figure out how to move majority of formatting into treefmt.nix.
 4. Figure out commands for deploy-rs.
 5. Set up check for deploy-rs, setup a microvm that is spun up and deployed to.
+6. Begin pulling commonalities from hosts into separate modules.
+7. Pull hardware details from hosts into separate profiles.
+8. Adjust formatter to use standard nix per system.
