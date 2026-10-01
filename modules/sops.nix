@@ -4,6 +4,7 @@ let
 in
 {
   sops.defaultSopsFile = ../secrets/tailscale.yaml;
+  # Key should be moved to root?
   sops.age.keyFile = myHomeDir + "/.config/sops/age/keys.txt";
   sops.age.generateKey = false;
   sops.secrets = {
