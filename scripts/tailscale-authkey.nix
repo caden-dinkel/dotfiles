@@ -1,0 +1,1 @@
+# Utilize tailscale API + tailscale client id and secret to generate a tagged auth key.
