@@ -16,8 +16,8 @@ pkgs.writeShellApplication {
     encrypted_key="$repo_root/secrets/deploy-rs-key"
     public_key="$repo_root/secrets/deploy-rs-key.pub"
 
-    tmpdir="$(mktemp -d)"
-    trap 'rm -rf "$tmpdir"' EXIT
+    tempdir="$(mktemp -d)"
+    trap 'rm -rf "$tempdir"' EXIT
 
     private_key="$tempdir/deploy-rs-key"
 
@@ -27,12 +27,12 @@ pkgs.writeShellApplication {
       -N "" \
       -C "deploy-rs" \
       -f "$private_key"
-    
+
     sops encrypt \
       --input-type binary \
       --output-type binary \
       "$private_key" > "$encrypted_key"
-    
+
     install -Dm0644 "$private_key.pub" "$public_key"
   '';
 }

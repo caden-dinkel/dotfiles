@@ -120,5 +120,12 @@
         ];
       };
 
+      apps = builtins.mapAttrs (system: pkgs: {
+        "create-deploy-key" = {
+          type = "app";
+          program = "${import ./scripts/create-deploy-key.nix { inherit pkgs; }}/bin/create-deploy-key";
+        };
+      }) inputs.nixpkgs.legacyPackages;
+
     };
 }
