@@ -10,6 +10,9 @@ in
   sops.secrets = {
     "tailscale/client_id" = { };
     "tailscale/client_secret" = { };
-    "deploy-rs-key" = { };
+    "deploy-rs-key" = { 
+      sopsFile = ../secrets/deploy-rs-key;
+      format = "binary";
+    };
   };
 }
