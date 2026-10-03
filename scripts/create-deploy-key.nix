@@ -1,8 +1,11 @@
-# Generate an ssh key and encrypt it with sops.
-# Dependent on .sops.yaml setup.
 { pkgs, ... }:
 pkgs.writeShellApplication {
   name = "create-deploy-key";
+  meta = {
+    description = ''
+      Script to create a deploy ssh key for this flake.
+    '';
+  };
   runtimeInputs = [
     pkgs.sops
     pkgs.openssh
@@ -14,6 +17,7 @@ pkgs.writeShellApplication {
 
     repo_root="$(git rev-parse --show-toplevel)"
     encrypted_key="$repo_root/secrets/deploy-rs-key"
+    encrypted_filename="$encrypted_key"
     public_key="$repo_root/secrets/deploy-rs-key.pub"
 
     tempdir="$(mktemp -d)"
@@ -28,7 +32,8 @@ pkgs.writeShellApplication {
       -C "deploy-rs" \
       -f "$private_key"
 
-    sops encrypt \
+    sops --encrypt \
+      --filename-override "$encrypted_filename" \
       --input-type binary \
       --output-type binary \
       "$private_key" > "$encrypted_key"

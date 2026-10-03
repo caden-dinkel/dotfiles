@@ -126,6 +126,5 @@
           program = "${import ./scripts/create-deploy-key.nix { inherit pkgs; }}/bin/create-deploy-key";
         };
       }) inputs.nixpkgs.legacyPackages;
-
     };
 }
