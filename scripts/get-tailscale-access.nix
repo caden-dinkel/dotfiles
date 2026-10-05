@@ -1,6 +1,6 @@
 { pkgs, ... }:
 pkgs.writeShellApplication {
-  name = "create-tailscale-auth-key.nix";
+  name = "get-tailscale-access.nix";
   meta = {
     description = ''
       Script to get a temporary tailscale access key to modify auth keys.
