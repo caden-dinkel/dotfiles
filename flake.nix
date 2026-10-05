@@ -125,6 +125,10 @@
           type = "app";
           program = "${import ./scripts/create-deploy-key.nix { inherit pkgs; }}/bin/create-deploy-key";
         };
+        "get-tailscale-access" = {
+          type = "app";
+          program = "${import ./scripts/get-tailscale-access.nix { inherit pkgs; }}/bin/get-tailscale-access";
+        };
       }) inputs.nixpkgs.legacyPackages;
     };
 }
