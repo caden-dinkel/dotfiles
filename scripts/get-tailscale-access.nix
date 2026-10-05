@@ -1,13 +1,7 @@
 { pkgs, ... }:
 pkgs.writeShellApplication {
   name = "get-tailscale-access";
-  meta = {
-    description = ''
-      Script to get a temporary tailscale access key to modify auth keys.
-      Input: Tailscale client ID, Tailscale client secret.
-      Output: path to tmp file containing temporary access code.
-    '';
-  };
+
   runtimeInputs = [
     pkgs.curl
     pkgs.jq

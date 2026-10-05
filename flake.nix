@@ -124,10 +124,22 @@
         "create-deploy-key" = {
           type = "app";
           program = "${import ./scripts/create-deploy-key.nix { inherit pkgs; }}/bin/create-deploy-key";
+          meta = {
+            description = ''
+              Script to create a deploy ssh key for this flake.
+            '';
+          };
         };
         "get-tailscale-access" = {
           type = "app";
           program = "${import ./scripts/get-tailscale-access.nix { inherit pkgs; }}/bin/get-tailscale-access";
+          meta = {
+            description = ''
+              Script to get a temporary tailscale access key to modify auth keys.
+              Input: Tailscale client ID, Tailscale client secret.
+              Output: path to tmp file containing temporary access code.
+            '';
+          };
         };
       }) inputs.nixpkgs.legacyPackages;
     };

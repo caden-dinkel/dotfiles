@@ -1,11 +1,7 @@
 { pkgs, ... }:
 pkgs.writeShellApplication {
   name = "create-deploy-key";
-  meta = {
-    description = ''
-      Script to create a deploy ssh key for this flake.
-    '';
-  };
+
   runtimeInputs = [
     pkgs.sops
     pkgs.openssh
