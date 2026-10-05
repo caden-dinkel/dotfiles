@@ -2,6 +2,7 @@
   config,
   lib,
   pkgs,
+  deployPubKey,
   ...
 }:
 let
@@ -12,7 +13,9 @@ in
     enable = lib.mkEnableOption "Enable the user for deploy-rs.";
     sshKeys = lib.mkOption {
       type = lib.types.listOf lib.types.singleLineStr;
-      default = [ ];
+      default = [
+        deployPubKey
+      ];
       description = ''
         ssh keys to add to deploy user's authorized keys.
       '';
