@@ -130,14 +130,14 @@
             '';
           };
         };
-        "get-tailscale-access" = {
+        "get-tailscale-authkey" = {
           type = "app";
-          program = "${import ./scripts/get-tailscale-access.nix { inherit pkgs; }}/bin/get-tailscale-access";
+          program = "${import ./scripts/get-tailscale-authkey.nix { inherit pkgs; }}/bin/get-tailscale-access";
           meta = {
             description = ''
-              Script to get a temporary tailscale access key to modify auth keys.
+              Script to get a temporary tailscale authkey.
               Input: Tailscale client ID, Tailscale client secret.
-              Output: path to tmp file containing temporary access code.
+              Output: authkey to initialize machine into tailnet.
             '';
           };
         };
