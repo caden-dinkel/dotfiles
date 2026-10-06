@@ -2,14 +2,24 @@
   name,
   pkgs,
   home-manager,
+  sops-nix,
   ...
 }:
 {
+  time.timeZone = "America/Chicago";
   imports = [
     ../../modules/common.nix
     home-manager.darwinModules.home-manager
+    sops-nix.darwinModules.sops
+    ../../modules/sops.nix
     ../../modules/home.nix
+    ../../modules/tailscale.nix
   ];
+
+  myNetworking.tailscale = {
+    enable = true;
+    profile = "personal";
+  };
 
   users.users.${name} = {
     home = "/Users/${name}";
@@ -28,7 +38,7 @@
 
   nix.linux-builder = {
     enable = true;
-    package = pkgs.darwin.linux-builder-vz;
+    package = pkgs.darwin.linux-builder; # -vz; # Add vz back when package set is updated/build machine is up.
     systems = [
       "aarch64-linux"
       "x86_64-linux"

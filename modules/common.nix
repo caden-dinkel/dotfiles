@@ -14,7 +14,6 @@
   system.configurationRevision = self.rev or self.dirtyRev or null;
 
   environment.systemPackages = [
-    pkgs.age
     pkgs.git
   ];
 }

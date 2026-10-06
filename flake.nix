@@ -1,15 +1,15 @@
 {
   description = "Refactor of multi-system, multi-function flake.";
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05";
 
     nix-darwin = {
-      url = "github:nix-darwin/nix-darwin/master";
+      url = "github:nix-darwin/nix-darwin/nix-darwin-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
     home-manager = {
-      url = "github:nix-community/home-manager";
+      url = "github:nix-community/home-manager/release-26.05";
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
@@ -58,17 +58,18 @@
         email = "git@cdink.dev";
       };
 
-      # treefmt - Directly from docs-ish.
-      systems = [
+      supportedSystems = [
         "x86_64-linux"
         "aarch64-linux"
         "x86_64-darwin"
         "aarch64-darwin"
       ];
-      eachSystem = f: nixpkgs.lib.genAttrs systems (system: f nixpkgs.legacyPackages.${system});
+
+      eachSystem = f: nixpkgs.lib.genAttrs supportedSystems (system: f nixpkgs.legacyPackages.${system});
       treefmtEval = eachSystem (pkgs: treefmt-nix.lib.evalModule pkgs ./modules/treefmt.nix);
     in
     {
+
       formatter = eachSystem (pkgs: treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.wrapper);
 
       checks = eachSystem (pkgs: {
@@ -83,6 +84,7 @@
             git
             name
             home-manager
+            sops-nix
             ;
         };
         system = "aarch64-darwin";
@@ -99,6 +101,7 @@
             git
             name
             home-manager
+            sops-nix
             ;
         };
         system = "x86_64-linux";
@@ -108,15 +111,36 @@
         ];
       };
 
-      /*
-          nixosConfigurations.charlie = nixpkgs.lib.nixosSystem {
-          specialArgs = { inherit self inputs; };
-          system = "x86_64-linux";
-          modules = [
-        disko.nixosModules.disko
-        ./hosts/charlie
-          ];
+      nixosConfigurations.charlie = nixpkgs.lib.nixosSystem {
+        specialArgs = { inherit self inputs; };
+        system = "x86_64-linux";
+        modules = [
+          disko.nixosModules.disko
+          ./hosts/charlie
+        ];
+      };
+
+      apps = builtins.mapAttrs (system: pkgs: {
+        "create-deploy-key" = {
+          type = "app";
+          program = "${import ./scripts/create-deploy-key.nix { inherit pkgs; }}/bin/create-deploy-key";
+          meta = {
+            description = ''
+              Script to create a deploy ssh key for this flake.
+            '';
           };
-      */
+        };
+        "get-tailscale-authkey" = {
+          type = "app";
+          program = "${import ./scripts/get-tailscale-authkey.nix { inherit pkgs; }}/bin/get-tailscale-authkey";
+          meta = {
+            description = ''
+              Script to get a temporary tailscale authkey.
+              Input: Tailscale client ID, Tailscale client secret.
+              Output: authkey to initialize machine into tailnet.
+            '';
+          };
+        };
+      }) inputs.nixpkgs.legacyPackages;
     };
 }

@@ -2,10 +2,26 @@
   name,
   pkgs,
   git,
+  config,
+  lib,
+  home-manager,
   ...
 }:
 let
   myHomeDir = if pkgs.stdenv.hostPlatform.isLinux then "/home/${name}" else "/Users/${name}";
+  zshContent = ''
+    alias ll="ls -alF"
+  ''
+  + (
+    if pkgs.stdenv.hostPlatform.isLinux then
+      ''
+        alias rebuild="sudo nixos-rebuild switch --flake .#${config.networking.hostName}"
+      ''
+    else
+      ''
+        alias rebuild="sudo darwin-rebuild switch --flake .#${config.networking.hostName}"
+      ''
+  );
 in
 {
   home-manager.useGlobalPkgs = true;
@@ -14,13 +30,18 @@ in
   home-manager.users.${name} = {
     home.packages = [
       pkgs.tree
-      pkgs.tmux
       pkgs.ripgrep
       pkgs.bitwarden-desktop
       pkgs.helix
+      pkgs.dust
+
+      pkgs.spotify
 
       pkgs.nil
       pkgs.nixfmt
+    ]
+    ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
+      pkgs.freecad
     ];
     home.homeDirectory = myHomeDir;
     home.stateVersion = "26.05";
@@ -49,14 +70,20 @@ in
       };
     };
     programs.vscode = {
+      profiles.default = {
+        enableUpdateCheck = false;
+        enableExtensionUpdateCheck = false;
+        extensions = with pkgs.vscode-extensions; [
+          jnoortheen.nix-ide
+          rust-lang.rust-analyzer
+        ];
+      };
       enable = true;
       argvSettings = {
         enable-crash-reporter = false;
       };
       mutableExtensionsDir = false;
-      extensions = with pkgs.vscode-extensions; [
-        jnoortheen.nix-ide
-      ];
+
       profiles.${name}.userSettings = {
         "[nix]" = {
           "editor.tabSize" = 2;
@@ -78,21 +105,19 @@ in
         };
       };
     };
-    programs.claude-code = {
+    programs.direnv = {
       enable = true;
     };
-    programs.ncspot = {
+    programs.claude-code = {
       enable = true;
     };
     programs.obsidian = {
       enable = true;
     };
-    programs.firefox = {
+    programs.firefox = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
       enable = true;
     };
-    programs.zsh = {
-      enable = true;
-    };
+
     programs.starship = {
       enable = true;
     };
@@ -103,8 +128,16 @@ in
         "--cmd cd" # This replaces the cd command with zoxide
       ];
     };
-    programs.fzf = {
+    programs.zsh = {
       enable = true;
+      enableCompletion = true;
+      initContent = zshContent;
+    };
+    programs.tmux = {
+      enable = true;
+      extraConfig = ''
+        set-option -g default-shell ${pkgs.zsh}/bin/zsh
+      '';
     };
   };
 }

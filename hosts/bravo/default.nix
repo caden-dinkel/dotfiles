@@ -3,15 +3,26 @@
   name,
   pkgs,
   home-manager,
+  sops-nix,
   ...
 }:
 {
+  time.timeZone = "America/Chicago";
+
   imports = [
     ./hardware-configuration.nix
     ../../modules/common.nix
     home-manager.nixosModules.home-manager
+    sops-nix.nixosModules.sops
+    ../../modules/sops.nix
     ../../modules/home.nix
+    ../../modules/tailscale.nix
   ];
+
+  myNetworking.tailscale = {
+    enable = true;
+    profile = "personal";
+  };
 
   # Allows non-root to execute root commands using sudo
   security.sudo.enable = true;
@@ -26,8 +37,14 @@
       package = config.boot.kernelPackages.nvidiaPackages.stable;
       modesetting.enable = true;
       open = true;
+      powerManagement.enable = true;
+      powerManagement.finegrained = false;
     };
   };
+
+  boot.kernelParams = [
+    "nvidia.NVreg_PreserveVideoMemoryAllocation=1"
+  ];
 
   # Primary, secondary, ternary, ... naming scheme.
   disko.devices.disk.primary.device = "/dev/disk/by-label/nvme-eui.e8238fa6bf530001001b448b4c504ccd";
