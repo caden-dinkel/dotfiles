@@ -132,7 +132,9 @@
         };
         "get-tailscale-authkey" = {
           type = "app";
-          program = "${import ./scripts/get-tailscale-authkey.nix { inherit pkgs; }}/bin/get-tailscale-authkey";
+          program = "${
+            import ./scripts/get-tailscale-authkey.nix { inherit pkgs; }
+          }/bin/get-tailscale-authkey";
           meta = {
             description = ''
               Script to get a temporary tailscale authkey.
