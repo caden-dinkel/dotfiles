@@ -12,7 +12,7 @@ pkgs.writeShellApplication {
     client_id="$(cat /run/secrets/tailscale/client_id)"
     client_secret="$(cat /run/secrets/tailscale/client_secret)"
 
-    access_response="$(
+    if ! access_response="$(
       curl --fail --silent --show-error \
         --proto '=https' \
         --proto-redir '=https' \
@@ -24,11 +24,17 @@ pkgs.writeShellApplication {
         --data-urlencode "client_id=''${client_id}" \
         --data-urlencode "client_secret=''${client_secret}" \
         "https://api.tailscale.com/api/v2/oauth/token"
-    )"
+    )"; then
+      printf '%s\n' 'Tailscale access token request failed.' >&2
+      exit 1
+    fi
 
-    access_token="$(jq -er '.access_token' <<<"$access_response")"
+    if ! access_token="$(jq -er '.access_token' <<<"$access_response")"; then
+      printf '%s\n' 'Tailscale response did not contain an access token.' >&2
+      exit 1
+    fi
 
-    get_authkey_response="$(
+    if ! get_auth_key_response="$(
       curl --show-error \
         --proto '=https' \
         --proto-redir '=https' \
@@ -55,11 +61,16 @@ pkgs.writeShellApplication {
           "expirySeconds": 600
         }' \
         "https://api.tailscale.com/api/v2/tailnet/-/keys"
-    )"
+    )"; then
+      echo "Tailscale auth key request failed."
+      exit 1
+    fi
 
-    authkey="$(jq -er '.key' <<<"$get_authkey_response")"
+    if ! auth_key="$(jq -er '.key' <<<"$get_auth_key_response")"; then
+      printf '%s\n' 'Tailscale response did not contain an auth key.' >&2
+      exit 1
+    fi
 
-    echo "$authkey"
+    printf '%s\n' "$auth_key"
   '';
-
 }
