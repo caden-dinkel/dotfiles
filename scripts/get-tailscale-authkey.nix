@@ -13,7 +13,7 @@ pkgs.writeShellApplication {
     client_secret="$(cat /run/secrets/tailscale/client_secret)"
 
     if ! access_response="$(
-      curl --fail --silent --show-error \
+      curl --fail-with-body --silent --show-error \
         --proto '=https' \
         --proto-redir '=https' \
         --max-redirs 0 \
@@ -35,7 +35,7 @@ pkgs.writeShellApplication {
     fi
 
     if ! get_auth_key_response="$(
-      curl --show-error \
+      curl --fail-with-body --silent --show-error \
         --proto '=https' \
         --proto-redir '=https' \
         --max-redirs 0 \
