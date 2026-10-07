@@ -9,8 +9,16 @@ pkgs.writeShellApplication {
     set -euo pipefail
     umask 077
 
-    client_id="$(cat /run/secrets/tailscale/client_id)"
-    client_secret="$(cat /run/secrets/tailscale/client_secret)"
+    if [[ $# -ne 2 ]]; then
+      printf 'Usage: %s <client-id-file> <client-secret-file>\n' "$0" >&2
+      exit 2
+    fi
+
+    client_id_file="$1"
+    client_secret_file="$2"
+
+    client_id="$(cat "$client_id_file")"
+    client_secret="$(cat "$client_secret_file")"
 
     if ! access_response="$(
       curl --fail-with-body --silent --show-error \

@@ -8,10 +8,18 @@ in
   sops.age.keyFile = myHomeDir + "/.config/sops/age/keys.txt";
   sops.age.generateKey = false;
   sops.secrets = {
-    "tailscale/client_id" = { };
-    "tailscale/client_secret" = { };
+    tailscaleClientId = {
+      key = "tailscale/client_id";
+    };
+    tailscaleClientSecret = {
+      key = "tailscale/client_secret";
+    };
     "deploy-rs-key" = {
       sopsFile = ../secrets/deploy-rs-key;
+      format = "binary";
+    };
+    "bin-cache-key" = {
+      sopsFile = ../secrets/bin-cache-key;
       format = "binary";
     };
   };
