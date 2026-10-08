@@ -1,5 +1,4 @@
 1. Move age key to root space and change perms to 0600.
-2. Add secondary secrets directory for deployment ssh key.
 3. Figure out how to move majority of formatting into treefmt.nix.
 4. Figure out commands for deploy-rs.
 5. Set up check for deploy-rs, setup a microvm that is spun up and deployed to.
