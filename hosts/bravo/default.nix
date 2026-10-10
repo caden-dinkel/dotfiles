@@ -66,6 +66,9 @@
         cudaSupport = true;
       }
     );
+    plugins = [
+      pkgs.obs-studio-plugins.obs-pipewire-audio-capture
+    ];
   };
 
   # Primary, secondary, ternary, ... naming scheme.
@@ -135,7 +138,6 @@
       };
     };
   };
-  
 
   users.users.${name} = {
     isNormalUser = true;
