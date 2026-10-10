@@ -85,7 +85,7 @@ in
       };
       mutableExtensionsDir = false;
 
-      profiles.${name}.userSettings = {
+      profiles.default.userSettings = {
         "[nix]" = {
           "editor.tabSize" = 2;
         };
@@ -93,6 +93,7 @@ in
         "nix.enableLanguageServer" = true;
         "nix.serverPath" = "nil";
         "nix.formatterPath" = "nixfmt -";
+        "update.mode" = "none";
       };
     };
 
