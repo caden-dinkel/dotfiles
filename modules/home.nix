@@ -38,7 +38,7 @@ in
 
       pkgs.spotify
 
-      pkgs.nil
+      pkgs.nixd
       pkgs.nixfmt
     ]
     ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
@@ -85,14 +85,14 @@ in
       };
       mutableExtensionsDir = false;
 
+      # user specific definitions are buggy on darwin.
       profiles.default.userSettings = {
         "[nix]" = {
           "editor.tabSize" = 2;
         };
         "files.autoSave" = "off";
         "nix.enableLanguageServer" = true;
-        "nix.serverPath" = "nil";
-        "nix.formatterPath" = "nixfmt -";
+        "nix.serverPath" = "nixd";
         "update.mode" = "none";
       };
     };
