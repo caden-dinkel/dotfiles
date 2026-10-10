@@ -94,6 +94,8 @@ in
         "nix.enableLanguageServer" = true;
         "nix.serverPath" = "nixd";
         "update.mode" = "none";
+        "editor.formatOnSave" = true;
+        "nix.formatterPath" = "nixfmt";
       };
     };
 
