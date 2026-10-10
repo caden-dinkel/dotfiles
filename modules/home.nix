@@ -34,6 +34,7 @@ in
       pkgs.bitwarden-desktop
       pkgs.helix
       pkgs.dust
+      pkgs.pciutils
 
       pkgs.spotify
 
@@ -120,6 +121,7 @@ in
     };
     programs.firefox = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
       enable = true;
+
     };
 
     programs.starship = {

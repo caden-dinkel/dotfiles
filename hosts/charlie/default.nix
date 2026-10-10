@@ -86,12 +86,4 @@
       };
     };
   };
-
-  # primary device holds OS.
-  # secondary device holds store backups/snapshots?
-
-  services.nix-serve = {
-    enable = true;
-    package = pkgs.nix-serve-ng;
-  };
 }

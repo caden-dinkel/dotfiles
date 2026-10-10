@@ -1,9 +1,9 @@
 { pkgs, ... }:
 {
   environment.systemPackages = [
-    (pkgs.prismLauncher.override {
+    (pkgs.prismlauncher.override {
       jdks = [
-        pkgs.termurin-bin-21
+        pkgs.temurin-bin-21
       ];
     })
   ];

@@ -17,6 +17,7 @@
     ../../modules/sops.nix
     ../../modules/home.nix
     ../../modules/tailscale.nix
+    ../../modules/minecraft.nix
   ];
 
   myNetworking.tailscale = {
@@ -39,12 +40,33 @@
       open = true;
       powerManagement.enable = true;
       powerManagement.finegrained = false;
+      nvidiaSettings = true;
     };
   };
+
+  boot.initrd.availableKernelModules = [
+    "nvidia_drm"
+    "nvidia_modeset"
+    "nvidia"
+    "nvidia_uvm"
+  ];
+
+  boot.blacklistedKernelModules = [ "nouveau" ];
 
   boot.kernelParams = [
     "nvidia.NVreg_PreserveVideoMemoryAllocation=1"
   ];
+
+  services.xserver.videoDrivers = [ "nvidia" ];
+
+  programs.obs-studio = {
+    enable = true;
+    package = (
+      pkgs.obs-studio.override {
+        cudaSupport = true;
+      }
+    );
+  };
 
   # Primary, secondary, ternary, ... naming scheme.
   disko.devices.disk.primary.device = "/dev/disk/by-label/nvme-eui.e8238fa6bf530001001b448b4c504ccd";
@@ -113,6 +135,7 @@
       };
     };
   };
+  
 
   users.users.${name} = {
     isNormalUser = true;
