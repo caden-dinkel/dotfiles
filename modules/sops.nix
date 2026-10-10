@@ -18,9 +18,11 @@ in
       sopsFile = ../secrets/deploy-rs-key;
       format = "binary";
     };
+    /*
     "bin-cache-key" = {
       sopsFile = ../secrets/bin-cache-key;
       format = "binary";
     };
+    */
   };
 }

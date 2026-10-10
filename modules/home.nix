@@ -105,9 +105,13 @@ in
         };
       };
     };
+    
     programs.direnv = {
       enable = true;
+      enableZshIntegration = true; # Or enableZshIntegration / enableFishIntegration
+      nix-direnv.enable = true;
     };
+
     programs.claude-code = {
       enable = true;
     };
