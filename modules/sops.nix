@@ -19,10 +19,10 @@ in
       format = "binary";
     };
     /*
-    "bin-cache-key" = {
-      sopsFile = ../secrets/bin-cache-key;
-      format = "binary";
-    };
+      "bin-cache-key" = {
+        sopsFile = ../secrets/bin-cache-key;
+        format = "binary";
+      };
     */
   };
 }

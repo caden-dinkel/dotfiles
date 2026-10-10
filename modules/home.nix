@@ -105,7 +105,7 @@ in
         };
       };
     };
-    
+
     programs.direnv = {
       enable = true;
       enableZshIntegration = true; # Or enableZshIntegration / enableFishIntegration
