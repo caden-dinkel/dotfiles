@@ -58,6 +58,8 @@
         email = "git@cdink.dev";
       };
 
+      binaryCache = "";
+
       supportedSystems = [
         "x86_64-linux"
         "aarch64-linux"
@@ -140,6 +142,15 @@
               Script to get a temporary tailscale authkey.
               Input: Tailscale client ID, Tailscale client secret.
               Output: authkey to initialize machine into tailnet.
+            '';
+          };
+        };
+        "create-nix-cache-key" = {
+          type = "app";
+          program = "${import ./scripts/create-nix-cache-key.nix { inherit pkgs; }}/bin/create-nix-cache-key";
+          meta = {
+            description = ''
+              Script to create a binary cache signing key for this flake.
             '';
           };
         };
