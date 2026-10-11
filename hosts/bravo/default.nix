@@ -18,6 +18,7 @@
     ../../modules/home.nix
     ../../modules/tailscale.nix
     ../../modules/minecraft.nix
+    ../../modules/state-version.nix
   ];
 
   myNetworking.tailscale = {
@@ -27,7 +28,6 @@
 
   # Allows non-root to execute root commands using sudo
   security.sudo.enable = true;
-  system.stateVersion = "26.05";
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   networking.hostName = "bravo";

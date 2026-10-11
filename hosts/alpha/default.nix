@@ -14,6 +14,7 @@
     ../../modules/sops.nix
     ../../modules/home.nix
     ../../modules/tailscale.nix
+    ../../modules/state-version.nix
   ];
 
   myNetworking.tailscale = {
@@ -25,7 +26,6 @@
     home = "/Users/${name}";
   };
 
-  system.stateVersion = 6;
   networking.hostName = "alpha";
   nixpkgs.hostPlatform = "aarch64-darwin";
   security.pam.services.sudo_local = {
