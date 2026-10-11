@@ -37,7 +37,7 @@ in
 
       pkgs.spotify
 
-      pkgs.nixd
+      pkgs.nil
       pkgs.nixfmt
     ]
     ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
@@ -91,7 +91,7 @@ in
         };
         "files.autoSave" = "off";
         "nix.enableLanguageServer" = true;
-        "nix.serverPath" = "nixd";
+        "nix.serverPath" = "nil";
         "update.mode" = "none";
       };
     };
