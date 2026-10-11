@@ -6,7 +6,7 @@
     ../../modules/common.nix
     ../../modules/state-version.nix
   ];
-  
+
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   networking.hostName = "charlie";

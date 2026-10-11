@@ -1,7 +1,7 @@
 { pkgs, ... }:
-let 
+let
   keyname = "cache.domain-1"; # dummy for now, looking to automate.
-in 
+in
 pkgs.writeShellApplication {
   name = "create-nix-cache-key";
 
@@ -23,7 +23,7 @@ pkgs.writeShellApplication {
     trap 'rm -rf "$tempdir"' EXIT
 
     private_key="$tempdir/nix-cache-key"
-    
+
     nix-store --generate-binary-cache-key ${keyname} "$private_key" "$private_key.pub" \
       --quiet
 
