@@ -143,6 +143,15 @@
             '';
           };
         };
+        "create-nix-cache-key" = {
+          type = "app";
+          program = "${import ./scripts/create-nix-cache-key.nix { inherit pkgs; }}/bin/create-nix-cache-key";
+          meta = {
+            description = ''
+              Script to create a binary cache signing key for this flake.
+            '';
+          };
+        };
       }) inputs.nixpkgs.legacyPackages;
     };
 }
