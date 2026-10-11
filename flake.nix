@@ -60,6 +60,8 @@
 
       binaryCache = "";
 
+      tailscaleDomain = "";
+
       supportedSystems = [
         "x86_64-linux"
         "aarch64-linux"
@@ -120,6 +122,17 @@
           disko.nixosModules.disko
           ./hosts/charlie
         ];
+      };
+
+      deploy.nodes.charlie = {
+        hostname = "charlie.${tailscaleDomain}";
+        sshUser = "deploy";
+        sshOpts = [ "-i" "/run/secrets/deploy-rs-key" ]
+        # This private ssh key (above) is decrypted at runtime by sops-nix
+        # I can assume that this is the case, and try to reference /run/secrets/deploy-rs-key
+        profiles.system = {
+          path = deploy-rs.lib.x86_linux.activate.nixos self.nixosConfigurations.charlie;
+        };
       };
 
       apps = builtins.mapAttrs (system: pkgs: {

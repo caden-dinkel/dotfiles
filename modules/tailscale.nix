@@ -57,6 +57,10 @@ in
       }
       // lib.optionalAttrs (cfg.profile == "server") {
         authKeyFile = cfg.authKeyFile;
+        # This is dependent on deploy-user.nix
+        extraUpFlags = [
+          "--ssh=false"
+        ];
       };
   };
 }
