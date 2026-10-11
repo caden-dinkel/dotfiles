@@ -1,11 +1,12 @@
 # This device will be the binary cache.
-{ config, pkgs, ... }: {
+{ config, ... }: {
   time.timeZone = "America/Chicago";
 
   imports = [
     ../../modules/common.nix
+    ../../modules/state-version.nix
   ];
-  system.stateVersion = "26.05";
+
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   networking.hostName = "charlie";

@@ -1,26 +1,25 @@
 {
   config,
   lib,
-  deployPubKey,
   ...
 }:
 let
   cfg = config.myUsers.deploy;
+  deployPubKeyPath = ../secrets/deploy-rs-key.pub;
 in
 {
   options.myUsers.deploy = {
     enable = lib.mkEnableOption "Enable the user for deploy-rs.";
-    sshKeys = lib.mkOption {
-      type = lib.types.listOf lib.types.singleLineStr;
+    sshKeyFiles = lib.mkOption {
+      type = lib.types.listOf lib.types.path;
       default = [
-        deployPubKey
+        deployPubKeyPath
       ];
       description = ''
-        ssh keys to add to deploy user's authorized keys.
+        Paths to ssh keys to add to deploy user's authorized keys.
       '';
       example = [
-        "ssh-rsa AAAAB3NzaC1yc2etc/etc/etcjwrsh8e596z6J0l7 example@host"
-        "ssh-ed25519 AAAAC3NzaCetcetera/etceteraJZMfk3QPfQ foo@bar"
+        ../secrets/sshkey.pub
       ];
     };
   };
@@ -29,10 +28,10 @@ in
     users.users.deploy = {
       description = "Deployment user for deploy-rs.";
       group = "deploy";
-      openssh.authorizedKeys.keys = cfg.sshKeys;
+      openssh.authorizedKeys.keyFiles = cfg.sshKeyFiles;
     };
     # Restricts networking for ssh-ing into deploy user to tailscale interfaces.
-    # Add an option to pull this from. (maybe a myssh.interface)
+    # Add an option to pull this from (maybe a myssh.ipRange)?
     services.openssh = {
       extraConfig = ''
         Match Address 100.64.0.0/10
@@ -41,17 +40,18 @@ in
           DenyUsers deploy
       '';
     };
-  };
-}
 
-/*
-  users.groups.deploy = { };
-  users.users.deploy = {
-    description = "Deployment User for deploy-rs";
-    group = "deploy";
-    createHome = false;
-    openssh.authorizedKeys.keys = [
-
+    # Temporary until specific commands are known.
+    security.sudo.extraRules = [
+      {
+        users = [ "deploy" ];
+        commands = [
+          {
+            command = "ALL";
+            options = [ "NOPASSWD" ];
+          }
+        ];
+      }
     ];
   };
-*/
+}
