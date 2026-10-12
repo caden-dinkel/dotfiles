@@ -5,12 +5,28 @@
   imports = [
     ../../modules/common.nix
     ../../modules/state-version.nix
+    ../../modules/tailscale.nix
+    ../../modules/deploy-user.nix
   ];
+
+  myNetworking.tailscale = {
+    enable = true;
+    profile = "server";
+    authKeyFile = /etc/tailscale/authkey;
+  };
+
+  myUsers.deploy = {
+    enable = true;
+    # Uses default ssh key.
+  };
 
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
+
   networking.hostName = "charlie";
+
   nixpkgs.hostPlatform = "x86_64-linux";
+
   hardware = {
     graphics.enable = true;
     nvidia = {
@@ -19,6 +35,7 @@
       open = true;
     };
   };
+
   disko.devices.disk.primary.device = "/dev/disk/by-id/nvme-eui.002538b971031fda";
   disko.devices.disk.secondary.device = "/dev/disk/by-id/wwn-0x5000cca8d8ec939a";
 
