@@ -42,6 +42,7 @@ in
     };
 
     # Temporary until specific commands are known.
+    security.sudo.enable = true;
     security.sudo.extraRules = [
       {
         users = [ "deploy" ];

@@ -7,6 +7,7 @@
     ../../modules/state-version.nix
     ../../modules/tailscale.nix
     ../../modules/deploy-user.nix
+    ../../modules/server.nix
   ];
 
   myNetworking.tailscale = {
@@ -33,12 +34,50 @@
       package = config.boot.kernelPackages.nvidiaPackages.legacy_580;
       modesetting.enable = true;
       open = true;
+      powerManagement = {
+        enable = true;
+        finegrained = true; 
+      };
     };
   };
+
+  boot.blacklistedKernelModules = [ "nouveau" ];
+  boot.kernelParams = [
+    "nvidia.NVreg_PreserveVideoMemoryAllocation=1"
+  ];
 
   disko.devices.disk.primary.device = "/dev/disk/by-id/nvme-eui.002538b971031fda";
   disko.devices.disk.secondary.device = "/dev/disk/by-id/wwn-0x5000cca8d8ec939a";
 
+  disko.devices.secondary = {
+    type = "disk";
+    content = {
+      type = "disk";
+      partitions = {
+        backups = {
+        size = "100%";
+        content = {
+          type = "btrfs";
+          subvolumes = {
+            "/backups" = {
+              mountpoint = "/backups";
+              mountOptions = [
+      "compress=zstd"
+      "noatime"
+    ];
+            };
+            "/backups/root" = {
+
+            };
+            "/backups/server_data" = {
+
+            };
+          };
+        };
+        };
+      };
+    };
+  };
   disko.devices.disk.primary = {
     type = "disk";
     content = {
@@ -78,10 +117,6 @@
                   "compress=zstd"
                   "noatime"
                 ];
-              };
-              "/home" = {
-                mountOptions = [ "compress=zstd" ];
-                mountpoint = "/home";
               };
               "/nix" = {
                 mountOptions = [

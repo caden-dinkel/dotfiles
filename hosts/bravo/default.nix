@@ -17,7 +17,7 @@
     ../../modules/sops.nix
     ../../modules/home.nix
     ../../modules/tailscale.nix
-    ../../modules/minecraft.nix
+    ../../modules/minecraft-client.nix
     ../../modules/state-version.nix
   ];
 
