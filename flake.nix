@@ -150,9 +150,8 @@
           inherit
             pkgs
             system
-            self
-            nixos-anywhere
-            ;
+            self;
+            nixos-anywhere = inputs.nixos-anywhere.packages.${system}.default;
         };
       }) inputs.nixpkgs.legacyPackages;
     };
