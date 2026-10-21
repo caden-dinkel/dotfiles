@@ -33,6 +33,11 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
+    microvm = {
+      url = "github:microvm-nix/microvm.nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     impermanence.url = "github:nix-community/impermanence";
 
     deploy-rs.url = "github:serokell/deploy-rs";
@@ -49,6 +54,7 @@
       impermanence,
       deploy-rs,
       treefmt-nix,
+      microvm,
       ...
     }:
     let
@@ -77,6 +83,25 @@
       checks = eachSystem (pkgs: {
         formatting = treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.check self;
       });
+
+      nixosConfigurations.microvm = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        modules = [
+          microvm.nixosModules.microvm
+          {
+            networking.hostName = "microvm";
+            system.stateVersion = "26.05";
+            microvm.hypervisor = "qemu";
+            microvm.interfaces = [
+              {
+                type = "tap";
+                id = "vm-eth";
+                mac = "ea:02:65:5a:52:61";
+              }
+            ];
+          }
+        ];
+      };
 
       darwinConfigurations.alpha = nix-darwin.lib.darwinSystem {
         specialArgs = {
