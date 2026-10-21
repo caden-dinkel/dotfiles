@@ -19,7 +19,7 @@
   myNetworking.tailscale = {
     enable = true;
     profile = "server";
-    authKeyFile = /etc/tailscale/authkey;
+    authKeyFile = "/etc/tailscale/authkey";
   };
 
   myUsers.deploy = {
