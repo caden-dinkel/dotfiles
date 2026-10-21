@@ -145,6 +145,15 @@
         "get-tailscale-authkey" = import ./scripts/get-tailscale-authkey.nix { inherit pkgs; };
 
         "create-nix-cache-key" = import ./scripts/create-nix-cache-key.nix { inherit pkgs; };
+
+        "provision-new-machine" = import ./scripts/provision-new-machine.nix {
+          inherit
+            pkgs
+            system
+            self
+            nixos-anywhere
+            ;
+        };
       }) inputs.nixpkgs.legacyPackages;
     };
 }
