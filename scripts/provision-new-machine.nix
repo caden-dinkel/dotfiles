@@ -22,13 +22,15 @@ pkgs.writeShellApplication {
     umask 077
 
     if [[ "$#" -ne 3 ]]; then
-      echo "Usage: provision-new-machine <machine_name> <target_ip> <access_user>" >&2
+      echo "Usage: provision-new-machine <machine_name> <target_ip> <access_user> <ts_client_id_file> <ts_client_secret_file>" >&2
       exit 2
     fi
 
     machine_name="$1"
     target_ip="$2"
     access_user="$3"
+    ts_client_id_file="$4"
+    ts_client_secret="$5"
 
 
     repo_root="$(git rev-parse --show-toplevel)"
@@ -51,7 +53,7 @@ pkgs.writeShellApplication {
 
     mkdir -p "$tempdir$(dirname "$tailscale_authkey_file")"
 
-    get-tailscale-authkey > "$tempdir$tailscale_authkey_file"
+    get-tailscale-authkey "$ts_client_id_file" "$ts_client_secret" > "$tempdir$tailscale_authkey_file"
 
     nixos-anywhere \
     --generate-hardware-config nixos-generate-config "$repo_root/hosts/$machine_name/hardware-configuration.nix" \
