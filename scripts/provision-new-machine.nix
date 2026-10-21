@@ -14,7 +14,7 @@ pkgs.writeShellApplication {
     pkgs.nix
   ];
   # The ssh key here is dependent on the prior unkown setup.
-  # There may not be an ssh key
+  # There was not an ssh key
   # However, in cases where a system already within the flake is being reprovisioned, it may be possible?
   # Could allow for some more impermanent setups.
   text = ''
