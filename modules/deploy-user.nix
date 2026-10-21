@@ -33,6 +33,8 @@ in
     };
     # Restricts networking for ssh-ing into deploy user to tailscale interfaces.
     # Add an option to pull this from (maybe a myssh.ipRange)?
+    # Temporary comment until machine is connected.
+    /*
     services.openssh = {
       extraConfig = ''
         Match Address 100.64.0.0/10
@@ -41,6 +43,7 @@ in
           DenyUsers deploy
       '';
     };
+    */
 
     # Temporary until specific commands are known.
     security.sudo.enable = true;

@@ -43,25 +43,23 @@ in
     };
   };
 
-  config = lib.mkIf cfg.enable {
-    # In the future, I can make my own package abstraction, and place them accordingly in user/home locations.
+    config = lib.mkIf cfg.enable {
     environment = lib.mkIf (cfg.profile == "personal" && pkgs.stdenv.hostPlatform.isDarwin) {
       systemPackages = [
         pkgs.tailscale-gui
       ];
     };
 
-    services.tailscale =
-      lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
-        enable = true;
-      }
-      // lib.optionalAttrs (cfg.profile == "server") {
-        authKeyFile = cfg.authKeyFile;
-        # This is dependent on deploy-user.nix
-        extraUpFlags = [
-          "--ssh=false"
-          "--advertise-tags=tag:provisioned-machine"
-        ];
-      };
+    services.tailscale = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
+      enable = true;
+      
+      # Nest the server-specific settings cleanly within the Linux block
+      authKeyFile = if cfg.profile == "server" then cfg.authKeyFile else null;
+      
+      extraUpFlags = if cfg.profile == "server" then [
+        "--ssh=false"
+        "--advertised-tags=tag:provisioned-machine"
+      ] else [];
+    };
   };
 }

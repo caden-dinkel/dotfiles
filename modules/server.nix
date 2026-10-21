@@ -12,6 +12,10 @@
       CPU_ENERGY_PERF_POLICY_ON_AC = "balance_performance";
     };
   };
+  services.openssh = {
+    enable = true;
+  };
+  networking.firewall.allowedTCPPorts = [ 22 ];
   services.logind.settings.Login = {
     HandleLidSwitch = "ignore";
     HandleLidSwitchExternalPower = "ignore";
