@@ -9,13 +9,24 @@ pkgs.writeShellApplication {
     set -euo pipefail
     umask 077
 
-    if [[ $# -ne 2 ]]; then
-      printf 'Usage: %s <client-id-file> <client-secret-file>\n' "$0" >&2
+    if [[ $# -lt 2 || $# -gt 3 ]]; then
+      printf 'Usage: %s <client-id-file> <client-secret-file> [--test]\n' "$0" >&2
       exit 2
     fi
 
     client_id_file="$1"
     client_secret_file="$2"
+    TEST=false
+
+    if [[ $# -eq 3 ]]; then
+      if [[ "$3" != "--test" ]]; then
+        printf 'Error: Unknown argument: %s\n' "$3" >&2
+        printf 'Usage: %s <client-id-file> <client-secret-file> [--test]\n' "$0" >&2
+        exit 2
+      fi
+      TEST=true
+    fi
+
 
     client_id="$(cat "$client_id_file")"
     client_secret="$(cat "$client_secret_file")"
@@ -60,7 +71,7 @@ pkgs.writeShellApplication {
             "devices": {
               "create": {
                 "reusable": true,
-                "ephemeral": false,
+                "ephemeral": $TEST,
                 "preauthorized": true,
                 "tags": [
                   "tag:provisioned-machine"

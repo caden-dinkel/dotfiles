@@ -95,8 +95,8 @@
             microvm.interfaces = [
               {
                 type = "tap";
-                id = "vm-eth";
-                mac = "ea:02:65:5a:52:61";
+                id = "enp5s0";
+                mac = "46:9e:18:1a:74:b5";
               }
             ];
           }
