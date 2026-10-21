@@ -82,5 +82,7 @@ pkgs.writeShellApplication {
     fi
 
     printf '%s\n' "$get_auth_key_response"
+
+    printf '%s\n' "$auth_key"
   '';
 }
