@@ -29,6 +29,7 @@ in
       description = "Deployment user for deploy-rs.";
       group = "deploy";
       openssh.authorizedKeys.keyFiles = cfg.sshKeyFiles;
+      isNormalUser = true;
     };
     # Restricts networking for ssh-ing into deploy user to tailscale interfaces.
     # Add an option to pull this from (maybe a myssh.ipRange)?

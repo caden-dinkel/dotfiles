@@ -36,7 +36,7 @@
       open = true;
       powerManagement = {
         enable = true;
-        finegrained = true; 
+        finegrained = true;
       };
     };
   };
@@ -49,31 +49,31 @@
   disko.devices.disk.primary.device = "/dev/disk/by-id/nvme-eui.002538b971031fda";
   disko.devices.disk.secondary.device = "/dev/disk/by-id/wwn-0x5000cca8d8ec939a";
 
-  disko.devices.secondary = {
+  disko.devices.disk.secondary = {
     type = "disk";
     content = {
-      type = "disk";
+      type = "gpt";
       partitions = {
         backups = {
-        size = "100%";
-        content = {
-          type = "btrfs";
-          subvolumes = {
-            "/backups" = {
-              mountpoint = "/backups";
-              mountOptions = [
-      "compress=zstd"
-      "noatime"
-    ];
-            };
-            "/backups/root" = {
+          size = "100%";
+          content = {
+            type = "btrfs";
+            subvolumes = {
+              "/backups" = {
+                mountpoint = "/backups";
+                mountOptions = [
+                  "compress=zstd"
+                  "noatime"
+                ];
+              };
+              "/backups/root" = {
 
-            };
-            "/backups/server_data" = {
+              };
+              "/backups/server_data" = {
 
+              };
             };
           };
-        };
         };
       };
     };

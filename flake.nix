@@ -140,37 +140,11 @@
       };
 
       packages = builtins.mapAttrs (system: pkgs: {
-        "create-deploy-key" = {
-          type = "app";
-          program = "${import ./scripts/create-deploy-key.nix { inherit pkgs; }}/bin/create-deploy-key";
-          meta = {
-            description = ''
-              Script to create a deploy ssh key for this flake.
-            '';
-          };
-        };
-        "get-tailscale-authkey" = {
-          type = "app";
-          program = "${
-            import ./scripts/get-tailscale-authkey.nix { inherit pkgs; }
-          }/bin/get-tailscale-authkey";
-          meta = {
-            description = ''
-              Script to get a temporary tailscale authkey.
-              Input: Tailscale client ID, Tailscale client secret.
-              Output: authkey to initialize machine into tailnet.
-            '';
-          };
-        };
-        "create-nix-cache-key" = {
-          type = "app";
-          program = "${import ./scripts/create-nix-cache-key.nix { inherit pkgs; }}/bin/create-nix-cache-key";
-          meta = {
-            description = ''
-              Script to create a binary cache signing key for this flake.
-            '';
-          };
-        };
+        "create-deploy-key" = import ./scripts/create-deploy-key.nix { inherit pkgs; };
+
+        "get-tailscale-authkey" = import ./scripts/get-tailscale-authkey.nix { inherit pkgs; };
+
+        "create-nix-cache-key" = import ./scripts/create-nix-cache-key.nix { inherit pkgs; };
       }) inputs.nixpkgs.legacyPackages;
     };
 }

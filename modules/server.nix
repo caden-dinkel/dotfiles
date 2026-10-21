@@ -1,4 +1,4 @@
-{
+{ pkgs, ... }: {
   services.thermald = {
     enable = true;
   };
@@ -21,7 +21,7 @@
 
   environment.systemPackages = with pkgs; [
     lm_sensors # Provides the 'sensors' command to check core temps
-    powertop   # Analyzes power drain
-    htop       # Quick process monitoring
+    powertop # Analyzes power drain
+    htop # Quick process monitoring
   ];
 }

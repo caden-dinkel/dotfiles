@@ -7,6 +7,7 @@
     bindAddress = "127.0.0.1";
     secretKeyFile = null; # config.sops.secrets."bin-cache-key".path;
   };
+
   services.nginx = {
     enable = true;
     recommendedProxySettings = true;
