@@ -21,7 +21,7 @@ pkgs.writeShellApplication {
     set -euo pipefail
     umask 077
 
-    if [[ "$#" -ne 4 ]]; then
+    if [[ "$#" -ne 3 ]]; then
       echo "Usage: provision-new-machine <machine_name> <target_ip> <access_user>" >&2
       exit 2
     fi
