@@ -43,7 +43,7 @@ in
     };
   };
 
-    config = lib.mkIf cfg.enable {
+  config = lib.mkIf cfg.enable {
     environment = lib.mkIf (cfg.profile == "personal" && pkgs.stdenv.hostPlatform.isDarwin) {
       systemPackages = [
         pkgs.tailscale-gui
@@ -52,14 +52,18 @@ in
 
     services.tailscale = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
       enable = true;
-      
+
       # Nest the server-specific settings cleanly within the Linux block
       authKeyFile = if cfg.profile == "server" then cfg.authKeyFile else null;
-      
-      extraUpFlags = if cfg.profile == "server" then [
-        "--ssh=false"
-        "--advertised-tags=tag:provisioned-machine"
-      ] else [];
+
+      extraUpFlags =
+        if cfg.profile == "server" then
+          [
+            "--ssh=false"
+            "--advertised-tags=tag:provisioned-machine"
+          ]
+        else
+          [ ];
     };
   };
 }

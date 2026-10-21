@@ -58,8 +58,6 @@
         email = "git@cdink.dev";
       };
 
-      binaryCache = "";
-
       tailscaleDomain = "";
 
       supportedSystems = [
