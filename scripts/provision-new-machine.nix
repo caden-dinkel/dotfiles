@@ -21,6 +21,12 @@ pkgs.writeShellApplication {
     set -euo pipefail
     umask 077
 
+    if [[ -v SSHPASS ]]; then
+      echo "SSHPASS is present in the script environment"
+    else
+      echo "SSHPASS is missing from the script environment" >&2
+    fi
+
     if [[ "$#" -ne 5 ]]; then
       echo "Usage: provision-new-machine <machine_name> <target_ip> <access_user> <ts_client_id_file> <ts_client_secret_file>" >&2
       exit 2
