@@ -16,7 +16,7 @@ pkgs.writeShellApplication {
 
     client_id_file="$1"
     client_secret_file="$2"
-    TEST=false
+    test="false"
 
     if [[ $# -eq 3 ]]; then
       if [[ "$3" != "--test" ]]; then
@@ -24,7 +24,7 @@ pkgs.writeShellApplication {
         printf 'Usage: %s <client-id-file> <client-secret-file> [--test]\n' "$0" >&2
         exit 2
       fi
-      TEST=true
+      test="true"
     fi
 
 
@@ -55,6 +55,9 @@ pkgs.writeShellApplication {
       exit 1
     fi
 
+
+
+
     if ! get_auth_key_response="$(
       curl --fail-with-body --silent --show-error \
         --proto '=https' \
@@ -64,27 +67,29 @@ pkgs.writeShellApplication {
         --request POST \
         --header 'Content-Type: application/json' \
         --header "Authorization: Bearer $access_token" \
-        --data '{
-          "keyType": "auth",
-          "description": "Provision new machine",
-          "capabilities": {
-            "devices": {
-              "create": {
-                "reusable": true,
-                "ephemeral": ''${TEST},
-                "preauthorized": true,
-                "tags": [
-                  "tag:provisioned-machine"
-                ]
-              }
+        --data @- \
+        "https://api.tailscale.com/api/v2/tailnet/-/keys" <<EOF
+      {
+        "keyType": "auth",
+        "description": "Provision new machine",
+        "capabilities": {
+          "devices": {
+            "create": {
+              "reusable": true,
+              "ephemeral": ''${test},
+              "preauthorized": true,
+              "tags": [
+                "tag:provisioned-machine"
+              ]
             }
-          },
-          "expirySeconds": 600
-        }' \
-        "https://api.tailscale.com/api/v2/tailnet/-/keys"
-    )"; then
-      echo "Tailscale auth key request failed."
-      exit 1
+          }
+        },
+        "expirySeconds": 600
+      }
+      EOF
+      )"; then
+        printf '%s\n' 'Tailscale auth key request failed.' >&2
+        exit 1
     fi
 
     if ! auth_key="$(jq -er '.key' <<<"$get_auth_key_response")"; then

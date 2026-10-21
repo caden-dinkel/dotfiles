@@ -1,0 +1,1 @@
+[ ] - Start moving inline bash scripts into .sh files and using builtins.readFile
