@@ -84,12 +84,12 @@
         formatting = treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.check self;
       });
 
-      nixosConfigurations.microvm = nixpkgs.lib.nixosSystem {
+      nixosConfigurations.my-microvm = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
           microvm.nixosModules.microvm
           {
-            networking.hostName = "microvm";
+            networking.hostName = "my-microvm";
             system.stateVersion = "26.05";
             microvm.hypervisor = "qemu";
             microvm.interfaces = [
