@@ -60,6 +60,7 @@ in
         # This is dependent on deploy-user.nix
         extraUpFlags = [
           "--ssh=false"
+          "--advertise-tags=tag:provisioned-machine"
         ];
       };
   };
