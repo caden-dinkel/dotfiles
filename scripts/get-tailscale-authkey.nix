@@ -71,7 +71,7 @@ pkgs.writeShellApplication {
             "devices": {
               "create": {
                 "reusable": true,
-                "ephemeral": $TEST,
+                "ephemeral": ''${TEST},
                 "preauthorized": true,
                 "tags": [
                   "tag:provisioned-machine"

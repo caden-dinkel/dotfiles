@@ -178,9 +178,9 @@
               ;
             nixos-anywhere = inputs.nixos-anywhere.packages.${system}.default;
           };
-        }) inputs.nixpkgs.legacyPackages
-        // {
+        }) inputs.nixpkgs.legacyPackages;
+        /*// {
           x86_64-linux.my-microvm = self.nixosConfigurations.my-microvm.config.microvm.declaredRunner;
-        };
+        };*/
     };
 }
