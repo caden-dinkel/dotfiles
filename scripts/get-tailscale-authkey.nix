@@ -31,6 +31,8 @@ pkgs.writeShellApplication {
         --data-urlencode "grant_type=client_credentials" \
         --data-urlencode "client_id=''${client_id}" \
         --data-urlencode "client_secret=''${client_secret}" \
+        --data-urlencode "scope=auth_keys" \
+        --data-urlencode "" \
         "https://api.tailscale.com/api/v2/oauth/token"
     )"; then
       printf '%s\n' 'Tailscale access token request failed.' >&2
@@ -79,6 +81,6 @@ pkgs.writeShellApplication {
       exit 1
     fi
 
-    printf '%s\n' "$auth_key"
+    printf '%s\n' "$get_auth_key_response"
   '';
 }
