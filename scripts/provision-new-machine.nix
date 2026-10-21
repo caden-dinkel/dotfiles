@@ -22,14 +22,14 @@ pkgs.writeShellApplication {
     umask 077
 
     if [[ "$#" -ne 4 ]]; then
-      echo "Usage: provision-new-machine <machine_name> <target_ip> <access_user> <path-to-private-key>" >&2
+      echo "Usage: provision-new-machine <machine_name> <target_ip> <access_user>" >&2
       exit 2
     fi
 
     machine_name="$1"
     target_ip="$2"
     access_user="$3"
-    private_key="$4"
+
 
     repo_root="$(git rev-parse --show-toplevel)"
 
@@ -58,6 +58,6 @@ pkgs.writeShellApplication {
     --flake "$repo_root#$machine_name" \
     --target-host "$access_user@$target_ip" \
     --extra-files "$tempdir" \
-    -i "$private_key"
+    --env-password
   '';
 }
