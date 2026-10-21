@@ -8,6 +8,8 @@
     ../../modules/tailscale.nix
     ../../modules/deploy-user.nix
     ../../modules/server.nix
+    # This is required so nixos-anywhere can link to the one generated on provisioned machine
+    ./hardware-configuration.nix
   ];
 
   myNetworking.tailscale = {
