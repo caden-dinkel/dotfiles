@@ -84,12 +84,12 @@
         formatting = treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.check self;
       });
 
-      nixosConfigurations.my-microvm = nixpkgs.lib.nixosSystem {
+      nixosConfigurations.test-microvm = nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
           microvm.nixosModules.microvm
           {
-            networking.hostName = "my-microvm";
+            networking.hostName = "test-microvm";
             system.stateVersion = "26.05";
             microvm.hypervisor = "qemu";
             microvm.interfaces = [
@@ -178,10 +178,8 @@
           nixos-anywhere = inputs.nixos-anywhere.packages.${system}.default;
         };
       }) inputs.nixpkgs.legacyPackages;
-      /*
-        // {
-          x86_64-linux.my-microvm = self.nixosConfigurations.my-microvm.config.microvm.declaredRunner;
-        };
-      */
+
+      x86_64-linux.test-microvm = self.nixosConfigurations.test-microvm.config.microvm.declaredRunner;
+
     };
 }

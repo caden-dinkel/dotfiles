@@ -1,5 +1,5 @@
 # This device will be the binary cache.
-{ config, ... }: {
+{ config, disko, ... }: {
   time.timeZone = "America/Chicago";
 
   imports = [
@@ -8,6 +8,7 @@
     ../../modules/tailscale.nix
     ../../modules/deploy-user.nix
     ../../modules/server.nix
+    disko.nixosModules.disko
   ]
   ++ (
     let

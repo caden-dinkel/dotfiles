@@ -1,0 +1,3 @@
+Consider using R2 to setup an S3 compatible binary cache for system. (2 options)
+1. Direct cache hosting from R2.
+2. Integrate with attic S3 cache on a personal device.

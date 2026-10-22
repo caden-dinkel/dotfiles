@@ -14,6 +14,8 @@ pkgs.writeShellApplication {
     pkgs.nix
   ];
 
+  # Figure out way to pass --test conditionally to get-tailscale-authkey. Probably just another flag for now
+
   text = ''
     set -euo pipefail
     umask 077
@@ -24,8 +26,8 @@ pkgs.writeShellApplication {
       echo "SSHPASS is missing from the script environment" >&2
     fi
 
-    if [[ "$#" -ne 5 ]]; then
-      echo "Usage: provision-new-machine <machine_name> <target_ip> <access_user> <ts_client_id_file> <ts_client_secret_file>" >&2
+    if [[ "$#" -ne 6 ]]; then
+      echo "Usage: %s <machine_name> <target_ip> <access_user> <ts_client_id_file> <ts_client_secret_file> [--test]\n" "$0" >&2
       exit 2
     fi
 
@@ -34,7 +36,16 @@ pkgs.writeShellApplication {
     access_user="$3"
     ts_client_id_file="$4"
     ts_client_secret="$5"
+    test=false
 
+    if [[ $# -eq 6 ]]; then
+      if [[ "$6" != "--test" ]]; then
+        printf 'Error: Unknown argument: %s\n' "$3" >&2
+        printf 'Usage: %s <client-id-file> <client-secret-file> [--test]\n' "$0" >&2
+        exit 2
+      fi
+      test=true
+    fi
 
     repo_root="$(git rev-parse --show-toplevel)"
 
@@ -56,7 +67,13 @@ pkgs.writeShellApplication {
 
     mkdir -p "$tempdir$(dirname "$tailscale_authkey_file")"
 
-    get-tailscale-authkey "$ts_client_id_file" "$ts_client_secret" > "$tempdir$tailscale_authkey_file"
+    tst_var=""
+
+    if test then
+      tst_var="--test"
+    fi
+
+    get-tailscale-authkey "$ts_client_id_file" "$ts_client_secret" "$tst_var" > "$tempdir$tailscale_authkey_file"
 
     nixos-anywhere \
     --generate-hardware-config nixos-generate-config "$repo_root/hosts/$machine_name/hardware-configuration.nix" \

@@ -1,0 +1,14 @@
+Create a test that effectively ensures that a newly provisioned system will have access to the tailnet after provisioning.
+
+The test will consist of 3 microvms.
+
+1 microvm will be booted into a dummy environment with a known ssh access. nixos-anywhere will execute on this vm and provision the system to be tested.
+
+The 2nd microvm will be booted into a known configuration with successful tailscale access. Upon receiving notification of testing system activation, a tailscale bound ping pong exchange is initiated with the test system.
+
+The third microvm will produce a running instance of headscale to act as a control plane (Nix tests are/should be hermetic from external network)
+
+Limitations of the test: This is simply testing a base ability to make contact with a machine through expected channels. Results when actually provisioned are dependent on the overall network (ACLs, etc.)
+
+REQUIREMENTS:
+Refactor disko to take a disk parameter
