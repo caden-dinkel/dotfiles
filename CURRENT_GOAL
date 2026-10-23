@@ -12,3 +12,4 @@ Limitations of the test: This is simply testing a base ability to make contact w
 
 REQUIREMENTS:
 Refactor disko to take a disk parameter
+Create script to replicate production auth key generation flow with headscale.
