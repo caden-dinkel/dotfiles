@@ -77,9 +77,6 @@
       treefmtEval = eachSystem (pkgs: treefmt-nix.lib.evalModule pkgs ./modules/treefmt.nix);
     in
     {
-      imports = [
-
-      ];
 
       formatter = eachSystem (pkgs: treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.wrapper);
 
@@ -87,24 +84,9 @@
         formatting = treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.check self;
       });
 
-      nixosConfigurations.test-microvm = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          microvm.nixosModules.microvm
-          {
-            networking.hostName = "test-microvm";
-            system.stateVersion = "26.05";
-            microvm.hypervisor = "qemu";
-            microvm.interfaces = [
-              {
-                type = "tap";
-                id = "enp5s0";
-                mac = "46:9e:18:1a:74:b5";
-              }
-            ];
-          }
-        ];
-      };
+      nixosConfigurations.headscale-server = import ./microvms/headscale-server.nix { inherit nixpkgs microvm; };
+      nixosConfigurations.ssh-blank = import ./microvms/ssh-blank.nix { inherit nixpkgs microvm; };
+      nixosConfigurations.test-microvm = import ./microvms/test-microvm.nix {inherit nixpkgs microvm; };
 
       darwinConfigurations.alpha = nix-darwin.lib.darwinSystem {
         specialArgs = {
@@ -142,10 +124,9 @@
       };
 
       nixosConfigurations.charlie = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit self inputs; };
+        specialArgs = { inherit self inputs disko; };
         system = "x86_64-linux";
         modules = [
-          disko.nixosModules.disko
           ./hosts/charlie
         ];
       };

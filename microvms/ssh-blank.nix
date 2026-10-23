@@ -11,13 +11,10 @@
               enable = true;
             };
             # Need to add generation of these keys to test script.
-            users.users.root.openssh.authorizedKeys.keyFiles = [
+            users.users.root.openssh.authorizedKeys.keys = [
               ../secrets/test-key.pub
             ];
             microvm.hypervisor = "qemu";
-            microvm.interfaces = [
-
-            ];
             microvm.volumes = [
               {
                 image = "../images/main.raw";
