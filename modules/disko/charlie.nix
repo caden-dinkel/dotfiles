@@ -1,8 +1,13 @@
-{ isVm ? false, ... }:
+{
+  isVm ? false,
+  ...
+}:
 {
 
-  disko.devices.disk.primary.device = if !isVm then "/dev/disk/by-id/nvme-eui.002538b971031fda" else "/dev/vda";
-  disko.devices.disk.secondary.device = if !isVm then "/dev/disk/by-id/wwn-0x5000cca8d8ec939a" else "/dev/vdb";
+  disko.devices.disk.primary.device =
+    if !isVm then "/dev/disk/by-id/nvme-eui.002538b971031fda" else "/dev/vda";
+  disko.devices.disk.secondary.device =
+    if !isVm then "/dev/disk/by-id/wwn-0x5000cca8d8ec939a" else "/dev/vdb";
   disko.devices.disk.secondary = {
     type = "disk";
     content = {

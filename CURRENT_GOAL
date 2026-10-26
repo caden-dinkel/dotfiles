@@ -13,3 +13,11 @@ Limitations of the test: This is simply testing a base ability to make contact w
 REQUIREMENTS:
 Refactor disko to take a disk parameter
 Create script to replicate production auth key generation flow with headscale.
+Need to refactor to separate hardware profile from final host.
+
+Refactor Goal:
+
+1. Reintroduce profiles/hardware and profiles/software.
+2. Create a host factory to create a host given some meta-data.
+3. Sanitize current modules to gracefully handle different systems.
+4. Properly fix disko module.

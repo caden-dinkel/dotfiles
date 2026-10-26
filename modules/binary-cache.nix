@@ -1,5 +1,5 @@
-{ pkgs, ... }:
-{
+{ pkgs, lib, ... }:
+lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
   services.nix-serve = {
     enable = true;
     package = pkgs.nix-serve-ng;

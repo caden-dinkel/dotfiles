@@ -84,9 +84,11 @@
         formatting = treefmtEval.${pkgs.stdenv.hostPlatform.system}.config.build.check self;
       });
 
-      nixosConfigurations.headscale-server = import ./microvms/headscale-server.nix { inherit nixpkgs microvm; };
+      nixosConfigurations.headscale-server = import ./microvms/headscale-server.nix {
+        inherit nixpkgs microvm;
+      };
       nixosConfigurations.ssh-blank = import ./microvms/ssh-blank.nix { inherit nixpkgs microvm; };
-      nixosConfigurations.test-microvm = import ./microvms/test-microvm.nix {inherit nixpkgs microvm; };
+      nixosConfigurations.test-microvm = import ./microvms/test-microvm.nix { inherit nixpkgs microvm; };
 
       darwinConfigurations.alpha = nix-darwin.lib.darwinSystem {
         specialArgs = {

@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }:
 let
@@ -27,9 +28,11 @@ in
     users.groups.deploy = { };
     users.users.deploy = {
       description = "Deployment user for deploy-rs.";
-      group = "deploy";
       openssh.authorizedKeys.keyFiles = cfg.sshKeyFiles;
+    }
+    // lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
       isNormalUser = true;
+      group = "deploy";
     };
     # Restricts networking for ssh-ing into deploy user to tailscale interfaces.
     # Add an option to pull this from (maybe a myssh.ipRange)?
@@ -46,17 +49,26 @@ in
     */
 
     # Temporary until specific commands are known.
-    security.sudo.enable = true;
-    security.sudo.extraRules = [
-      {
-        users = [ "deploy" ];
-        commands = [
-          {
-            command = "ALL";
-            options = [ "NOPASSWD" ];
-          }
-        ];
-      }
-    ];
+    security.sudo = {
+      enable = true;
+    }
+    // lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
+      extraRules = [
+        {
+          users = [ "deploy" ];
+          commands = [
+            {
+              command = "ALL";
+              options = [ "NOPASSWD" ];
+            }
+          ];
+        }
+      ];
+    }
+    // lib.mkIf pkgs.stdenv.hostPlatform.isDarwin {
+      extraConfig = ''
+
+      '';
+    };
   };
 }
