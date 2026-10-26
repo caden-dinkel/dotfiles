@@ -1,6 +1,6 @@
 { nixpkgs, microvm }:
-{
-  nixosConfigurations.test-microvm = nixpkgs.lib.nixosSystem {
+
+nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
           microvm.nixosModules.microvm
@@ -17,5 +17,4 @@
             ];
           }
         ];
-      };
-}
+      }

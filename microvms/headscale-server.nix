@@ -1,6 +1,5 @@
 { nixpkgs, microvm }:
-{
-  nixosConfigurations.ssh-blank = nixpkgs.lib.nixosSystem {
+nixpkgs.lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
           microvm.nixosModules.microvm
@@ -14,12 +13,14 @@
               enable = true;
               address = "0.0.0.0";
               port = 8080;
+              settings = {
+                
+              };
             };
             networking.firewall.allowedTCPPorts = [ 8080 ];
             
             microvm.hypervisor = "qemu";
-
+            
           }
         ];
-      };
-}
+      }

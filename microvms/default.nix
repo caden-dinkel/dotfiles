@@ -1,5 +1,0 @@
-{
-  imports = [
-    ./test-microvm.nix
-  ];
-}
