@@ -148,23 +148,25 @@
         };
       };
 
-      packages = builtins.mapAttrs (system: pkgs: {
-        "create-deploy-key" = import ./scripts/create-deploy-key.nix { inherit pkgs; };
+      packages =
+        builtins.mapAttrs (system: pkgs: {
+          "create-deploy-key" = import ./scripts/create-deploy-key.nix { inherit pkgs; };
 
-        "get-tailscale-authkey" = import ./scripts/get-tailscale-authkey.nix { inherit pkgs; };
+          "get-tailscale-authkey" = import ./scripts/get-tailscale-authkey.nix { inherit pkgs; };
 
-        "create-nix-cache-key" = import ./scripts/create-nix-cache-key.nix { inherit pkgs; };
+          "create-nix-cache-key" = import ./scripts/create-nix-cache-key.nix { inherit pkgs; };
 
-        "provision-new-machine" = import ./scripts/provision-new-machine.nix {
-          inherit
-            pkgs
-            system
-            self
-            ;
-          nixos-anywhere = inputs.nixos-anywhere.packages.${system}.default;
+          "provision-new-machine" = import ./scripts/provision-new-machine.nix {
+            inherit
+              pkgs
+              system
+              self
+              ;
+            nixos-anywhere = inputs.nixos-anywhere.packages.${system}.default;
+          };
+        }) inputs.nixpkgs.legacyPackages
+        // {
+          x86_64-linux.test-microvm = self.nixosConfigurations.test-microvm.config.microvm.declaredRunner;
         };
-      }) inputs.nixpkgs.legacyPackages;
-
-      x86_64-linux.test-microvm = self.nixosConfigurations.test-microvm.config.microvm.declaredRunner;
     };
 }
