@@ -6,6 +6,8 @@ pkgs.testers.runNixOSTest {
       ../modules/tailscale.nix
     ];
 
+    # Need to come up with a method to get runtime secrets into this test vm.
+    # The actual test is simple, just a hook checking for tailscale status.
     myNetworking.tailscale = {
       enable = true;
       profile = "server";
