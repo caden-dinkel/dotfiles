@@ -45,9 +45,7 @@ in
 
   config = lib.mkIf cfg.enable {
     environment = lib.mkIf (cfg.profile == "personal" && pkgs.stdenv.hostPlatform.isDarwin) {
-      systemPackages = [
-        pkgs.tailscale-gui
-      ];
+      services.tailscale.enable = true;
     };
 
     services.tailscale = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
