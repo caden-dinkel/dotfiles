@@ -14,7 +14,6 @@ pkgs.writeShellApplication {
     pkgs.nix
   ];
 
-  # Figure out way to pass --test conditionally to get-tailscale-authkey. Probably just another flag for now
 
   text = ''
     set -euo pipefail

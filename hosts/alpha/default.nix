@@ -28,12 +28,27 @@
 
   networking.hostName = "alpha";
   nixpkgs.hostPlatform = "aarch64-darwin";
-  security.pam.services.sudo_local = {
+
+
+  nix.linux-builder = {
     enable = true;
-    touchIdAuth = true;
-    # Don't have my watch setup yet. Don't want to look up key again.
-    # watchIdAuth = true;
-    reattach = true;
+    package = pkgs.darwin.linux-builder; # -vz; # Add vz back when package set is updated/build machine is up.
+    systems = [
+      "aarch64-linux"
+      "x86_64-linux"
+    ];
+
+    ephemeral = true;
+    maxJobs = 4;
+    config = {
+      virtualisation = {
+        darwin-builder = {
+          diskSize = 40 * 1024;
+          memorySize = 8 * 1024;
+        };
+        cores = 6;
+      };
+    };
   };
 
   nix.settings.trusted-users = [ "@admin" ];

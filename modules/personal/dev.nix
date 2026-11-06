@@ -1,4 +1,10 @@
-{ config, lib, pkgs, name, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  name,
+  ...
+}:
 let
   cfg = config.roles.personal.user.roles.dev;
 

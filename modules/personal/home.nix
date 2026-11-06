@@ -1,4 +1,10 @@
-{ config, lib, pkgs, name, ... }:
+{
+  config,
+  lib,
+  pkgs,
+  name,
+  ...
+}:
 let
   cfg = config.roles.personal.user.roles.home;
   myHomeDir = if pkgs.stdenv.hostPlatform.isLinux then "/home/${name}" else "/Users/${name}";

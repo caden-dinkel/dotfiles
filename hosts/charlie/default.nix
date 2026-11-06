@@ -50,7 +50,5 @@
   };
 
   boot.blacklistedKernelModules = [ "nouveau" ];
-  boot.kernelParams = [
-    "nvidia.NVreg_PreserveVideoMemoryAllocation=1"
-  ];
+
 }
