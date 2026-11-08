@@ -129,6 +129,7 @@
         specialArgs = { inherit self inputs disko; };
         system = "x86_64-linux";
         modules = [
+          disko.nixosModules.disko
           ./hosts/charlie
         ];
       };
@@ -136,7 +137,7 @@
       deploy.nodes.charlie = {
         hostname = "charlie.${tailscaleDomain}";
         # This private ssh key (above) is decrypted at runtime by sops-nix
-        # I can assume that this is the case, and try to reference /run/secrets/deploy-rs-key
+        # I am assuming that this is the case, and try to reference /run/secrets/deploy-rs-key
         profiles.system = {
           sshUser = "deploy";
           sshOpts = [

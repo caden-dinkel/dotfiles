@@ -7,6 +7,8 @@
   ...
 }:
 {
+  nixpkgs.hostPlatform = "x86_64-linux";
+
   time.timeZone = "America/Chicago";
 
   imports = [
@@ -31,7 +33,6 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   networking.hostName = "bravo";
-  nixpkgs.hostPlatform = "x86_64-linux";
   hardware = {
     graphics.enable = true;
     nvidia = {
@@ -72,7 +73,7 @@
   };
 
   # Primary, secondary, ternary, ... naming scheme.
-  disko.devices.disk.primary.device = "/dev/disk/by-label/nvme-eui.e8238fa6bf530001001b448b4c504ccd";
+  # 
   disko.devices.disk.primary = {
     type = "disk";
     content = {

@@ -6,6 +6,8 @@
   ...
 }:
 {
+  nixpkgs.hostPlatform = "aarch64-darwin";
+
   time.timeZone = "America/Chicago";
   imports = [
     ../../modules/common.nix
@@ -15,6 +17,7 @@
     ../../modules/home.nix
     ../../modules/tailscale.nix
     ../../modules/state-version.nix
+    ../../profiles/macbook.nix
   ];
 
   myNetworking.tailscale = {
@@ -27,7 +30,6 @@
   };
 
   networking.hostName = "alpha";
-  nixpkgs.hostPlatform = "aarch64-darwin";
 
   nix.linux-builder = {
     enable = true;

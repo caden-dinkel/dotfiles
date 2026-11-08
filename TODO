@@ -1,1 +1,7 @@
 [ ] - Start moving inline bash scripts into .sh files and using builtins.readFile
+
+[ ] - Move cpu-os string to hosts.
+
+[ ] - Move any reference to hardware or things dependent on the end system from each host/<hostnames>/default.nix.
+
+[ ] - Create 2 top level definitions for each host, vm and hdh (host dependent hardware).
