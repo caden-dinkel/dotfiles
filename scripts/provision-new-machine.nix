@@ -14,7 +14,6 @@ pkgs.writeShellApplication {
     pkgs.nix
   ];
 
-
   text = ''
     set -euo pipefail
     umask 077

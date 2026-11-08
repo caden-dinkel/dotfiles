@@ -29,7 +29,6 @@
   networking.hostName = "alpha";
   nixpkgs.hostPlatform = "aarch64-darwin";
 
-
   nix.linux-builder = {
     enable = true;
     package = pkgs.darwin.linux-builder; # -vz; # Add vz back when package set is updated/build machine is up.

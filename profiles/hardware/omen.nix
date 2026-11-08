@@ -1,4 +1,4 @@
-{config, ... }: {
+{ config, ... }: {
   hardware = {
     graphics.enable = true;
     nvidia = {
@@ -13,6 +13,6 @@
   };
 
   boot.blacklistedKernelModules = [ "nouveau" ];
-  
+
   nixpkgs.hostPlatform = "x86_64-linux";
 }
