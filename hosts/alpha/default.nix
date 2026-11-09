@@ -17,7 +17,6 @@
     ../../modules/home.nix
     ../../modules/tailscale.nix
     ../../modules/state-version.nix
-    ../../profiles/macbook.nix
   ];
 
   myNetworking.tailscale = {

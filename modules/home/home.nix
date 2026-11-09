@@ -69,114 +69,114 @@ in
         };
       };
     };
-    programs = { 
+    programs = {
       vscode = {
-      profiles.default = {
-        enableUpdateCheck = false;
-        enableExtensionUpdateCheck = false;
-        extensions = with pkgs.vscode-extensions; [
-          jnoortheen.nix-ide
-          rust-lang.rust-analyzer
+        profiles.default = {
+          enableUpdateCheck = false;
+          enableExtensionUpdateCheck = false;
+          extensions = with pkgs.vscode-extensions; [
+            jnoortheen.nix-ide
+            rust-lang.rust-analyzer
+          ];
+        };
+        enable = true;
+        argvSettings = {
+          enable-crash-reporter = false;
+        };
+        mutableExtensionsDir = false;
+
+        # user specific definitions are buggy on darwin.
+        profiles.default.userSettings = {
+          "[nix]" = {
+            "editor.tabSize" = 2;
+          };
+          "files.autoSave" = "off";
+          "nix.enableLanguageServer" = true;
+          "nix.serverPath" = "nil";
+          "update.mode" = "none";
+        };
+      };
+
+      programs.alacritty = {
+        theme = "ashes_dark";
+        enable = true;
+        settings = {
+          terminal.shell = {
+            program = "${pkgs.zsh}/bin/zsh";
+            args = [ "-l" ];
+          };
+        };
+      };
+
+      programs.direnv = {
+        enable = true;
+        enableZshIntegration = true; # Or enableZshIntegration / enableFishIntegration
+        nix-direnv.enable = true;
+      };
+
+      programs.claude-code = {
+        enable = true;
+      };
+      programs.obsidian = {
+        enable = true;
+      };
+
+      programs.starship = {
+        enable = true;
+      };
+      programs.zoxide = {
+        enable = true;
+        enableZshIntegration = true;
+        options = [
+          "--cmd cd" # This replaces the cd command with zoxide
         ];
       };
-      enable = true;
-      argvSettings = {
-        enable-crash-reporter = false;
+      programs.zsh = {
+        enable = true;
+        enableCompletion = true;
+        initContent = zshContent;
       };
-      mutableExtensionsDir = false;
-
-      # user specific definitions are buggy on darwin.
-      profiles.default.userSettings = {
-        "[nix]" = {
-          "editor.tabSize" = 2;
+      programs.tmux = {
+        enable = true;
+        extraConfig = ''
+          set-option -g default-shell ${pkgs.zsh}/bin/zsh
+        '';
+      };
+    };
+    # System Wide
+    # from https://discourse.nixos.org/t/declare-firefox-extensions-and-settings/36265
+    programs.firefox = {
+      enable = true;
+      policies = {
+        DisableTelemetry = true;
+        DisableFirefoxStudies = true;
+        EnableTrackingProtection = {
+          Value = true;
+          Locked = true;
+          Cryptomining = true;
+          Fingerprinting = true;
         };
-        "files.autoSave" = "off";
-        "nix.enableLanguageServer" = true;
-        "nix.serverPath" = "nil";
-        "update.mode" = "none";
-      };
-    };
-
-    programs.alacritty = {
-      theme = "ashes_dark";
-      enable = true;
-      settings = {
-        terminal.shell = {
-          program = "${pkgs.zsh}/bin/zsh";
-          args = [ "-l" ];
-        };
-      };
-    };
-
-    programs.direnv = {
-      enable = true;
-      enableZshIntegration = true; # Or enableZshIntegration / enableFishIntegration
-      nix-direnv.enable = true;
-    };
-
-    programs.claude-code = {
-      enable = true;
-    };
-    programs.obsidian = {
-      enable = true;
-    };
-
-    programs.starship = {
-      enable = true;
-    };
-    programs.zoxide = {
-      enable = true;
-      enableZshIntegration = true;
-      options = [
-        "--cmd cd" # This replaces the cd command with zoxide
-      ];
-    };
-    programs.zsh = {
-      enable = true;
-      enableCompletion = true;
-      initContent = zshContent;
-    };
-    programs.tmux = {
-      enable = true;
-      extraConfig = ''
-        set-option -g default-shell ${pkgs.zsh}/bin/zsh
-      '';
-    };
-  };
-  # System Wide
-  # from https://discourse.nixos.org/t/declare-firefox-extensions-and-settings/36265
-  programs.firefox = {
-    enable = true;
-    policies = {
-      DisableTelemetry = true;
-      DisableFirefoxStudies = true;
-      EnableTrackingProtection = {
-        Value = true;
-        Locked = true;
-        Cryptomining = true;
-        Fingerprinting = true;
-      };
-      DisablePocket = true;
-      DisableFirefoxAccounts = true;
-      DisableAccounts = true;
-      DisableFirefoxScreenshots = true;
-      OverrideFirstRunPage = "";
-      OverridePostUpdatePage = "";
-      DontCheckDefaultBrowser = true;
-      ExtensionSettings = {
-        "*".installation_mode = "blocked"; # blocks all addons except the ones specified below
-        # uBlock Origin:
-        "uBlock0@raymondhill.net" = {
-          install_url = "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi";
-          installation_mode = "force_installed";
-        };
-        # Privacy Badger:
-        "jid1-MnnxcxisBPnSXQ@jetpack" = {
-          install_url = "https://addons.mozilla.org/firefox/downloads/latest/privacy-badger17/latest.xpi";
-          installation_mode = "force_installed";
+        DisablePocket = true;
+        DisableFirefoxAccounts = true;
+        DisableAccounts = true;
+        DisableFirefoxScreenshots = true;
+        OverrideFirstRunPage = "";
+        OverridePostUpdatePage = "";
+        DontCheckDefaultBrowser = true;
+        ExtensionSettings = {
+          "*".installation_mode = "blocked"; # blocks all addons except the ones specified below
+          # uBlock Origin:
+          "uBlock0@raymondhill.net" = {
+            install_url = "https://addons.mozilla.org/firefox/downloads/latest/ublock-origin/latest.xpi";
+            installation_mode = "force_installed";
+          };
+          # Privacy Badger:
+          "jid1-MnnxcxisBPnSXQ@jetpack" = {
+            install_url = "https://addons.mozilla.org/firefox/downloads/latest/privacy-badger17/latest.xpi";
+            installation_mode = "force_installed";
+          };
         };
       };
     };
   };
-};
 }

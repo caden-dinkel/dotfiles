@@ -20,7 +20,6 @@
     ../../modules/home.nix
     ../../modules/tailscale.nix
     ../../modules/minecraft-client.nix
-    ../../modules/state-version.nix
   ];
 
   myNetworking.tailscale = {
@@ -73,7 +72,7 @@
   };
 
   # Primary, secondary, ternary, ... naming scheme.
-  # 
+  #
   disko.devices.disk.primary = {
     type = "disk";
     content = {

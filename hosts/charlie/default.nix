@@ -1,5 +1,11 @@
 # This device will be the binary cache.
-{ isVm ? false, config, disko, ... }: {
+{
+  isVm ? false,
+  config,
+  disko,
+  ...
+}:
+{
   nixpkgs.hostPlatform = "x86_64-linux";
 
   time.timeZone = "America/Chicago";
@@ -34,7 +40,6 @@
 
   networking.hostName = "charlie";
 
-
   hardware = {
     graphics.enable = true;
     nvidia = {
@@ -49,7 +54,7 @@
   };
 
   boot.blacklistedKernelModules = [ "nouveau" ];
-disko.devices.disk.secondary = {
+  disko.devices.disk.secondary = {
     type = "disk";
     content = {
       type = "gpt";
