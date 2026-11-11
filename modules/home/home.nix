@@ -1,7 +1,6 @@
 {
   name,
   pkgs,
-  git,
   config,
   lib,
   ...
@@ -28,75 +27,17 @@ in
   home-manager.backupFileExtension = "backup";
   home-manager.users.${name} = {
     home.packages = [
-      pkgs.tree
-      pkgs.ripgrep
       pkgs.bitwarden-desktop
-      pkgs.helix
-      pkgs.dust
-      pkgs.pciutils
-
       pkgs.spotify
-
-      pkgs.nil
-      pkgs.nixfmt
     ]
     ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
       pkgs.freecad
     ];
     home.homeDirectory = myHomeDir;
     home.stateVersion = "26.05";
-    programs.git = {
-      enable = true;
-      ignores = [ "**/.DS_Store" ];
-      settings = {
-        user = {
-          name = git.name;
-          email = git.email;
-        };
-        init.defaultBranch = "main";
-        push.autoSetupRemote = true;
-      };
-    };
-    programs.ssh = {
-      enable = true;
-      enableDefaultConfig = false;
-      settings = {
-        "github.com" = {
-          HostName = "github.com";
-          User = "git";
-          IdentityFile = "~/.ssh/git_id_ed25519";
-          IdentitiesOnly = true;
-        };
-      };
-    };
-    programs = {
-      vscode = {
-        profiles.default = {
-          enableUpdateCheck = false;
-          enableExtensionUpdateCheck = false;
-          extensions = with pkgs.vscode-extensions; [
-            jnoortheen.nix-ide
-            rust-lang.rust-analyzer
-          ];
-        };
-        enable = true;
-        argvSettings = {
-          enable-crash-reporter = false;
-        };
-        mutableExtensionsDir = false;
-
-        # user specific definitions are buggy on darwin.
-        profiles.default.userSettings = {
-          "[nix]" = {
-            "editor.tabSize" = 2;
-          };
-          "files.autoSave" = "off";
-          "nix.enableLanguageServer" = true;
-          "nix.serverPath" = "nil";
-          "update.mode" = "none";
-        };
-      };
-
+    
+    
+    
       programs.alacritty = {
         theme = "ashes_dark";
         enable = true;
@@ -108,15 +49,8 @@ in
         };
       };
 
-      programs.direnv = {
-        enable = true;
-        enableZshIntegration = true; # Or enableZshIntegration / enableFishIntegration
-        nix-direnv.enable = true;
-      };
-
-      programs.claude-code = {
-        enable = true;
-      };
+      
+      
       programs.obsidian = {
         enable = true;
       };
@@ -136,12 +70,7 @@ in
         enableCompletion = true;
         initContent = zshContent;
       };
-      programs.tmux = {
-        enable = true;
-        extraConfig = ''
-          set-option -g default-shell ${pkgs.zsh}/bin/zsh
-        '';
-      };
+      
     };
     # System Wide
     # from https://discourse.nixos.org/t/declare-firefox-extensions-and-settings/36265
@@ -178,5 +107,4 @@ in
         };
       };
     };
-  };
 }
