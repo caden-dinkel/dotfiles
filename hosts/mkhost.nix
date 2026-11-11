@@ -4,17 +4,17 @@ let
     alpha = {
       platform = "aarch64-darwin";
       hardware = ../../profiles/macbook.nix;
-      software = ./alpha.nix;
+      software = ./alpha;
     };
     bravo = {
       platform = "x86_64-linux";
       hardware = ../../profiles/desktop.nix;
-      software = ./bravo.nix;
+      software = ./bravo;
     };
     charlie = {
       platform= "x86_64-linux";
       hardware = ../../profiles/omen.nix;
-      software = ./charlie.nix;
+      software = ./charlie;
     };
   };
   vmHardware = ../../profiles/vm.nix;
