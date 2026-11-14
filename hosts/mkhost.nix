@@ -1,7 +1,7 @@
 {
   lib,
   host,
-  isVm ? false,
+  isVm,
   ...
 }:
 let
@@ -26,6 +26,7 @@ let
   selectedHost = hosts.${host} or (throw "Unknown host: ${host}");
 in
 {
+  #
   imports = [
     selectedHost.software
   ]

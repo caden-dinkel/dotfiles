@@ -4,6 +4,7 @@
   pkgs,
   home-manager,
   sops-nix,
+  disko,
   ...
 }:
 {
@@ -20,6 +21,8 @@
     ../../modules/home/home.nix
     ../../modules/tailscale.nix
     ../../modules/minecraft-client.nix
+    disko.nixosModules.disko
+    ./disko.nix
   ];
 
   myNetworking.tailscale = {
@@ -32,32 +35,6 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   networking.hostName = "bravo";
-  hardware = {
-    graphics.enable = true;
-    nvidia = {
-      package = config.boot.kernelPackages.nvidiaPackages.stable;
-      modesetting.enable = true;
-      open = true;
-      powerManagement.enable = true;
-      powerManagement.finegrained = false;
-      nvidiaSettings = true;
-    };
-  };
-
-  boot.initrd.availableKernelModules = [
-    "nvidia_drm"
-    "nvidia_modeset"
-    "nvidia"
-    "nvidia_uvm"
-  ];
-
-  boot.blacklistedKernelModules = [ "nouveau" ];
-
-  boot.kernelParams = [
-    "nvidia.NVreg_PreserveVideoMemoryAllocation=1"
-  ];
-
-  services.xserver.videoDrivers = [ "nvidia" ];
 
   programs.obs-studio = {
     enable = true;

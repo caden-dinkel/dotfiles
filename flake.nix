@@ -110,11 +110,11 @@
             name
             home-manager
             sops-nix
+            disko
             ;
         };
         system = "x86_64-linux";
         modules = [
-          disko.nixosModules.disko
           ./hosts/bravo
         ];
       };
@@ -123,7 +123,6 @@
         specialArgs = { inherit self inputs disko; };
         system = "x86_64-linux";
         modules = [
-          disko.nixosModules.disko
           ./hosts/charlie
         ];
       };

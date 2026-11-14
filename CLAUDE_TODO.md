@@ -14,28 +14,14 @@ branch `feature/host-builder`.
 
 ---
 
-## 0. Blocking bugs (fix independent of the refactor)
-
-These will break any `mkhost.nix`-based config too, so fix before building on
-top of them:
-
-- [ ] `hosts/alpha/default.nix:19` and `hosts/charlie/default.nix:15` import
-      `../../modules/state-version.nix`, which does not exist anywhere in the
-      repo (`system.stateVersion` is already set generically in
-      `modules/common.nix:20`, so these imports are likely just stale).
 
 ## 1. Finish the hardware/software split that's already half-done
 
 `profiles/desktop.nix`, `profiles/omen.nix`, `profiles/macbook.nix` exist and
 contain hardware config, but the hosts weren't pruned to match:
 
-- [ ] `hosts/bravo/default.nix` still inlines the *exact* nvidia/graphics
-      block, `boot.initrd.availableKernelModules`, `boot.blacklistedKernelModules`,
-      `boot.kernelParams`, and `services.xserver.videoDrivers` that now also
-      live in `profiles/desktop.nix`. Delete the duplicate from the host file.
-- [ ] `hosts/charlie/default.nix` has the same duplication against
-      `profiles/omen.nix` (nvidia block + `boot.blacklistedKernelModules`),
-      plus it owns the *entire* disko layout (both disks). Decide how much of
+
+- [ ] Decide how much of
       the disko layout is "hardware" (device paths, disk count — belongs in
       the profile) vs "software" (partition scheme, filesystem choices,
       subvolumes — arguably stays with the host). Right now it's 100% in the

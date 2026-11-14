@@ -1,7 +1,7 @@
 {
-  isVm ? false,
+  isVm,
   lib,
-  useHostFS ? false,
+  useHostFS,
   ...
 }:
 lib.mkIf (!useHostFS) {
