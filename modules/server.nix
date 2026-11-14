@@ -24,8 +24,8 @@
   boot.kernelParams = [ "consoleblank=60" ];
 
   environment.systemPackages = with pkgs; [
-    lm_sensors # Provides the 'sensors' command to check core temps
-    powertop # Analyzes power drain
-    htop # Quick process monitoring
+    lm_sensors
+    powertop
+    htop
   ];
 }

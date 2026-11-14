@@ -1,4 +1,9 @@
-{ lib, host, isVm ? false, ... }:
+{
+  lib,
+  host,
+  isVm ? false,
+  ...
+}:
 let
   hosts = {
     alpha = {
@@ -12,7 +17,7 @@ let
       software = ./bravo;
     };
     charlie = {
-      platform= "x86_64-linux";
+      platform = "x86_64-linux";
       hardware = ../../profiles/omen.nix;
       software = ./charlie;
     };
@@ -23,9 +28,11 @@ in
 {
   imports = [
     selectedHost.software
-  ] ++ lib.optionals (!isVm) [
+  ]
+  ++ lib.optionals (!isVm) [
     selectedHost.hardware
-  ] ++ lib.optionals isVm [
+  ]
+  ++ lib.optionals isVm [
     vmHardware
   ];
 }

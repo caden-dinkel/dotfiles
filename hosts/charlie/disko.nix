@@ -1,5 +1,10 @@
-{  isVm ? false, lib, useHostFS ? false, ... }:
-lib.mkIf (!useHostFS){
+{
+  isVm ? false,
+  lib,
+  useHostFS ? false,
+  ...
+}:
+lib.mkIf (!useHostFS) {
   disko.devices.disk.secondary = {
     type = "disk";
     content = {
@@ -38,7 +43,7 @@ lib.mkIf (!useHostFS){
           priority = 1;
           name = "ESP";
           start = "1M";
-          end = "1G";
+          end = if isVm then "4M" else "1G";
           type = "EF00";
           content = {
             type = "filesystem";
@@ -47,7 +52,7 @@ lib.mkIf (!useHostFS){
             mountOptions = [ "umask=0077" ];
           };
         };
-        swap = lib.mkIf (!isVm){
+        swap = lib.mkIf (!isVm) {
           priority = 2;
           size = "32G";
           content = {

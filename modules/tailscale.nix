@@ -48,6 +48,12 @@ in
       services.tailscale.enable = true;
     };
 
+    networking.firewall = lib.mkIf (pkgs.stdenv.hostPlatform.isLinux && cfg.profile == "server") {
+      trustedInterfaces = [
+        "tailscale0"
+      ];
+    };
+
     services.tailscale = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
       enable = true;
 

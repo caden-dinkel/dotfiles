@@ -19,9 +19,6 @@ branch `feature/host-builder`.
 These will break any `mkhost.nix`-based config too, so fix before building on
 top of them:
 
-- [ ] `hosts/alpha/default.nix:17` and `hosts/bravo/default.nix:20` import
-      `../../modules/home.nix`, but the file actually lives at
-      `modules/home/home.nix`. Path is currently dangling.
 - [ ] `hosts/alpha/default.nix:19` and `hosts/charlie/default.nix:15` import
       `../../modules/state-version.nix`, which does not exist anywhere in the
       repo (`system.stateVersion` is already set generically in

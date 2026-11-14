@@ -55,5 +55,5 @@
   };
 
   boot.blacklistedKernelModules = [ "nouveau" ];
-  
+
 }
