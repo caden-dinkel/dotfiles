@@ -16,7 +16,6 @@
     ../../modules/sops.nix
     ../../modules/home/home.nix
     ../../modules/tailscale.nix
-    ../../modules/state-version.nix
   ];
 
   myNetworking.tailscale = {

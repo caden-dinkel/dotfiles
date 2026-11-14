@@ -11,7 +11,6 @@
 
   imports = [
     ../../modules/common.nix
-    ../../modules/state-version.nix
     ../../modules/tailscale.nix
     ../../modules/deploy-user.nix
     ../../modules/server.nix

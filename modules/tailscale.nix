@@ -43,31 +43,37 @@ in
     };
   };
 
-  config = lib.mkIf cfg.enable {
-    environment = lib.mkIf (cfg.profile == "personal" && pkgs.stdenv.hostPlatform.isDarwin) {
-      services.tailscale.enable = true;
-    };
+  config = lib.mkIf cfg.enable (
+    lib.mkMerge [
+      # Personal profile on macOS
+      (lib.mkIf (cfg.profile == "personal" && pkgs.stdenv.hostPlatform.isDarwin) {
+        services.tailscale.enable = true;
+      })
 
-    networking.firewall = lib.mkIf (pkgs.stdenv.hostPlatform.isLinux && cfg.profile == "server") {
-      trustedInterfaces = [
-        "tailscale0"
-      ];
-    };
+      # Server profile on Linux
+      (lib.mkIf (cfg.profile == "server" && pkgs.stdenv.hostPlatform.isLinux) {
+        networking.firewall.trustedInterfaces = [
+          "tailscale0"
+        ];
+      })
 
-    services.tailscale = lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
-      enable = true;
+      # All Linux profiles
+      (lib.mkIf pkgs.stdenv.hostPlatform.isLinux {
+        services.tailscale = {
+          enable = true;
 
-      # Nest the server-specific settings cleanly within the Linux block
-      authKeyFile = if cfg.profile == "server" then cfg.authKeyFile else null;
+          authKeyFile = if cfg.profile == "server" then cfg.authKeyFile else null;
 
-      extraUpFlags =
-        if cfg.profile == "server" then
-          [
-            "--ssh=false"
-            "--advertised-tags=tag:provisioned-machine"
-          ]
-        else
-          [ ];
-    };
-  };
+          extraUpFlags =
+            if cfg.profile == "server" then
+              [
+                "--ssh=false"
+                "--advertised-tags=tag:provisioned-machine"
+              ]
+            else
+              [ ];
+        };
+      })
+    ]
+  );
 }
