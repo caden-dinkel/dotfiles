@@ -14,7 +14,7 @@
     home-manager.darwinModules.home-manager
     sops-nix.darwinModules.sops
     ../../modules/sops.nix
-    ../../modules/home/home.nix
+    ../../modules/home
     ../../modules/tailscale.nix
   ];
 

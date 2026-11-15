@@ -1,3 +1,5 @@
 [ ] - Start moving inline bash scripts into .sh files and using builtins.readFile
 
 [ ] - Cleanly handle hardware-configuration.nix importing in bravo.
+
+[ ] - Add assertion for git email field.

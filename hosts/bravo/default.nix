@@ -18,7 +18,7 @@
     home-manager.nixosModules.home-manager
     sops-nix.nixosModules.sops
     ../../modules/sops.nix
-    ../../modules/home/home.nix
+    ../../modules/home
     ../../modules/tailscale.nix
     ../../modules/minecraft-client.nix
     disko.nixosModules.disko
