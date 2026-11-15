@@ -8,17 +8,17 @@ let
   hosts = {
     alpha = {
       platform = "aarch64-darwin";
-      hardware = ../../profiles/macbook.nix;
+      hardware = ../profiles/macbook.nix;
       software = ./alpha;
     };
     bravo = {
       platform = "x86_64-linux";
-      hardware = ../../profiles/desktop.nix;
+      hardware = ../profiles/desktop.nix;
       software = ./bravo;
     };
     charlie = {
       platform = "x86_64-linux";
-      hardware = ../../profiles/omen.nix;
+      hardware = ../profiles/omen.nix;
       software = ./charlie;
     };
   };

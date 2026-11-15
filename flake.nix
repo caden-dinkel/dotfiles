@@ -94,10 +94,13 @@
             home-manager
             sops-nix
             ;
+          host = "alpha";
+          isVm = false;
+          useHostFS = false;
         };
         system = "aarch64-darwin";
         modules = [
-          ./hosts/alpha
+          ./hosts/mkhost.nix
         ];
       };
 
@@ -112,10 +115,13 @@
             sops-nix
             disko
             ;
+          host = "bravo";
+          isVm = false;
+          useHostFS = false;
         };
         system = "x86_64-linux";
         modules = [
-          ./hosts/bravo
+          ./hosts/mkhost.nix
         ];
       };
 
