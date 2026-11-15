@@ -26,12 +26,11 @@ contain hardware config, but the hosts weren't pruned to match:
       the profile) vs "software" (partition scheme, filesystem choices,
       subvolumes — arguably stays with the host). Right now it's 100% in the
       host; `desktop.nix`/`omen.nix` only carry `.device` overrides.
-- [ ] `hosts/alpha/default.nix` is in reasonable shape already — only the
-      darwin-specific `services.yabai` and `nix.linux-builder` blocks are
-      arguably "hardware" (they're alpha-the-machine-specific, not
-      alpha-the-role-specific) and could move to `profiles/macbook.nix`
-      alongside the existing `sudo_local`/TouchID block. Lower priority than
-      bravo/charlie since nothing is duplicated yet.
+
+Disk count and device paths will be per machine or hardware
+
+
+
 - [ ] Once split, create the flat per-host **software-only** files that
       `hosts/mkhost.nix` already expects but don't exist yet:
       `hosts/alpha.nix`, `hosts/bravo.nix`, `hosts/charlie.nix`. These replace

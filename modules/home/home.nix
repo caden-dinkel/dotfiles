@@ -19,9 +19,8 @@ let
       ''
   );
   cfg = config.myUsers;
-  userType =
-    { name, ... }:
-    lib.types.submodule {
+  userType = lib.types.submodule (
+    { name, ... }: {
       options = {
         enable = lib.mkEnableOption "Enable home management for specified user.";
         user = lib.mkOption {
@@ -53,14 +52,15 @@ let
           };
         };
       };
-    };
+    }
+  );
 in
 {
   options.myUsers = {
     enable = lib.mkEnableOption "Enable home management for machine.";
     home = lib.mkOption {
-      type = lib.types.nullOr (lib.types.attrsOf userType);
-      default = null;
+      type = lib.types.attrsOf userType;
+      default = { };
       example = {
         alice = {
           dev = true;
@@ -69,7 +69,7 @@ in
       description = "Attribute set of users to manage with home-manager.";
     };
   };
-  config = lib.mkIf (cfg.enable && cfg.home != null) {
+  config = lib.mkIf cfg.enable {
     home-manager.useGlobalPkgs = true;
     home-manager.useUserPackages = true;
     home-manager.backupFileExtension = "backup";
@@ -151,7 +151,7 @@ in
             initContent = zshContent;
           };
         }
-        (lib.mkIf userCfg.dev {
+        (lib.mkIf userCfg.dev.enable {
           home.packages = [
             pkgs.helix
             pkgs.dust

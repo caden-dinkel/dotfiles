@@ -2,6 +2,7 @@
   imports = [
     ./home.nix
   ];
+  myUsers.enable = true;
   myUsers.home.${name} = {
     enable = true;
     dev = {
