@@ -10,9 +10,7 @@ nixpkgs.lib.nixosSystem {
       microvm.hypervisor = "qemu";
       microvm.interfaces = [
         {
-          type = "tap";
-          id = "enp5s0";
-          mac = "46:9e:18:1a:74:b5";
+          type = "user";
         }
       ];
     }
