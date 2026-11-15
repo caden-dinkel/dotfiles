@@ -1,6 +1,6 @@
-{git,name, ...}:{
+{ git, name, ... }: {
   imports = [
-./home.nix
+    ./home.nix
   ];
   myUsers.home.${name} = {
     enable = true;

@@ -32,25 +32,25 @@ let
         };
         dev = {
           enable = lib.mkOption {
-          type = lib.types.bool;
-          default = false;
-          example = true;
-          description = "Enable/Disable dev dependencies (ide, ssh, git, etc.)";
-        };
-        git = {
-          name = lib.mkOption {
-            type = lib.types.str;
-          default = name;
-          example = "alice smith";
-          description = "Name for git commits.";
+            type = lib.types.bool;
+            default = false;
+            example = true;
+            description = "Enable/Disable dev dependencies (ide, ssh, git, etc.)";
           };
-          email = lib.mkOption {
-            type = lib.types.str;
-          default = name;
-          example = "alice smith";
-          description = "Email for git commits.";
+          git = {
+            name = lib.mkOption {
+              type = lib.types.str;
+              default = name;
+              example = "alice smith";
+              description = "Name for git commits.";
+            };
+            email = lib.mkOption {
+              type = lib.types.str;
+              default = name;
+              example = "alice smith";
+              description = "Email for git commits.";
+            };
           };
-        };
         };
       };
     };
@@ -153,78 +153,78 @@ in
         }
         (lib.mkIf userCfg.dev {
           home.packages = [
-    pkgs.helix
-    pkgs.dust
-    pkgs.pciutils
-    pkgs.tree
-    pkgs.ripgrep
-    pkgs.nil
-    pkgs.nixfmt
-  ];
-  programs.git = {
-    enable = true;
-    ignores = [ "**/.DS_Store" ];
-    settings = {
-      user = {
-        name = userCfg.dev.git.name;
-        email = userCfg.dev.git.email;
-      };
-      init.defaultBranch = "main";
-      push.autoSetupRemote = true;
-    };
-  };
-  programs.ssh = {
-    enable = true;
-    enableDefaultConfig = false;
-    settings = {
-      "github.com" = {
-        HostName = "github.com";
-        User = "git";
-        IdentityFile = "~/.ssh/git_id_ed25519";
-        IdentitiesOnly = true;
-      };
-    };
-  };
-  programs.vscode = {
-    profiles.default = {
-      enableUpdateCheck = false;
-      enableExtensionUpdateCheck = false;
-      extensions = with pkgs.vscode-extensions; [
-        jnoortheen.nix-ide
-        rust-lang.rust-analyzer
-      ];
-    };
-    enable = true;
-    argvSettings = {
-      enable-crash-reporter = false;
-    };
-    mutableExtensionsDir = false;
+            pkgs.helix
+            pkgs.dust
+            pkgs.pciutils
+            pkgs.tree
+            pkgs.ripgrep
+            pkgs.nil
+            pkgs.nixfmt
+          ];
+          programs.git = {
+            enable = true;
+            ignores = [ "**/.DS_Store" ];
+            settings = {
+              user = {
+                name = userCfg.dev.git.name;
+                email = userCfg.dev.git.email;
+              };
+              init.defaultBranch = "main";
+              push.autoSetupRemote = true;
+            };
+          };
+          programs.ssh = {
+            enable = true;
+            enableDefaultConfig = false;
+            settings = {
+              "github.com" = {
+                HostName = "github.com";
+                User = "git";
+                IdentityFile = "~/.ssh/git_id_ed25519";
+                IdentitiesOnly = true;
+              };
+            };
+          };
+          programs.vscode = {
+            profiles.default = {
+              enableUpdateCheck = false;
+              enableExtensionUpdateCheck = false;
+              extensions = with pkgs.vscode-extensions; [
+                jnoortheen.nix-ide
+                rust-lang.rust-analyzer
+              ];
+            };
+            enable = true;
+            argvSettings = {
+              enable-crash-reporter = false;
+            };
+            mutableExtensionsDir = false;
 
-    # user specific definitions are buggy on darwin.
-    profiles.default.userSettings = {
-      "[nix]" = {
-        "editor.tabSize" = 2;
-      };
-      "files.autoSave" = "off";
-      "nix.enableLanguageServer" = true;
-      "nix.serverPath" = "nil";
-      "update.mode" = "none";
-    };
-  };
-  programs.direnv = {
-    enable = true;
-    enableZshIntegration = true; # Or enableZshIntegration / enableFishIntegration
-    nix-direnv.enable = true;
-  };
-  programs.claude-code = {
-    enable = true;
-  };
-  programs.tmux = {
-    enable = true;
-    extraConfig = ''
-      set-option -g default-shell ${pkgs.zsh}/bin/zsh
-    '';
-  };
+            # user specific definitions are buggy on darwin.
+            profiles.default.userSettings = {
+              "[nix]" = {
+                "editor.tabSize" = 2;
+              };
+              "files.autoSave" = "off";
+              "nix.enableLanguageServer" = true;
+              "nix.serverPath" = "nil";
+              "update.mode" = "none";
+            };
+          };
+          programs.direnv = {
+            enable = true;
+            enableZshIntegration = true; # Or enableZshIntegration / enableFishIntegration
+            nix-direnv.enable = true;
+          };
+          programs.claude-code = {
+            enable = true;
+          };
+          programs.tmux = {
+            enable = true;
+            extraConfig = ''
+              set-option -g default-shell ${pkgs.zsh}/bin/zsh
+            '';
+          };
         })
       ]
     ) cfg.home;
