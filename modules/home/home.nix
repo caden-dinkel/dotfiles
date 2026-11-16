@@ -116,6 +116,7 @@ in
           home.packages = [
             pkgs.bitwarden-desktop
             pkgs.spotify
+            pkgs.discord
           ]
           ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
             pkgs.freecad
