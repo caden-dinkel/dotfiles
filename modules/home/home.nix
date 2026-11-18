@@ -117,6 +117,8 @@ in
             pkgs.bitwarden-desktop
             pkgs.spotify
             pkgs.discord
+            pkgs.easyeffects
+            pkgs.rnnoise-plugin
           ]
           ++ lib.optionals pkgs.stdenv.hostPlatform.isLinux [
             pkgs.freecad
